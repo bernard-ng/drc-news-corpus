@@ -8,6 +8,7 @@ use App\Service\PoliticoCdService;
 use App\Service\RadioOkapiNetService;
 use App\Service\Politique7sur7CdService;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -32,6 +33,7 @@ class CrawleCommand extends Command
         #[Autowire('%kernel.project_dir%')]
         public readonly string $projectDir,
         public readonly HttpClientInterface $client,
+        public readonly MailerInterface $mailer
     ) {
         parent::__construct();
     }
@@ -65,9 +67,9 @@ class CrawleCommand extends Command
         $end = $input->getArgument('end');
 
         $service = match ($input->getArgument('website')) {
-            'radiookapi.net' => new RadioOkapiNetService($this->projectDir, $this->client, $this->io),
-            '7sur7.cd' => new Politique7sur7CdService($this->projectDir, $this->client, $this->io),
-            'politico.cd' => new PoliticoCdService($this->projectDir, $this->client, $this->io),
+            'radiookapi.net' => new RadioOkapiNetService($this->projectDir, $this->client, $this->io, $this->mailer),
+            '7sur7.cd' => new Politique7sur7CdService($this->projectDir, $this->client, $this->io, $this->mailer),
+            'politico.cd' => new PoliticoCdService($this->projectDir, $this->client, $this->io, $this->mailer),
         };
         $service->process($start, $end, $input->getArgument('filename'), $input->getArgument('category'));
 

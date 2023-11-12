@@ -7,6 +7,7 @@ namespace App\Service;
 use League\Csv\Writer;
 use League\Csv\UnavailableStream;
 use Symfony\Component\Mime\Email;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Stopwatch\Stopwatch;
 use Symfony\Component\Stopwatch\StopwatchPeriod;
@@ -78,8 +79,8 @@ final readonly class RadioOkapiNetService extends AbstractService
 
 
             $email = (new Email())
-                ->from('contact@devscast.tech', 'Devscast')
-                ->to('ngandubernard@gmail.com', 'Bernard Ngandu')
+                ->from(new Address('contact@devscast.tech', 'Devscast'))
+                ->to(new Address('ngandubernard@gmail.com', 'Bernard Ngandu'))
                 ->subject('radiookapi.net Crawling done')
                 ->text(
                     <<<EOF
