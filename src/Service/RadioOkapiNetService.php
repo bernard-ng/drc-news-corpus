@@ -6,10 +6,11 @@ namespace App\Service;
 
 use League\Csv\Writer;
 use League\Csv\UnavailableStream;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\DomCrawler\Crawler;
-use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\Stopwatch\Stopwatch;
+use Symfony\Component\Stopwatch\StopwatchPeriod;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 /**
  * Class OkapiService.
@@ -21,12 +22,14 @@ final readonly class RadioOkapiNetService extends AbstractService
     public const URL = 'https://www.radiookapi.net';
 
     /**
-     * @throws UnavailableStream
+     * @throws UnavailableStream|TransportExceptionInterface
      */
     public function process(int $start, int $end, string $filename, ?array $categories = []): void
     {
+        $stopwatch = new Stopwatch();
         $writer = Writer::createFromPath("{$this->projectDir}/data/{$filename}.csv", open_mode: 'a+');
 
+        $stopwatch->start('crawling');
         for ($i = $start; $i < $end; $i++) {
             $this->io->info("page $i");
 
@@ -66,6 +69,31 @@ final readonly class RadioOkapiNetService extends AbstractService
                     $this->io->text("> $title ❌");
                 }
             });
+            $stopwatch->lap("page $i");
+        }
+
+        try {
+            $event = $stopwatch->stop('crawling');
+            $periods = join("\n", array_map(fn (StopwatchPeriod $period) => (string) $period, $event->getPeriods()));
+
+
+            $email = (new Email())
+                ->from('contact@devscast.tech', 'Devscast')
+                ->to('ngandubernard@gmail.com', 'Bernard Ngandu')
+                ->subject('radiookapi.net Crawling done')
+                ->text(
+                    <<<EOF
+                        The crawling of radiookapi.net is done.
+                        It took {$event}
+                        Here are the details:
+                        
+                        $periods
+                    EOF
+                )
+                ->attachFromPath("{$this->projectDir}/data/{$filename}.csv");
+            $this->mailer->send($email);
+        } finally {
+            $this->io->success('Done');
         }
     }
 }
