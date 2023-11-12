@@ -1,25 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Command;
 
-use League\Csv\Writer;
-use League\Csv\UnavailableStream;
-use App\Service\PoliticoCdService;
-use App\Service\RadioOkapiNetService;
-use App\Service\Politique7sur7CdService;
-use Symfony\Component\DomCrawler\Crawler;
-use Symfony\Component\Mailer\MailerInterface;
+use App\Source\SourceHandler;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 
 #[AsCommand(
     name: 'app:crawle',
@@ -30,21 +22,18 @@ class CrawleCommand extends Command
     private SymfonyStyle $io;
 
     public function __construct(
-        #[Autowire('%kernel.project_dir%')]
-        public readonly string $projectDir,
-        public readonly HttpClientInterface $client,
-        public readonly MailerInterface $mailer
+        private readonly SourceHandler $sourceHandler
     ) {
         parent::__construct();
     }
 
     public function configure(): void
     {
-        $this->addArgument('website', InputArgument::REQUIRED, 'the website to crawle');
-        $this->addArgument('start', InputArgument::REQUIRED, 'the start page');
-        $this->addArgument('end', InputArgument::REQUIRED, 'the end page');
-        $this->addArgument('filename', InputArgument::OPTIONAL, 'the filename to save the data');
-        $this->addArgument('category', InputArgument::OPTIONAL, 'the category to crawle');
+        $this->addArgument('source', InputArgument::REQUIRED, 'the website source to crawle');
+        $this->addOption('start', null, InputOption::VALUE_REQUIRED, 'the start page');
+        $this->addOption('end', null, InputOption::VALUE_REQUIRED, 'the end page');
+        $this->addOption('filename', null, InputOption::VALUE_OPTIONAL, 'the filename to save the data');
+        $this->addOption('category', null, InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'the category to crawle');
     }
 
     public function initialize(InputInterface $input, OutputInterface $output): void
@@ -52,28 +41,33 @@ class CrawleCommand extends Command
         $this->io = new SymfonyStyle($input, $output);
     }
 
-    /**
-     * @throws ServerExceptionInterface
-     * @throws RedirectionExceptionInterface
-     * @throws ClientExceptionInterface
-     * @throws UnavailableStream
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        /** @var int $start */
-        $start = $input->getArgument('start');
+        /** @var string $source */
+        $source = $input->getArgument('source');
 
-        /** @var int $end */
-        $end = $input->getArgument('end');
+        /** @var string $start */
+        $start = $input->getOption('start');
 
-        $service = match ($input->getArgument('website')) {
-            'radiookapi.net' => new RadioOkapiNetService($this->projectDir, $this->client, $this->io, $this->mailer),
-            '7sur7.cd' => new Politique7sur7CdService($this->projectDir, $this->client, $this->io, $this->mailer),
-            'politico.cd' => new PoliticoCdService($this->projectDir, $this->client, $this->io, $this->mailer),
-        };
-        $service->process($start, $end, $input->getArgument('filename'), $input->getArgument('category'));
+        /** @var string $end */
+        $end = $input->getOption('end');
 
-        $this->io->success('website crawled successfully');
+        /** @var string $filename */
+        $filename = $input->getOption('filename') ?? $source;
+
+        /** @var array|null $category */
+        $category = $input->getOption('category');
+
+        $handled = $this->sourceHandler->process(
+            id: $source,
+            io: $this->io,
+            start: (int) $start,
+            end: (int) $end,
+            filename: $filename,
+            categories: $category
+        );
+
+        $handled ? $this->io->success('website crawled successfully') : $this->io->error('website not crawled');
         return Command::SUCCESS;
     }
 }
