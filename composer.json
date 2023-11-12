@@ -7,14 +7,19 @@
         "php": ">=8.1",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "league/csv": "^9.11",
         "symfony/console": "6.3.*",
+        "symfony/css-selector": "6.3.*",
+        "symfony/dom-crawler": "6.3.*",
         "symfony/dotenv": "6.3.*",
         "symfony/flex": "^2",
         "symfony/framework-bundle": "6.3.*",
+        "symfony/http-client": "6.3.*",
         "symfony/runtime": "6.3.*",
         "symfony/yaml": "6.3.*"
     },
     "require-dev": {
+        "symfony/maker-bundle": "^1.51"
     },
     "config": {
         "allow-plugins": {
