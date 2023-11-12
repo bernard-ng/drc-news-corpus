@@ -70,7 +70,7 @@ final readonly class RadioOkapiNetService extends AbstractService
                     $this->io->text("> $title ❌");
                 }
             });
-            $stopwatch->lap("page $i");
+            $stopwatch->lap("crawling");
         }
 
         try {
