@@ -26,7 +26,7 @@ running this command in the background is recommended.
 ### Available Sources
 - [x] [radiookapi.net](https://www.radiookapi.net/actualite)
 - [ ] [actualite.cd](https://actualite.cd/)
-- [ ] [7sur7.cd](https://7sur7.cd/index.php/category/politique)
+- [x] [7sur7.cd](https://7sur7.cd/index.php/category/politique)
 - [ ] [juricaf.org](https://juricaf.org/recherche/+/facet_pays%3ACongo_d%C3%A9mocratique)
 - [ ] [leganews.pro](https://leganews.pro/)
 - [ ] [congoprofond.net](https://congoprofond.net/category/actualite)

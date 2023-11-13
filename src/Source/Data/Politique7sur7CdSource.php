@@ -35,6 +35,7 @@ final readonly class Politique7sur7CdSource extends AbstractSource
     public function process(SymfonyStyle $io, int $start, int $end, string $filename = self::ID, ?array $categories = []): void
     {
         $stopwatch = new Stopwatch();
+        $category = $categories[0] ?? 'politique';
         $filename = "{$this->projectDir}/data/{$filename}.csv";
         $writer = Writer::createFromPath($this->ensureFileExists($filename), open_mode: 'a+');
 
@@ -42,7 +43,7 @@ final readonly class Politique7sur7CdSource extends AbstractSource
         for ($i = $start; $i < $end; $i++) {
             try {
                 $io->info("page {$i}");
-                $crawler = $this->crawle(self::URL . "/index.php/category/politique?page={$i}");
+                $crawler = $this->crawle(self::URL . "/index.php/category/{$category}?page={$i}");
                 $articles = $crawler->filter('.view-content')->children('.row.views-row');
                 $writer->insertOne(['title', 'link', 'categories', 'body', 'timestamp', 'source']);
             } catch (\Throwable) {
