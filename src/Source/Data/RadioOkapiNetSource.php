@@ -41,7 +41,10 @@ final readonly class RadioOkapiNetSource extends AbstractSource
         $stopwatch->start('crawling');
         for ($i = $start; $i < $end; $i++) {
             try {
-                $io->info("page {$i}");
+                if ($io->isVerbose()) {
+                    $io->info("page {$i}");
+                }
+
                 $crawler = $this->crawle(self::URL . "/actualite?page={$i}");
                 $articles = $crawler->filter('.view-content')->children('.views-row.content-row');
                 $writer->insertOne(['title', 'link', 'categories', 'body', 'timestamp', 'source']);
@@ -64,13 +67,16 @@ final readonly class RadioOkapiNetSource extends AbstractSource
                     }
 
                     $writer->insertOne([$title, $link, implode(',', $categories), $body, $timestamp, self::ID]);
-                    $io->text("> {$title} ✅");
+                    if ($io->isVerbose()) {
+                        $io->text("> {$title} ✅");
+                    }
                 } catch (\Throwable) {
-                    $io->text('> failed ❌');
+                    if ($io->isVerbose()) {
+                        $io->text('> failed ❌');
+                    }
                     return;
                 }
             });
-            $stopwatch->lap('crawling');
         }
 
         try {

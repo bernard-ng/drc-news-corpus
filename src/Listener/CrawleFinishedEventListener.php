@@ -36,11 +36,10 @@ final readonly class CrawleFinishedEventListener
             ->text(<<<EOF
             The crawling of {$event->source} is done.
             It took {$event->event}
-            Here are the details:
-            
-            {$event->periods}
+                        
             EOF)
-            ->attachFromPath("{$event->filename}");
+            ->attachFromPath($event->filename)
+            ->attachFromPath(str_ireplace('csv', 'log', $event->filename));
         $this->mailer->send($email);
     }
 }

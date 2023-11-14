@@ -64,7 +64,6 @@ abstract readonly class AbstractSource implements SourceInterface
     protected function dispatchCrawleFinishedEvent(Stopwatch $stopwatch, string $filename): void
     {
         $event = $stopwatch->stop('crawling');
-        $periods = join("\n", array_map(fn (StopwatchPeriod $period) => (string) $period, $event->getPeriods()));
-        $this->dispatcher->dispatch(new CrawleFinishedEvent($event, $periods, $filename,static::ID));
+        $this->dispatcher->dispatch(new CrawleFinishedEvent($event, $filename,static::ID));
     }
 }

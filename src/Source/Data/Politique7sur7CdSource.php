@@ -42,10 +42,12 @@ final readonly class Politique7sur7CdSource extends AbstractSource
         $stopwatch->start('crawling');
         for ($i = $start; $i < $end; $i++) {
             try {
-                $io->info("page {$i}");
+                if ($io->isVerbose()) {
+                    $io->info("page {$i}");
+                }
+
                 $crawler = $this->crawle(self::URL . "/index.php/category/{$category}?page={$i}");
                 $articles = $crawler->filter('.view-content')->children('.row.views-row');
-                $writer->insertOne(['title', 'link', 'categories', 'body', 'timestamp', 'source']);
             } catch (\Throwable) {
                 continue;
             }
@@ -65,13 +67,16 @@ final readonly class Politique7sur7CdSource extends AbstractSource
                     }
 
                     $writer->insertOne([$title, $link, implode(',', $categories), $body, $timestamp, self::ID]);
-                    $io->text("> {$title} ✅");
+                    if ($io->isVerbose()) {
+                        $io->text("> {$title} ✅");
+                    }
                 } catch (\Throwable) {
-                    $io->text('> failed ❌');
+                    if ($io->isVerbose()) {
+                        $io->text('> failed ❌');
+                    }
                     return;
                 }
             });
-            $stopwatch->lap('crawling');
         }
 
         try {

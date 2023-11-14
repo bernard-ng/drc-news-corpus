@@ -10,7 +10,6 @@ final readonly class CrawleFinishedEvent
 {
     public function __construct(
         public StopwatchEvent $event,
-        public string $periods,
         public string $filename,
         public string $source
     ) {
