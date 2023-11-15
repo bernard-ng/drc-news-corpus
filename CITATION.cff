@@ -1,0 +1,38 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: DRC News Corpus
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Bernard
+    name-particle: Tshabu
+    family-names: Ngandu
+    email: bernard@devscast.tech
+    affiliation: Devscast Community
+    orcid: 'https://orcid.org/0009-0003-9777-6349'
+repository-code: 'https://github.com/bernard-ng/drc-news-corpus'
+repository: >-
+  https://www.kaggle.com/datasets/bernardngandu/drc-news-corpus
+abstract: >-
+  The "DRC News Corpus" is a curated collection of news
+  articles sourced from major media outlets covering a wide
+  spectrum of topics related to the Democratic Republic of
+  Congo (DRC). This dataset encompasses a diverse range of
+  news stories, including but not limited to politics,
+  economy, social issues, culture, environment, and
+  international relations, providing comprehensive coverage
+  of events and developments within the country.
+keywords:
+  - news
+  - datasets
+  - DRC
+  - politics
+  - NLP
+license: CC-BY-NC-SA-4.0
+commit: e15b7bc27baa0dd451eefd8bea2c28040cb9d5a4
+version: 1.0.0
+date-released: '2023-11-16'
