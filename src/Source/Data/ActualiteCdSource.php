@@ -59,8 +59,8 @@ final readonly class ActualiteCdSource extends AbstractSource
                         $body = $crawler->filter('.views-field.views-field-body')->text();
                         $timestamp = $this->createTimeStamp($crawler->filter('#p-date')->text(),'l d F Y - H:i');
                     } catch (\Throwable) {
-                        $body ??= '';
-                        $timestamp ??= '';
+                        $body = '';
+                        $timestamp = '';
                     }
 
                     $writer->insertOne([$title, $link, $categories, $body, $timestamp, self::ID]);

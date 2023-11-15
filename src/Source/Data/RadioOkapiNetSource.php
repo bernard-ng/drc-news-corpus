@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Source\Data;
 
-use League\Csv\{Exception, UnavailableStream, Writer};
 use App\Source\AbstractSource;
+use League\Csv\{Exception, UnavailableStream, Writer};
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 use Symfony\Component\DomCrawler\Crawler;
