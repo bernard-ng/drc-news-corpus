@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace App\Source\Data;
 
-use League\Csv\Writer;
 use App\Source\AbstractSource;
-use Symfony\Component\DomCrawler\Crawler;
-use Symfony\Component\Stopwatch\Stopwatch;
+use League\Csv\{Exception, UnavailableStream, Writer};
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
+use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\Stopwatch\Stopwatch;
 
 /**
- * Class PoliticoCdAbstractSource.
+ * Class Politique7sur7Service.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
@@ -23,47 +23,54 @@ final readonly class ActualiteCdSource extends AbstractSource
 
     public const ID = 'actualite.cd';
 
-    public function supports(string $source): bool
-    {
-        return $source === self::ID;
-    }
-
+    /**
+     * @throws UnavailableStream
+     * @throws Exception
+     */
     public function process(SymfonyStyle $io, int $start, int $end, string $filename = self::ID, ?array $categories = []): void
     {
         $stopwatch = new Stopwatch();
-        $category = $categories[0] ?? 'politique';
         $filename = "{$this->projectDir}/data/{$filename}.csv";
         $writer = Writer::createFromPath($this->ensureFileExists($filename), open_mode: 'a+');
+        $writer->insertOne(['title', 'link', 'categories', 'body', 'timestamp', 'source']);
 
         $stopwatch->start('crawling');
         for ($i = $start; $i < $end; $i++) {
             try {
-                $io->info("page {$i}");
+                if ($io->isVerbose()) {
+                    $io->info("page {$i}");
+                }
+
                 $crawler = $this->crawle(self::URL . "/actualite?page={$i}");
-                $articles = $crawler->filter('.view-content')->children('.row.views-row');
-                $writer->insertOne(['title', 'link', 'categories', 'body', 'timestamp', 'source']);
-            } catch (\Throwable) {
+                $articles = $crawler->filter('#views-bootstrap-taxonomy-term-page-2 > div > div');
+            } catch (\Throwable $e) {
                 continue;
             }
 
             // loop through the articles and get the title, link, date, categories and body
             $articles->each(function (Crawler $node) use ($writer, $io) {
                 try {
-                    $categories = ['politique'];
-                    $title = $node->filter('.views-field-title a')->text();
-                    $link = $node->filter('.views-field-title a')->attr('href');
-                    $timestamp = $this->createTimeStamp($node->filter('.views-field-created')->text());
+                    $title = $node->filter('#actu-titre a')->text();
+                    $link = $node->filter('#actu-titre a')->attr('href');
+                    $categories = $node->filter('#actu-cat a')->text();
 
                     try {
-                        $body = $this->crawle(self::URL . "/{$link}")->filter('.field.field--name-body')->text();
+                        $crawler = $this->crawle(self::URL . "/{$link}");
+                        $body = $crawler->filter('.views-field.views-field-body')->text();
+                        $timestamp = $this->createTimeStamp($crawler->filter('#p-date')->text(),'l d F Y - H:i');
                     } catch (\Throwable) {
-                        $body = '';
+                        $body ??= '';
+                        $timestamp ??= '';
                     }
 
-                    $writer->insertOne([$title, $link, implode(',', $categories), $body, $timestamp, self::ID]);
-                    $io->text("> {$title} ✅");
+                    $writer->insertOne([$title, $link, $categories, $body, $timestamp, self::ID]);
+                    if ($io->isVerbose()) {
+                        $io->text("> {$title} ✅");
+                    }
                 } catch (\Throwable) {
-                    $io->text('> failed ❌');
+                    if ($io->isVerbose()) {
+                        $io->text('> failed ❌');
+                    }
                     return;
                 }
             });

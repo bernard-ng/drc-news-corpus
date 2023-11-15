@@ -23,9 +23,9 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
  */
 abstract readonly class AbstractSource implements SourceInterface
 {
-    public const URL = 'https://www.radiookapi.net';
+    public const URL = 'url';
 
-    public const ID = 'radiookapi.net';
+    public const ID = 'id';
 
     public function __construct(
         #[Autowire('%kernel.project_dir%')] protected string $projectDir,
@@ -34,9 +34,42 @@ abstract readonly class AbstractSource implements SourceInterface
     ) {
     }
 
+    public function supports(string $source): bool
+    {
+        return $source === static::ID;
+    }
+
     protected function createTimeStamp(string $date, string $format = 'd/m/Y - H:m'): string
     {
+        $days = [
+            'Monday' => 'Lundi',
+            'Tuesday' => 'Mardi',
+            'Wednesday' => 'Mercredi',
+            'Thursday' => 'Jeudi',
+            'Friday' => 'Vendredi',
+            'Saturday' => 'Samedi',
+            'Sunday' => 'Dimanche',
+        ];
+
+        $months = [
+            'January' => 'Janvier',
+            'February' => 'Février',
+            'March' => 'Mars',
+            'April' => 'Avril',
+            'May' => 'Mai',
+            'June' => 'Juin',
+            'July' => 'Juillet',
+            'August' => 'Août',
+            'September' => 'Septembre',
+            'October' => 'Octobre',
+            'November' => 'Novembre',
+            'December' => 'Décembre',
+        ];
+
+        $date = str_ireplace(array_keys($days), array_values($days), $date);
+        $date = str_ireplace(array_keys($months), array_values($months), $date);
         $date = \DateTime::createFromFormat($format, $date);
+
         return $date !== false ? $date->format('U') : (new \DateTime())->format('U');
     }
 

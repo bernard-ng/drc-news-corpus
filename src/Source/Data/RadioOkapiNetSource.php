@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace App\Source\Data;
 
+use League\Csv\{Exception, UnavailableStream, Writer};
 use App\Source\AbstractSource;
-use League\Csv\UnavailableStream;
-use League\Csv\Writer;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 use Symfony\Component\DomCrawler\Crawler;
@@ -31,12 +30,14 @@ final readonly class RadioOkapiNetSource extends AbstractSource
 
     /**
      * @throws UnavailableStream
+     * @throws Exception
      */
     public function process(SymfonyStyle $io, int $start, int $end, string $filename = self::ID, ?array $categories = []): void
     {
         $stopwatch = new Stopwatch();
         $filename = "{$this->projectDir}/data/{$filename}.csv";
         $writer = Writer::createFromPath($this->ensureFileExists($filename), open_mode: 'a+');
+        $writer->insertOne(['title', 'link', 'categories', 'body', 'timestamp', 'source']);
 
         $stopwatch->start('crawling');
         for ($i = $start; $i < $end; $i++) {
@@ -47,7 +48,6 @@ final readonly class RadioOkapiNetSource extends AbstractSource
 
                 $crawler = $this->crawle(self::URL . "/actualite?page={$i}");
                 $articles = $crawler->filter('.view-content')->children('.views-row.content-row');
-                $writer->insertOne(['title', 'link', 'categories', 'body', 'timestamp', 'source']);
             } catch (\Throwable) {
                 continue;
             }

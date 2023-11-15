@@ -38,8 +38,7 @@ final readonly class CrawleFinishedEventListener
             It took {$event->event}
                         
             EOF)
-            ->attachFromPath($event->filename)
-            ->attachFromPath(str_ireplace('csv', 'log', $event->filename));
+            ->attachFromPath($event->filename);
         $this->mailer->send($email);
     }
 }
