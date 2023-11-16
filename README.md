@@ -18,8 +18,12 @@ Researchers, journalists, policymakers, and data enthusiasts interested in under
 
 Efforts have been made to ensure the dataset's integrity and quality by including articles from reputable news outlets. However, users are encouraged to exercise discretion and validate the information independently as journalistic standards and perspectives may vary among sources.
 
+# Download the dataset
+[DRC News Corpus on Kaggle](https://www.kaggle.com/datasets/bernardngandu/drc-news-corpus)
 
-# Installation
+# Rebuild the dataset
+if you want to rebuild the dataset follow the steps bellow : 
+
 ```bash
 git clone https://github.com/bernard-ng/drc-news-corpus.git && cd drc-news-corpus
 composer install
@@ -65,4 +69,5 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 ## Acknowledgment:
 
-The compilation and curation of the "DRC News Corpus" were conducted by Tshabu Ngandu Bernard with the primary objective of facilitating research and analysis related to the Democratic Republic of Congo.
+The compilation and curation of the "DRC News Corpus" were conducted by Tshabu Ngandu Bernard with the primary objective of facilitating research and analysis related to the Democratic Republic of Congo. 
+I don't forget to cite this repository if you consider to use the data or this software. 
