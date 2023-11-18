@@ -55,7 +55,7 @@ class CrawleCommand extends Command
         /** @var string $filename */
         $filename = $input->getOption('filename') ?? $source;
 
-        /** @var array|null $category */
+        /** @var array<string>|null $category */
         $category = $input->getOption('category');
 
         $handled = $this->sourceHandler->process(
