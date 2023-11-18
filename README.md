@@ -56,7 +56,7 @@ php bin/console app:crawl 7sur7.cd --start=0 --end=100 --filename=7sur7.cd --cat
 - [x] [7sur7.cd](https://7sur7.cd/index.php/category/politique)
 - [ ] [juricaf.org](https://juricaf.org/recherche/+/facet_pays%3ACongo_d%C3%A9mocratique)
 - [ ] [congoprofond.net](https://congoprofond.net/category/actualite)
-- [ ] [politico.cd](https://www.politico.cd/rubrique/encontinu/)
+- [x] [politico.cd](https://www.politico.cd/rubrique/encontinu/)
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
