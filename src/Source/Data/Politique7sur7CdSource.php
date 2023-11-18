@@ -55,9 +55,9 @@ final readonly class Politique7sur7CdSource extends AbstractSource
             }
 
             // loop through the articles and get the title, link, date, categories and body
-            $articles->each(function (Crawler $node) use ($writer, $io) {
+            $articles->each(function (Crawler $node) use ($writer, $io, $category) {
                 try {
-                    $categories = ['politique'];
+                    $categories = [$category];
                     $title = $node->filter('.views-field-title a')->text();
                     $link = $node->filter('.views-field-title a')->attr('href');
                     $timestamp = $this->createTimeStamp($node->filter('.views-field-created')->text());
