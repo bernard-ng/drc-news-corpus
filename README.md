@@ -12,6 +12,31 @@ This dataset encompasses a diverse range of news stories, including but not limi
 The dataset comprises articles gathered from prominent news sources operating within the DRC, offering insights into the nation's dynamic socio-political landscape, economic trends, humanitarian affairs, and more. 
 The articles are primarily in French, representing a variety of perspectives and reporting styles from respected journalistic platforms. Spanning a time range from 2004 to november 2023, the dataset encapsulates news reports, analyses, opinion pieces, and feature stories published within this period, offering a snapshot of the media discourse surrounding the DRC during this timeframe.
 
+**cite this repository**:
+```tex
+@software{Tshabu_Ngandu_DRC_News_Corpus_2023,
+author = {Tshabu Ngandu, Bernard},
+license = {CC-BY-NC-SA-4.0},
+month = nov,
+title = {{DRC News Corpus}},
+url = {https://github.com/bernard-ng/drc-news-corpus},
+version = {1.0.0},
+year = {2023}
+}
+```
+
+**cite the dataset**:
+```tex
+@dataset{Tshabu_Ngandu_DRC_News_Corpus_2023,
+author = {Tshabu Ngandu, Bernard},
+license = {CC-BY-NC-SA-4.0},
+month = nov,
+title = {{DRC News Corpus}},
+url = {https://www.kaggle.com/datasets/bernardngandu/drc-news-corpus},
+year = {2023}
+}
+```
+
 ## Use Cases:
 
 Researchers, journalists, policymakers, and data enthusiasts interested in understanding the socio-political climate, economic dynamics, and other facets of the DRC will find this dataset valuable. It serves as a resource for sentiment analysis, trend identification, language modeling, and other natural language processing (NLP) tasks.
