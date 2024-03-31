@@ -33,6 +33,6 @@ keywords:
   - politics
   - NLP
 license: CC-BY-NC-SA-4.0
-commit: e15b7bc27baa0dd451eefd8bea2c28040cb9d5a4
-version: 1.0.0
-date-released: '2023-11-16'
+commit: b1d386986b196ae0ab637ec1a50fd992cf829d34
+version: 1.2.1
+date-released: '2024-03-31'
