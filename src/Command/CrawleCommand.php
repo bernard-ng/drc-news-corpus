@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Filter\DateRange;
+use App\Filter\PageRange;
+use App\Source\ProcessConfig;
 use App\Source\SourceHandler;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -15,7 +18,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:crawle',
-    description: 'crawle radio okapi website',
+    description: 'crawle a news website',
 )]
 class CrawleCommand extends Command
 {
@@ -30,10 +33,10 @@ class CrawleCommand extends Command
     public function configure(): void
     {
         $this->addArgument('source', InputArgument::REQUIRED, 'the website source to crawle');
-        $this->addOption('start', null, InputOption::VALUE_REQUIRED, 'the start page');
-        $this->addOption('end', null, InputOption::VALUE_REQUIRED, 'the end page');
-        $this->addOption('filename', null, InputOption::VALUE_OPTIONAL, 'the filename to save the data');
-        $this->addOption('category', null, InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'the category to crawle');
+        $this->addOption('date', null, InputOption::VALUE_OPTIONAL, 'Date interval to crawle', null);
+        $this->addOption('page', null, InputOption::VALUE_OPTIONAL, 'PageRange interval to crawle', null);
+        $this->addOption('category', null, InputOption::VALUE_OPTIONAL, 'the category to crawle', null);
+        $this->addOption('filename', null, InputOption::VALUE_OPTIONAL, 'the filename to save the data', null);
     }
 
     public function initialize(InputInterface $input, OutputInterface $output): void
@@ -46,25 +49,27 @@ class CrawleCommand extends Command
         /** @var string $source */
         $source = $input->getArgument('source');
 
-        /** @var string $start */
-        $start = $input->getOption('start');
+        /** @var string|null $page */
+        $page = $input->getOption('page');
 
-        /** @var string $end */
-        $end = $input->getOption('end');
+        /** @var string|null $date */
+        $date = $input->getOption('date');
 
         /** @var string $filename */
         $filename = $input->getOption('filename') ?? $source;
 
-        /** @var array<string>|null $category */
+        /** @var string|null $category */
         $category = $input->getOption('category');
 
         $handled = $this->sourceHandler->process(
-            id: $source,
             io: $this->io,
-            start: (int) $start,
-            end: (int) $end,
-            filename: $filename,
-            categories: $category
+            config: new ProcessConfig(
+                id: $source,
+                filename: $filename,
+                page: $page !== null ? PageRange::from($page) : null,
+                date: $date !== null ? DateRange::from($date) : null,
+                category: $category
+            )
         );
 
         $handled ? $this->io->success('website crawled successfully') : $this->io->error('website not crawled');

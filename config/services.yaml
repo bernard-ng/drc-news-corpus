@@ -6,6 +6,7 @@
 parameters:
     app_from_email: '%env(APP_FROM_EMAIL)%'
     app_to_email: '%env(APP_TO_EMAIL)%'
+    app_timezone: '%env(APP_TIMEZONE)%'
 
 services:
     # default configuration for services in *this* file

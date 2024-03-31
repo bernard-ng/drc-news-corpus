@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace App\Source\Data;
 
+use App\Filter\DateRange;
+use App\Filter\PageRange;
 use App\Source\AbstractSource;
-use League\Csv\{Exception, UnavailableStream, Writer};
+use App\Source\ProcessConfig;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 use Symfony\Component\DomCrawler\Crawler;
-use Symfony\Component\Stopwatch\Stopwatch;
 
 /**
  * Class Politique7sur7Service.
@@ -17,69 +18,62 @@ use Symfony\Component\Stopwatch\Stopwatch;
  * @author bernard-ng <bernard@devscast.tech>
  */
 #[AsTaggedItem('app.data_source')]
-final readonly class ActualiteCdSource extends AbstractSource
+final class ActualiteCdSource extends AbstractSource
 {
-    public const URL = 'https://actualite.cd';
+    public const string URL = 'https://actualite.cd';
 
-    public const ID = 'actualite.cd';
+    public const string ID = 'actualite.cd.csv';
 
     /**
-     * @throws UnavailableStream
-     * @throws Exception
+     * @throws \Throwable
      */
-    public function process(SymfonyStyle $io, int $start, int $end, string $filename = self::ID, ?array $categories = []): void
+    #[\Override]
+    public function process(SymfonyStyle $io, ProcessConfig $config): void
     {
-        $stopwatch = new Stopwatch();
-        $filename = "{$this->projectDir}/data/{$filename}.csv";
-        $writer = Writer::createFromPath($this->ensureFileExists($filename), open_mode: 'a+');
-        $writer->insertOne(['title', 'link', 'categories', 'body', 'timestamp', 'source']);
+        $this->initialize($io, $config->filename);
+        $page = $config->page ?? PageRange::from(sprintf('0:%d', $this->getLastPageNumber(self::URL . '/actualite')));
 
-        $stopwatch->start('crawling');
-        for ($i = $start; $i < $end; $i++) {
+        for ($i = $page->start; $i < $page->end; $i++) {
             try {
-                if ($io->isVerbose()) {
-                    $io->info("page {$i}");
-                }
-
-                $crawler = $this->crawle(self::URL . "/actualite?page={$i}");
+                $crawler = $this->crawle(self::URL . "/actualite?page={$i}", $i);
                 $articles = $crawler->filter('#views-bootstrap-taxonomy-term-page-2 > div > div');
             } catch (\Throwable $e) {
                 continue;
             }
 
             // loop through the articles and get the title, link, date, categories and body
-            $articles->each(function (Crawler $node) use ($writer, $io) {
-                try {
-                    $title = $node->filter('#actu-titre a')->text();
-                    $link = $node->filter('#actu-titre a')->attr('href');
-                    $categories = $node->filter('#actu-cat a')->text();
-
-                    try {
-                        $crawler = $this->crawle(self::URL . "/{$link}");
-                        $body = $crawler->filter('.views-field.views-field-body')->text();
-                        $timestamp = $this->createTimeStamp($crawler->filter('#p-date')->text(),'l d F Y - H:i');
-                    } catch (\Throwable) {
-                        $body = '';
-                        $timestamp = '';
-                    }
-
-                    $writer->insertOne([$title, $link, $categories, $body, $timestamp, self::ID]);
-                    if ($io->isVerbose()) {
-                        $io->text("> {$title} ✅");
-                    }
-                } catch (\Throwable) {
-                    if ($io->isVerbose()) {
-                        $io->text('> failed ❌');
-                    }
-                    return;
-                }
-            });
+            $articles->each(fn (Crawler $node) => $this->processNode($node, $config->date));
         }
 
+        $this->onCrawlingCompleted();
+    }
+
+    #[\Override]
+    public function processNode(Crawler $node, ?DateRange $interval = null): void
+    {
         try {
-            $this->dispatchCrawleFinishedEvent($stopwatch, $filename);
-        } finally {
-            $io->success('Done');
+            $title = $node->filter('#actu-titre a')->text();
+            $link = $node->filter('#actu-titre a')->attr('href');
+            $categories = $node->filter('#actu-cat a')->text();
+
+            $crawler = $this->crawle(self::URL . "/{$link}");
+            $body = $crawler->filter('.views-field.views-field-body')->text();
+            $date = $crawler->filter('#p-date')->text();
+            $timestamp = $this->createTimeStamp(
+                date: $date,
+                format: self::DATE_FORMAT,
+                pattern: '/(\d{1}) (\d{2}) (\d{2}) (\d{4}) - (\d{2}:\d{2})/',
+                replacement: '$4-$3-$2 $5'
+            );
+
+            if ($interval === null || $interval->inRange((int) $timestamp)) {
+                $this->writeOnFile($title, $link, $categories, $body, $timestamp);
+            } else {
+                $this->skipOnOutOfRange($interval, $timestamp, $title, $date);
+            }
+        } catch (\Throwable $e) {
+            $this->skipOnError($e);
+            return;
         }
     }
 }

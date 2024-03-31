@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace App\Source;
 
 use App\Event\CrawleFinishedEvent;
+use App\Filter\DateRange;
+use App\Filter\PageRange;
+use League\Csv\Writer;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Stopwatch\Stopwatch;
-use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 /**
@@ -20,14 +20,52 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-abstract readonly class AbstractSource implements SourceInterface
+abstract class AbstractSource implements SourceInterface
 {
-    public const URL = 'url';
+    public const array MONTHS = [
+        'janvier' => '01',
+        'février' => '02',
+        'mars' => '03',
+        'avril' => '04',
+        'mai' => '05',
+        'juin' => '06',
+        'juillet' => '07',
+        'août' => '08',
+        'septembre' => '09',
+        'octobre' => '10',
+        'novembre' => '11',
+        'décembre' => '12',
+    ];
 
-    public const ID = 'id';
+    public const array DAYS = [
+        'dimanche' => '0',
+        'lundi' => '1',
+        'mardi' => '2',
+        'mercredi' => '3',
+        'jeudi' => '4',
+        'vendredi' => '5',
+        'samedi' => '6',
+    ];
+
+    protected const string URL = 'url';
+
+    protected const string ID = 'id';
+
+    protected const string DATE_FORMAT = 'Y-m-d H:i';
+
+    protected string $filename;
+
+    protected Stopwatch $stopwatch;
+
+    protected SymfonyStyle $io;
+
+    protected Writer $writer;
+
+    protected PageRange $page;
 
     public function __construct(
         #[Autowire('%kernel.project_dir%')] protected string $projectDir,
+        #[Autowire('%app_timezone%')] protected string $timezone,
         protected HttpClientInterface $client,
         protected EventDispatcherInterface $dispatcher
     ) {
@@ -38,48 +76,51 @@ abstract readonly class AbstractSource implements SourceInterface
         return $source === static::ID;
     }
 
-    protected function createTimeStamp(string $date, string $format = 'd/m/Y - H:m'): string
+    /**
+     * @throws \Throwable
+     */
+    protected function initialize(SymfonyStyle $io, string $filename): void
     {
-        $days = [
-            'Monday' => 'Lundi',
-            'Tuesday' => 'Mardi',
-            'Wednesday' => 'Mercredi',
-            'Thursday' => 'Jeudi',
-            'Friday' => 'Vendredi',
-            'Saturday' => 'Samedi',
-            'Sunday' => 'Dimanche',
-        ];
-
-        $months = [
-            'January' => 'Janvier',
-            'February' => 'Février',
-            'March' => 'Mars',
-            'April' => 'Avril',
-            'May' => 'Mai',
-            'June' => 'Juin',
-            'July' => 'Juillet',
-            'August' => 'Août',
-            'September' => 'Septembre',
-            'October' => 'Octobre',
-            'November' => 'Novembre',
-            'December' => 'Décembre',
-        ];
-
-        $date = str_ireplace(array_keys($days), array_values($days), $date);
-        $date = str_ireplace(array_keys($months), array_values($months), $date);
-        $date = \DateTime::createFromFormat($format, $date);
-
-        return $date !== false ? $date->format('U') : (new \DateTime())->format('U');
+        $this->io = $io;
+        $this->stopwatch = new Stopwatch();
+        $this->filename = "{$this->projectDir}/data/{$filename}.csv";
+        $this->writer = Writer::createFromPath($this->ensureFileExists($filename), open_mode: 'a+');
+        $this->writer->insertOne(['title', 'link', 'categories', 'body', 'timestamp', 'source']);
+        $this->stopwatch->start('crawling');
     }
 
     /**
-     * @throws TransportExceptionInterface
-     * @throws ServerExceptionInterface
-     * @throws RedirectionExceptionInterface
-     * @throws ClientExceptionInterface
+     * @throws \Throwable
      */
-    protected function crawle(string $url): Crawler
+    protected function createTimeStamp(string $date, string $format, ?string $pattern = null, ?string $replacement = null): string
     {
+        $date = strtr(strtr(strtolower($date), self::DAYS), self::MONTHS);
+        if ($pattern !== null && $replacement !== null) {
+            $date = preg_replace(
+                pattern: $pattern,
+                replacement: $replacement,
+                subject: $date
+            );
+        }
+
+        $date = \DateTime::createFromFormat($format, $date);
+
+        return $date !== false ?
+            $date->format('U') :
+            (new \DateTime())->format('U');
+    }
+
+    /**
+     * @throws \Throwable
+     */
+    protected function crawle(string $url, ?int $page = null): Crawler
+    {
+        if ($page !== null) {
+            if ($this->io->isVerbose()) {
+                $this->io->info("> Page {$page}");
+            }
+        }
+
         $response = $this->client->request('GET', $url)->getContent();
         return new Crawler($response);
     }
@@ -93,9 +134,65 @@ abstract readonly class AbstractSource implements SourceInterface
         return $filename;
     }
 
-    protected function dispatchCrawleFinishedEvent(Stopwatch $stopwatch, string $filename): void
+    protected function dispatchFinished(): void
     {
-        $event = $stopwatch->stop('crawling');
-        $this->dispatcher->dispatch(new CrawleFinishedEvent($event, $filename,static::ID));
+        $event = $this->stopwatch->stop('crawling');
+        $this->dispatcher->dispatch(new CrawleFinishedEvent($event, $this->filename,static::ID));
+    }
+
+    /**
+     * @throws \Throwable
+     */
+    protected function getLastPageNumber(?string $url = null): int
+    {
+        $result = [];
+        $node = $this->crawle($url ?? self::URL)
+            ->filter('ul.pagination > li a')
+            ->last()
+            ->attr('href');
+        parse_str(parse_url($node, PHP_URL_QUERY), $result);
+
+        return (int) $result['page'];
+    }
+
+    protected function skipOnOutOfRange(DateRange $interval, string $timestamp, string $title, string $date): void
+    {
+        if ($interval->end > (int) $timestamp) {
+            $this->dispatchFinished();
+            $this->io->success('Done');
+            exit;
+        }
+
+        if ($this->io->isVerbose()) {
+            $this->io->text("> {$title} [Skipped {$date}]");
+        }
+    }
+
+    /**
+     * @throws \Throwable
+     */
+    protected function writeOnFile(string $title, ?string $link, string $categories, string $body, string $timestamp): void
+    {
+        $this->writer->insertOne([$title, $link, $categories, $body, $timestamp, self::ID]);
+
+        if ($this->io->isVerbose()) {
+            $this->io->text("> {$title} ✅");
+        }
+    }
+
+    protected function skipOnError(\Throwable|\Exception $e): void
+    {
+        if ($this->io->isVerbose()) {
+            $this->io->text("> {$e->getMessage()} [Failed] ❌");
+        }
+    }
+
+    protected function onCrawlingCompleted(): void
+    {
+        try {
+            $this->dispatchFinished();
+        } finally {
+            $this->io->success('Done');
+        }
     }
 }

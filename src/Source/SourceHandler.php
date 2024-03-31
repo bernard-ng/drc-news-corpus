@@ -25,13 +25,13 @@ final readonly class SourceHandler
         $this->sources = iterator_to_array($sources);
     }
 
-    public function process(string $id, SymfonyStyle $io, int $start, int $end, string $filename, ?array $categories = []): bool
+    public function process(SymfonyStyle $io, ProcessConfig $config): bool
     {
         $sourceSupported = false;
         foreach ($this->sources as $source) {
-            if ($source->supports($id)) {
+            if ($source->supports($config->id)) {
                 $sourceSupported = true;
-                $source->process($io, $start, $end, $filename, $categories);
+                $source->process($io, $config);
             }
         }
 

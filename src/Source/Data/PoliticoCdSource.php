@@ -4,15 +4,13 @@ declare(strict_types=1);
 
 namespace App\Source\Data;
 
+use App\Filter\DateRange;
+use App\Filter\PageRange;
 use App\Source\AbstractSource;
-use League\Csv\CannotInsertRecord;
-use League\Csv\Exception;
-use League\Csv\UnavailableStream;
-use League\Csv\Writer;
+use App\Source\ProcessConfig;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 use Symfony\Component\DomCrawler\Crawler;
-use Symfony\Component\Stopwatch\Stopwatch;
 
 /**
  * Class PoliticoCdAbstractSource.
@@ -20,79 +18,66 @@ use Symfony\Component\Stopwatch\Stopwatch;
  * @author bernard-ng <bernard@devscast.tech>
  */
 #[AsTaggedItem('app.data_source')]
-final readonly class PoliticoCdSource extends AbstractSource
+final class PoliticoCdSource extends AbstractSource
 {
-    public const URL = 'https://politico.cd';
+    public const string URL = 'https://politico.cd';
 
-    public const ID = 'politico.cd';
+    public const string ID = 'politico.cd';
 
-    public function supports(string $source): bool
-    {
-        return $source === self::ID;
-    }
+    private string $category;
 
     /**
-     * @throws UnavailableStream
-     * @throws CannotInsertRecord
-     * @throws Exception
+     * @throws \Throwable
      */
-    public function process(SymfonyStyle $io, int $start, int $end, string $filename = self::ID, ?array $categories = []): void
+    #[\Override]
+    public function process(SymfonyStyle $io, ProcessConfig $config): void
     {
-        $stopwatch = new Stopwatch();
-        $filename = "{$this->projectDir}/data/{$filename}.csv";
-        $category = $categories[0] ?? 'encontinu';
-        $writer = Writer::createFromPath($this->ensureFileExists($filename), open_mode: 'a+');
-        $writer->insertOne(['title', 'link', 'categories', 'body', 'timestamp', 'source']);
+        $this->initialize($io, $config->filename);
 
-        $stopwatch->start('crawling');
-        for ($i = $start; $i < $end; $i++) {
+        $this->category = $config->category ?? 'politique';
+        $page = $config->page ?? PageRange::from(sprintf('0:%d', $this->getLastPageNumber(self::URL . "/rubrique/{$this->category}")));
+
+        for ($i = $page->start; $i < $page->end; $i++) {
             try {
-                if ($io->isVerbose()) {
-                    $io->info("page {$i}");
-                }
-
-                $crawler = $this->crawle(self::URL . "/rubrique/{$category}/page/{$i}");
+                $crawler = $this->crawle(self::URL . "/rubrique/{$this->category}/page/{$i}", $i);
                 $articles = $crawler->filter('article.l-post');
             } catch (\Throwable) {
                 continue;
             }
 
             // loop through the articles and get the title, link, date, categories and body
-            $articles->each(function (Crawler $node) use ($writer, $io) {
-                try {
-                    /** @var string $link */
-                    $link = $node->filter('.post-title a')->attr('href');
-                    $categories = $node->filter('.post-cat a')->text();
-                    $title = $node->filter('.post-title a')->text();
-
-                    /** @var string $date */
-                    $date = $node->filter('time')->attr('datetime');
-                    $timestamp = $this->createTimeStamp($date, format: 'c');
-
-                    try {
-                        $crawler = $this->crawle($link);
-                        $body = $crawler->filter('div.post-content.cf.entry-content.content-spacious')->text();
-                    } catch (\Throwable) {
-                        $body = '';
-                    }
-
-                    $writer->insertOne([$title, $link, $categories, $body, $timestamp, self::ID]);
-                    if ($io->isVerbose()) {
-                        $io->text("> {$title} ✅");
-                    }
-                } catch (\Throwable) {
-                    if ($io->isVerbose()) {
-                        $io->text('> failed ❌');
-                    }
-                    return;
-                }
-            });
+            $articles->each(fn (Crawler $node) => $this->processNode($node, $config->date));
         }
 
+        $this->onCrawlingCompleted();
+    }
+
+    #[\Override]
+    public function processNode(Crawler $node, ?DateRange $interval = null): void
+    {
         try {
-            $this->dispatchCrawleFinishedEvent($stopwatch, $filename);
-        } finally {
-            $io->success('Done');
+            $link = $node->filter('.post-title a')->attr('href');
+            $categories = $node->filter('.post-cat a')->text();
+            $title = $node->filter('.post-title a')->text();
+
+            $date = $node->filter('time')->attr('datetime');
+            $timestamp = $this->createTimeStamp($date, format: 'c');
+
+            if ($interval === null || $interval->inRange((int) $timestamp)) {
+                try {
+                    $crawler = $this->crawle($link);
+                    $body = $crawler->filter('div.post-content.cf.entry-content.content-spacious')->text();
+                } catch (\Throwable) {
+                    $body = '';
+                }
+
+                $this->writeOnFile($title, $link, $categories, $body, $timestamp);
+            } else {
+                $this->skipOnOutOfRange($interval, $timestamp, $title, $date);
+            }
+        } catch (\Throwable $e) {
+            $this->skipOnError($e);
+            return;
         }
     }
 }
