@@ -2,7 +2,8 @@ version: '3'
 
 services:
   php:
-    image: php:cli-alpine3.19
+    build:
+      context: ./docker
     user: '${USER_ID}:${GROUP_ID}'
     container_name: maxicash_php
     restart: unless-stopped
