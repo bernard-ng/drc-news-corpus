@@ -84,7 +84,7 @@ abstract class AbstractSource implements SourceInterface
         $this->io = $io;
         $this->stopwatch = new Stopwatch();
         $this->filename = "{$this->projectDir}/data/{$filename}.csv";
-        $this->writer = Writer::createFromPath($this->ensureFileExists($filename), open_mode: 'a+');
+        $this->writer = Writer::createFromPath($this->ensureFileExists($this->filename), open_mode: 'a+');
         $this->writer->insertOne(['title', 'link', 'categories', 'body', 'timestamp', 'source']);
         $this->stopwatch->start('crawling');
     }
