@@ -44,7 +44,7 @@ final class RadioOkapiNetSource extends AbstractSource
             $articles->each(fn (Crawler $node) => $this->processNode($node, $config->date));
         }
 
-        $this->onCrawlingCompleted($io);
+        $this->onCrawlingCompleted();
     }
 
     #[\Override]

@@ -56,10 +56,12 @@ final class PoliticoCdSource extends AbstractSource
     public function processNode(Crawler $node, ?DateRange $interval = null): void
     {
         try {
+            /** @var string $link */
             $link = $node->filter('.post-title a')->attr('href');
             $categories = $node->filter('.post-cat a')->text();
             $title = $node->filter('.post-title a')->text();
 
+            /** @var string $date */
             $date = $node->filter('time')->attr('datetime');
             $timestamp = $this->createTimeStamp($date, format: 'c');
 

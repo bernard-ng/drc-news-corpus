@@ -94,8 +94,10 @@ abstract class AbstractSource implements SourceInterface
      */
     protected function createTimeStamp(string $date, string $format, ?string $pattern = null, ?string $replacement = null): string
     {
+        /** @var string $date */
         $date = strtr(strtr(strtolower($date), self::DAYS), self::MONTHS);
         if ($pattern !== null && $replacement !== null) {
+            /** @var string $date */
             $date = preg_replace(
                 pattern: $pattern,
                 replacement: $replacement,
@@ -103,10 +105,10 @@ abstract class AbstractSource implements SourceInterface
             );
         }
 
-        $date = \DateTime::createFromFormat($format, $date);
+        $datetime = \DateTime::createFromFormat($format, $date);
 
-        return $date !== false ?
-            $date->format('U') :
+        return $datetime !== false ?
+            $datetime->format('U') :
             (new \DateTime())->format('U');
     }
 
@@ -146,11 +148,16 @@ abstract class AbstractSource implements SourceInterface
     protected function getLastPageNumber(?string $url = null): int
     {
         $result = [];
+
+        /** @var string $node */
         $node = $this->crawle($url ?? self::URL)
             ->filter('ul.pagination > li a')
             ->last()
             ->attr('href');
-        parse_str(parse_url($node, PHP_URL_QUERY), $result);
+
+        /** @var string $query */
+        $query = parse_url($node, PHP_URL_QUERY);
+        parse_str($query, $result);
 
         return (int) $result['page'];
     }

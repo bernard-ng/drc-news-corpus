@@ -32,7 +32,10 @@ final readonly class DateRange implements \Stringable
     {
         [$startDate, $endDate] = explode(':', $interval);
 
+        /** @var DateTime $start */
         $start = DateTime::createFromFormat($format, $startDate);
+
+        /** @var DateTime $end */
         $end = DateTime::createFromFormat($format, $endDate);
 
         return new self((int) $start->format('U'), (int) $end->format('U'));
