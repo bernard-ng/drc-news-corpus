@@ -8,7 +8,7 @@ user := $(shell id -u)
 group := $(shell id -g)
 
 ifeq ($(is_docker), 1)
-	php := USER_ID=$(user) GROUP_ID=$(group) docker-compose run --rm --no-deps php
+	php := USER_ID=$(user) GROUP_ID=$(group) docker compose run --rm --no-deps php
 	composer := $(php) composer
 else
 	php := php
