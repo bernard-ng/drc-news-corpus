@@ -22,7 +22,7 @@ final class ActualiteCdSource extends AbstractSource
 {
     public const string URL = 'https://actualite.cd';
 
-    public const string ID = 'actualite.cd.csv';
+    public const string ID = 'actualite.cd';
 
     /**
      * @throws \Throwable

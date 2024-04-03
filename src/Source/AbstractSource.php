@@ -180,7 +180,7 @@ abstract class AbstractSource implements SourceInterface
      */
     protected function writeOnFile(string $title, ?string $link, string $categories, string $body, string $timestamp): void
     {
-        $this->writer->insertOne([$title, $link, $categories, $body, $timestamp, self::ID]);
+        $this->writer->insertOne([$title, $link, $categories, $body, $timestamp, static::ID]);
 
         if ($this->io->isVerbose()) {
             $this->io->text("> {$title} ✅");
