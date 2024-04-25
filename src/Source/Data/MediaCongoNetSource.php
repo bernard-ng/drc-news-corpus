@@ -6,14 +6,13 @@ namespace App\Source\Data;
 
 use App\Filter\DateRange;
 use App\Filter\PageRange;
-use App\Source\ProcessConfig;
 use App\Source\AbstractSource;
-use Symfony\Component\DomCrawler\Crawler;
+use App\Source\ProcessConfig;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\DomCrawler\Crawler;
 
 final class MediaCongoNetSource extends AbstractSource
 {
-
     public const string URL = 'https://mediacongo.net';
 
     public const string ID = 'mediacongo.net';
@@ -48,6 +47,7 @@ final class MediaCongoNetSource extends AbstractSource
     public function processNode(Crawler $node, ?DateRange $interval = null): void
     {
         try {
+            /** @var string $title */
             $title = $node->filter('img')->attr('alt');
             $link = $node->filter('a')->first()->attr('href');
             $categories = $node->filter('a.color_link')->text();
