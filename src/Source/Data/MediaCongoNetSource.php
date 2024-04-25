@@ -55,7 +55,10 @@ final class MediaCongoNetSource extends AbstractSource
 
             $crawler = $this->crawle(self::URL . "/{$link}");
             $body = $crawler->filter('.article_ttext')->text();
-            $timestamp = $this->createTimeStamp(date: $date, format: self::DATE_FORMAT);
+            $timestamp = $this->createTimeStamp(
+                date: substr($date, 0, 10),
+                format: self::DATE_FORMAT,
+            );
 
             if ($interval === null || $interval->inRange((int) $timestamp)) {
                 $this->writeOnFile($title, $link, $categories, $body, $timestamp);
