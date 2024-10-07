@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                          https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity
+            name="App\Aggregator\Domain\Entity\Article"
+            repository-class="App\Aggregator\Infrastructure\Persistence\Doctrine\ORM\ArticleOrmRepository"
+            table="article"
+    >
+        <id name="id" type="uuid">
+            <generator strategy="NONE" />
+        </id>
+        <indexes>
+            <index fields="source" />
+        </indexes>
+
+        <field name="title"/>
+        <field name="body" type="text" />
+        <field name="link" unique="true" />
+        <field name="source" />
+        <field name="categories" nullable="true" />
+        <field name="publishedAt" type="date_immutable" />
+        <field name="createdAt" type="datetime_immutable" />
+    </entity>
+</doctrine-mapping>

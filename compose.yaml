@@ -1,11 +1,54 @@
-version: '3'
 
 services:
+  database:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: app_dev
+      MYSQL_ALLOW_EMPTY_ROOT_PASSWORD: 'no'
+    volumes:
+      - database_data:/var/lib/mysql:rw
+      - ./var/mysql:/var/www/var
+    networks:
+      - corpus_network
+
   php:
-    build:
-      context: ./docker
     user: '${USER_ID}:${GROUP_ID}'
-    container_name: maxicash_php
-    restart: unless-stopped
+    build: ./docker/php
     volumes:
       - .:/var/www:delegated
+    depends_on:
+      - database
+    networks:
+      - corpus_network
+
+  adminer:
+    image: adminer:latest
+    depends_on:
+      - database
+    environment:
+      APP_ENV: dev
+      ADMINER_DESIGN: pepa-linha
+      ADMINER_DEFAULT_SERVER: database
+    ports:
+      - "8082:8080"
+    networks:
+      - corpus_network
+
+  mailer:
+    image: axllent/mailpit
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+    networks:
+      - corpus_network
+
+networks:
+  corpus_network:
+
+volumes:
+  database_data:

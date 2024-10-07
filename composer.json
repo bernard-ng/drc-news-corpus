@@ -7,25 +7,39 @@
         "php": ">=8.3",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "doctrine/dbal": "^3",
+        "doctrine/doctrine-bundle": "^2.13",
+        "doctrine/doctrine-migrations-bundle": "^3.3",
+        "doctrine/orm": "^3.2",
         "league/csv": "^9.11",
-        "symfony/console": "6.3.*",
-        "symfony/css-selector": "6.3.*",
-        "symfony/dom-crawler": "6.3.*",
-        "symfony/dotenv": "6.3.*",
+        "symfony/console": "7.1.*",
+        "symfony/css-selector": "7.1.*",
+        "symfony/dom-crawler": "7.1.*",
+        "symfony/dotenv": "7.1.*",
         "symfony/flex": "^2",
-        "symfony/framework-bundle": "6.3.*",
-        "symfony/http-client": "6.3.*",
-        "symfony/mailer": "6.3.*",
-        "symfony/messenger": "6.3.*",
-        "symfony/runtime": "6.3.*",
-        "symfony/stopwatch": "6.3.*",
-        "symfony/yaml": "6.3.*"
+        "symfony/framework-bundle": "7.1.*",
+        "symfony/http-client": "7.1.*",
+        "symfony/mailer": "7.1.*",
+        "symfony/messenger": "7.1.*",
+        "symfony/monolog-bundle": "^3.10",
+        "symfony/runtime": "7.1.*",
+        "symfony/stopwatch": "7.1.*",
+        "symfony/twig-bundle": "7.1.*",
+        "symfony/uid": "7.1.*",
+        "symfony/yaml": "7.1.*",
+        "twig/extra-bundle": "^2.12|^3.0",
+        "twig/twig": "^2.12|^3.0",
+        "webmozart/assert": "^1.11"
     },
     "require-dev": {
-        "phpstan/phpstan": "^1.10",
+        "behat/behat": "^3.14",
+        "phpstan/phpstan": "^1.12",
+        "phpstan/phpstan-doctrine": "^1.5",
         "phpunit/phpunit": "^10.4",
+        "qossmic/deptrac": "^2.0",
+        "rector/rector": "^1.2",
         "symfony/maker-bundle": "^1.51",
-        "symplify/easy-coding-standard": "^12.0"
+        "symplify/easy-coding-standard": "^12.3"
     },
     "config": {
         "allow-plugins": {
@@ -64,6 +78,32 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "corpus:migrations": [
+            "bin/console doctrine:database:create --if-not-exists",
+            "bin/console doctrine:migration:migrate --no-interaction --allow-no-migration"
+        ],
+        "corpus:code-quality": [
+            "./vendor/bin/ecs check",
+            "bin/console lint:yaml config --parse-tags",
+            "bin/console lint:container",
+            "./vendor/bin/phpstan analyse --memory-limit=-1 --configuration=phpstan.neon",
+            "./vendor/bin/rector --dry-run",
+            "./vendor/bin/deptrac"
+        ],
+        "corpus:tests": [
+            "APP_ENV=test bin/console doctrine:database:create",
+            "APP_ENV=test bin/console doctrine:migration:migrate --no-interaction --allow-no-migration",
+            "APP_ENV=test ./vendor/bin/phpunit"
+        ],
+        "corpus:behat": [
+            "APP_ENV=test bin/console doctrine:database:create",
+            "APP_ENV=test bin/console doctrine:migration:migrate --no-interaction --allow-no-migration",
+            "APP_ENV=test ./vendor/bin/behat --format=progress --no-interaction"
+        ],
+        "corpus:env": [
+            "APP_RUNTIME_ENV=prod bin/console secrets:decrypt-to-local --force",
+            "bin/console dotenv:dump prod"
         ]
     },
     "conflict": {
@@ -72,7 +112,7 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "6.3.*"
+            "require": "7.1.*"
         }
     }
 }

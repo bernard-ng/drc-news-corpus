@@ -25,10 +25,3 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
-    App\Source\Data\:
-        resource: '../src/Source/Data'
-        tags: ['app.data_source']
-        arguments:
-            $projectDir: '%kernel.project_dir%'
-            $client: '@Symfony\Contracts\HttpClient\HttpClientInterface'
-            $dispatcher: '@Symfony\Component\EventDispatcher\EventDispatcherInterface'
