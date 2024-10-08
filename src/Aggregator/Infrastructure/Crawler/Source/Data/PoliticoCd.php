@@ -27,7 +27,7 @@ final class PoliticoCd extends Source
     #[\Override]
     public function fetch(FetchConfig $config): void
     {
-        $this->initialize($config->filename);
+        $this->initialize();
         $category = $config->category ?? 'politique';
         $page = $config->page ?? PageRange::from(sprintf('0:%d', $this->getLastPage(self::URL . "/rubrique/{$category}")));
 
@@ -49,6 +49,8 @@ final class PoliticoCd extends Source
     #[\Override]
     public function fetchOne(string $html, ?DateRange $interval = null): void
     {
+        $node = new Crawler($html);
+
         try {
             /** @var string $link */
             $link = $node->filter('.post-title a')->attr('href');
@@ -57,7 +59,7 @@ final class PoliticoCd extends Source
 
             /** @var string $date */
             $date = $node->filter('time')->attr('datetime');
-            $timestamp = $this->dateNormalizer->createTimeStamp($date, format: 'c');
+            $timestamp = $this->dateParser->createTimeStamp($date, format: 'c');
 
             if ($interval === null || $interval->inRange((int) $timestamp)) {
                 try {
@@ -72,7 +74,7 @@ final class PoliticoCd extends Source
                 $this->skip($interval, $timestamp, $title, $date);
             }
         } catch (\Throwable $e) {
-            $this->logger->error("> {$e->getMessage()} [Failed] ❌");
+            $this->logger->critical("> {$e->getMessage()} [Failed] ❌");
             return;
         }
     }

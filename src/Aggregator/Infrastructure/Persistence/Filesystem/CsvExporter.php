@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace  App\Aggregator\Infrastructure\Persistence\Filesystem;
+namespace App\Aggregator\Infrastructure\Persistence\Filesystem;
 
-use League\Csv\Writer;
 use App\Aggregator\Domain\Service\Exporter;
+use League\Csv\Writer;
 
 /**
  * Class CsvExporter.
@@ -14,9 +14,6 @@ use App\Aggregator\Domain\Service\Exporter;
  */
 final readonly class CsvExporter implements Exporter
 {
-    protected Writer $writer;
-    protected string $filename;
-
     public function __construct(
         private string $projectDir
     ) {
@@ -25,21 +22,21 @@ final readonly class CsvExporter implements Exporter
     #[\Override]
     public function export(array $data): string
     {
-        $filename = sprintf("%s/data/export-%s.csv", $this->projectDir, (new \DateTimeImmutable('now'))->format('U'));
+        $filename = sprintf('%s/data/export-%s.csv', $this->projectDir, (new \DateTimeImmutable('now'))->format('U'));
         $writer = Writer::createFromPath($filename, open_mode: 'a+');
 
-        if (!file_exists($filename)) {
+        if (! file_exists($filename)) {
             $writer->insertOne(['title', 'link', 'categories', 'body', 'published_at', 'source']);
         }
 
         foreach ($data as $article) {
-            $this->writer->insertOne([
+            $writer->insertOne([
                 $article->title,
                 $article->link,
                 $article->categories,
                 $article->body,
-                $article->publishedAt,
-                $article->source
+                $article->publishedAt->format('U'),
+                $article->source,
             ]);
         }
 

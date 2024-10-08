@@ -1,6 +1,10 @@
 parameters:
     level: 9
     paths:
-        - src
-    checkMissingIterableValueType: false
-    checkGenericClassInNonGenericObjectType: false
+        - bin/
+        - config/
+        - public/
+        - src/
+        - tests/
+    ignoreErrors:
+        -   identifier: missingType.iterableValue

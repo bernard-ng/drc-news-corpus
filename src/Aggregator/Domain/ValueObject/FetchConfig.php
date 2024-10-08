@@ -15,12 +15,10 @@ final readonly class FetchConfig
 {
     public function __construct(
         public string $id,
-        public string $filename,
         public ?PageRange $page = null,
         public ?DateRange $date = null,
         public ?string $category = null
     ) {
         Assert::notEmpty($this->id);
-        Assert::notEmpty($this->filename);
     }
 }

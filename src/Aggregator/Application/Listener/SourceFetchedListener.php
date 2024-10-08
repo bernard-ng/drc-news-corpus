@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Application\Listener;
+namespace App\Aggregator\Application\Listener;
 
 use App\Aggregator\Application\Email\SourceFetchedEmail;
-use App\Domain\Event\SourceFetched;
+use App\Aggregator\Domain\Event\SourceFetched;
 use App\SharedKernel\Application\Email\Mailer;
 use App\SharedKernel\Domain\EventListener\EventListener;
 

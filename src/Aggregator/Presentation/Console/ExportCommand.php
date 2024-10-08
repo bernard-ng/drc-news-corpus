@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace App\Presentation\Console;
+namespace App\Aggregator\Presentation\Console;
 
-use Symfony\Component\Console\Command\Command;
+use App\Aggregator\Application\UseCase\Command\Export;
 use App\Aggregator\Domain\ValueObject\DateRange;
-use Symfony\Component\Console\Input\InputOption;
 use App\SharedKernel\Application\Bus\CommandBus;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use App\Aggregator\Application\UseCase\Command\Export;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:export',
@@ -51,7 +51,10 @@ final class ExportCommand extends Command
         /** @var string|null $date */
         $date = $input->getOption('date');
 
-       $this->commandBus->handle(new Export($source, DateRange::from($date)));
+        $this->commandBus->handle(new Export(
+            source: $source,
+            date: $date !== null ? DateRange::from($date) : null
+        ));
 
         $this->io->success('website crawled successfully');
         return Command::SUCCESS;

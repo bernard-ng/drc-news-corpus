@@ -19,9 +19,8 @@ final readonly class PageRange implements \Stringable
 
     private function __construct(int $start, int $end)
     {
-        Assert::positiveInteger($start);
-        Assert::positiveInteger($end);
-        Assert::greaterThanEq($start, $end);
+        Assert::greaterThanEq($start, 0);
+        Assert::greaterThanEq($end, 0);
 
         $this->start = $start;
         $this->end = $end;

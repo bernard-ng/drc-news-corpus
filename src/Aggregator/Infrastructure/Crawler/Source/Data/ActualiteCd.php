@@ -27,7 +27,7 @@ final class ActualiteCd extends Source
     #[\Override]
     public function fetch(FetchConfig $config): void
     {
-        $this->initialize($config->filename);
+        $this->initialize();
         $page = $config->page ?? PageRange::from(sprintf('0:%d', $this->getLastPage(self::URL . '/actualite')));
 
         for ($i = $page->start; $i < $page->end; $i++) {
@@ -51,14 +51,15 @@ final class ActualiteCd extends Source
         $node = new Crawler($html);
 
         try {
-            $title = $node->filter('#actu-titre a')->text();
+            /** @var string $link */
             $link = $node->filter('#actu-titre a')->attr('href');
+            $title = $node->filter('#actu-titre a')->text();
             $categories = $node->filter('#actu-cat a')->text();
 
             $crawler = $this->crawle(self::URL . "/{$link}");
             $body = $crawler->filter('.views-field.views-field-body')->text();
             $date = $crawler->filter('#p-date')->text();
-            $timestamp = $this->dateNormalizer->createTimeStamp(
+            $timestamp = $this->dateParser->createTimeStamp(
                 date: $date,
                 pattern: '/(\d{1}) (\d{2}) (\d{2}) (\d{4}) - (\d{2}:\d{2})/',
                 replacement: '$4-$3-$2 $5'
@@ -70,7 +71,7 @@ final class ActualiteCd extends Source
                 $this->skip($interval, $timestamp, $title, $date);
             }
         } catch (\Throwable $e) {
-            $this->logger->error("> {$e->getMessage()} [Failed] ❌");
+            $this->logger->critical("> {$e->getMessage()} [Failed] ❌");
             return;
         }
     }

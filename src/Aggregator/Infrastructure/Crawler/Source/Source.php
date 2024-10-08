@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Infrastructure\Crawler\Source;
 
-use App\Aggregator\Domain\Service\DateNormalizer;
+use App\Aggregator\Application\UseCase\Command\SaveArticle;
+use App\Aggregator\Domain\Service\DateParser;
 use App\Aggregator\Domain\Service\SourceFetcher;
 use App\Aggregator\Domain\ValueObject\DateRange;
-use App\Domain\Event\SourceFetched;
+use App\Aggregator\Domain\Event\SourceFetched;
+use App\SharedKernel\Application\Bus\CommandBus;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Stopwatch\Stopwatch;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -28,17 +29,16 @@ abstract class Source implements SourceFetcher
 
     protected const string ID = 'id';
 
+    private const string WATCH_EVENT_NAME = 'crawling';
+
     protected Stopwatch $stopwatch;
 
     public function __construct(
-        #[Autowire('%kernel.project_dir%')]
-        protected string $projectDir,
-        #[Autowire('%app_timezone%')]
-        protected string $timezone,
         protected HttpClientInterface $client,
         protected EventDispatcherInterface $dispatcher,
         protected LoggerInterface $logger,
-        protected DateNormalizer $dateNormalizer
+        protected DateParser $dateParser,
+        protected CommandBus $commandBus
     ) {
     }
 
@@ -46,19 +46,6 @@ abstract class Source implements SourceFetcher
     public function supports(string $source): bool
     {
         return $source === static::ID;
-    }
-
-    /**
-     * @throws \Throwable
-     */
-    protected function initialize(string $filename): void
-    {
-        if (! file_exists($filename)) {
-            touch($filename);
-        }
-
-        $this->stopwatch = new Stopwatch();
-        $this->stopwatch->start('crawling');
     }
 
     /**
@@ -72,6 +59,50 @@ abstract class Source implements SourceFetcher
 
         $response = $this->client->request('GET', $url)->getContent();
         return new Crawler($response);
+    }
+
+    protected function save(string $title, string $link, string $categories, string $body, string $timestamp): void
+    {
+        try {
+            /** @var string $id */
+            $id = $this->commandBus->handle(
+                new SaveArticle(
+                    title: $title,
+                    link: $link,
+                    categories: $categories,
+                    body: $body,
+                    source: static::ID,
+                    timestamp: (int) $timestamp
+                )
+            );
+            $this->logger->info("> {$id} : {$title} ✅");
+        } catch (\Throwable $e) {
+            $this->logger->critical("> {$e->getMessage()} [Failed] ❌");
+        }
+    }
+
+    protected function initialize(): void
+    {
+        $this->stopwatch = new Stopwatch();
+        $this->stopwatch->start(self::WATCH_EVENT_NAME);
+        $this->logger->info('Initialized');
+    }
+
+    protected function completed(): void
+    {
+        $event = $this->stopwatch->stop(self::WATCH_EVENT_NAME);
+        $this->dispatcher->dispatch(new SourceFetched((string) $event, static::ID));
+        $this->logger->info('Done');
+    }
+
+    protected function skip(DateRange $interval, string $timestamp, string $title, string $date): void
+    {
+        if ($interval->end > (int) $timestamp) {
+            $this->completed();
+            exit; // force process to stop
+        }
+
+        $this->logger->info("> {$title} [Skipped {$date}]");
     }
 
     /**
@@ -92,36 +123,5 @@ abstract class Source implements SourceFetcher
         parse_str($query, $result);
 
         return (int) $result['page'];
-    }
-
-    protected function skip(DateRange $interval, string $timestamp, string $title, string $date): void
-    {
-        if ($interval->end > (int) $timestamp) {
-            $event = $this->stopwatch->stop('crawling');
-            $this->dispatcher->dispatch(new SourceFetched((string) $event, static::ID));
-            $this->logger->info('Done');
-            exit;
-        }
-
-        $this->logger->info("> {$title} [Skipped {$date}]");
-    }
-
-    protected function save(string $title, ?string $link, string $categories, string $body, string $timestamp): void
-    {
-        try {
-            $this->logger->info("> {$title} ✅");
-        } catch (\Throwable $e) {
-            $this->logger->error("> {$e->getMessage()} [Failed] ❌");
-        }
-    }
-
-    protected function completed(): void
-    {
-        try {
-            $event = $this->stopwatch->stop('crawling');
-            $this->dispatcher->dispatch(new SourceFetched((string) $event, static::ID));
-        } finally {
-            $this->logger->info('Done');
-        }
     }
 }

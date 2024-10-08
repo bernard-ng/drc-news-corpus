@@ -6,13 +6,25 @@
 parameters:
     app_from_email: '%env(APP_FROM_EMAIL)%'
     app_to_email: '%env(APP_TO_EMAIL)%'
-    app_timezone: '%env(APP_TIMEZONE)%'
 
 services:
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+    _instanceof:
+        App\SharedKernel\Application\Bus\CommandHandler:
+            tags:
+                - { name: messenger.message_handler, bus: 'command.bus' }
+        App\SharedKernel\Application\Bus\QueryHandler:
+            tags:
+                - { name: messenger.message_handler, bus: 'query.bus' }
+        App\SharedKernel\Application\Bus\MessageHandler:
+            tags:
+                - { name: messenger.message_handler, bus: 'message.bus' }
+        App\SharedKernel\Domain\EventListener\EventListener:
+            tags:
+                - { name: kernel.event_listener }
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name

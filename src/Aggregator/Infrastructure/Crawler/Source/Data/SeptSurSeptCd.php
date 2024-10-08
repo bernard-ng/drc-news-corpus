@@ -29,7 +29,7 @@ final class SeptSurSeptCd extends Source
     #[\Override]
     public function fetch(FetchConfig $config): void
     {
-        $this->initialize($config->filename);
+        $this->initialize();
         $this->category = $config->category ?? 'politique';
         $page = $config->page ?? PageRange::from(
             sprintf('0:%d', $this->getLastPage(self::URL . "/index.php/category/{$this->category}"))
@@ -58,14 +58,15 @@ final class SeptSurSeptCd extends Source
         $node = new Crawler($html);
 
         try {
+            /** @var string $link */
+            $link = $node->filter('.views-field-title a')->attr('href');
             $date = $node->filter('.views-field-created')->text();
-            $timestamp = $this->dateNormalizer->createTimeStamp(
+            $timestamp = $this->dateParser->createTimeStamp(
                 date: $date,
                 pattern: '/\w{3} (\d{2})\/(\d{2})\/(\d{4}) - (\d{2}:\d{2})/',
                 replacement: '$3-$2-$1 $4'
             );
             $title = $node->filter('.views-field-title a')->text();
-            $link = $node->filter('.views-field-title a')->attr('href');
 
             if ($interval === null || $interval->inRange((int) $timestamp)) {
                 try {
@@ -79,7 +80,7 @@ final class SeptSurSeptCd extends Source
                 $this->skip($interval, $timestamp, $title, $date);
             }
         } catch (\Throwable $e) {
-            $this->logger->error("> {$e->getMessage()} [Failed] ❌");
+            $this->logger->critical("> {$e->getMessage()} [Failed] ❌");
             return;
         }
     }

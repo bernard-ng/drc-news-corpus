@@ -18,8 +18,8 @@ readonly class Article
         public string $categories,
         public string $body,
         public string $source,
-        public int $publishedAt,
-        public int $crawledAt
+        public \DateTimeImmutable $publishedAt,
+        public \DateTimeImmutable $crawledAt
     ) {
     }
 }

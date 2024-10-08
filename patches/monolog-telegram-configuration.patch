@@ -1,0 +1,10 @@
+--- a/vendor/symfony/monolog-bundle/DependencyInjection/Configuration.php	2023-11-06 11:08:12.000000000 +0200
++++ b/vendor/symfony/monolog-bundle/DependencyInjection/Configuration.php	2024-08-16 05:05:49.286417317 +0200
+@@ -595,6 +595,7 @@
+                 ->booleanNode('disable_notification')->defaultNull()->end() // telegram
+                 ->booleanNode('split_long_messages')->defaultFalse()->end() // telegram
+                 ->booleanNode('delay_between_messages')->defaultFalse()->end() // telegram
++                ->integerNode('topic')->defaultNull()->end() // telegram
+                 ->integerNode('factor')->defaultValue(1)->min(1)->end() // sampling
+                 ->arrayNode('tags') // loggly
+                     ->beforeNormalization()

@@ -118,10 +118,10 @@ class TelegramFormatter extends NormalizerFormatter
     /**
      * Normalizes given $data.
      *
-     * @return null|scalar|array<mixed[]|scalar|null|object>|object
+     * @return array<array|bool|float|int|object|string|null>|bool|float|int|object|string|null
      */
     #[\Override]
-    protected function normalize(mixed $data, int $depth = 0): mixed
+    protected function normalize(mixed $data, int $depth = 0): array|bool|float|int|object|string|null
     {
         if ($depth > $this->maxNormalizeDepth) {
             return 'Over ' . $this->maxNormalizeDepth . ' levels deep, aborting normalization';
@@ -149,7 +149,9 @@ class TelegramFormatter extends NormalizerFormatter
             }
 
             if ($data instanceof \Throwable) {
-                return $this->normalizeException($data, $depth);
+                /** @var array|float|object|bool|int|string|null $throwable */
+                $throwable = $this->normalizeException($data, $depth);
+                return $throwable;
             }
 
             // if the object has specific json serializability we want to make sure we skip the __toString treatment below
@@ -172,6 +174,7 @@ class TelegramFormatter extends NormalizerFormatter
             return parent::normalize($data);
         }
 
+        /** @var array|float|object|bool|int|string|null $data */
         return $data;
     }
 

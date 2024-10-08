@@ -5,14 +5,16 @@ declare(strict_types=1);
 namespace App\Aggregator\Infrastructure\Persistence\Doctrine\ORM;
 
 use App\Aggregator\Domain\Entity\Article;
-use App\Aggregator\Domain\ValueObject\DateRange;
 use App\Aggregator\Domain\Repository\ArticleRepository;
+use App\Aggregator\Domain\ValueObject\DateRange;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Uid\Uuid;
 
 /**
  * Class ArticleOrmRepository.
+ *
+ * @extends ServiceEntityRepository<Article>
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
@@ -70,13 +72,13 @@ final class ArticleOrmRepository extends ServiceEntityRepository implements Arti
     #[\Override]
     public function export(?string $source, ?DateRange $date): array
     {
-       $qb = $this->createQueryBuilder('a');
-        
+        $qb = $this->createQueryBuilder('a');
+
         if ($source !== null) {
             $qb->andWhere('a.source = :source')
                 ->setParameter('source', $source);
         }
-        
+
         if ($date !== null) {
             $qb->andWhere('a.publishedAt BETWEEN :start AND :end')
                 ->setParameter('start', $date->start)

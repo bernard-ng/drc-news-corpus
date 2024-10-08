@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Application\UseCase\CommandHandler;
 
-use App\Aggregator\Application\UseCase\Command\CreateArticle;
+use App\Aggregator\Application\UseCase\Command\SaveArticle;
 use App\Aggregator\Domain\Entity\Article;
-use App\Aggregator\Domain\Exception\DuplicateArticle;
+use App\Aggregator\Domain\Exception\DuplicatedArticle;
 use App\Aggregator\Domain\Repository\ArticleRepository;
 use App\SharedKernel\Application\Bus\CommandHandler;
 use App\SharedKernel\Domain\Model\IdGenerator;
 
 /**
- * Class CreateArticleHandler.
+ * Class SaveArticleHandler.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final readonly class CreateArticleHandler implements CommandHandler
+final readonly class SaveArticleHandler implements CommandHandler
 {
     public function __construct(
         private IdGenerator $idGenerator,
@@ -24,12 +24,16 @@ final readonly class CreateArticleHandler implements CommandHandler
     ) {
     }
 
-    public function __invoke(CreateArticle $command): string
+    public function __invoke(SaveArticle $command): string
     {
         $article = $this->articleRepository->getByLink($command->link);
         if ($article !== null) {
-            throw DuplicateArticle::withLink($command->link);
+            throw DuplicatedArticle::withLink($command->link);
         }
+
+        /** @var \DateTimeImmutable $publishedAt */
+        $publishedAt = \DateTimeImmutable::createFromFormat('U', (string) $command->timestamp);
+        $createdAt = new \DateTimeImmutable('now');
 
         $article = new Article(
             id: $this->idGenerator->uuid(),
@@ -38,8 +42,8 @@ final readonly class CreateArticleHandler implements CommandHandler
             categories: $command->categories,
             body: $command->body,
             source: $command->source,
-            publishedAt: $command->timestamp,
-            crawledAt: (int) (new \DateTimeImmutable('now'))->format('U')
+            publishedAt: $publishedAt,
+            crawledAt: $createdAt
         );
         $this->articleRepository->add($article);
 

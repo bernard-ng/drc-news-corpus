@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Aggregator\Application\UseCase\Command;
 
 /**
- * Class CreateArticle.
+ * Class SaveArticle.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final readonly class CreateArticle
+final readonly class SaveArticle
 {
     public function __construct(
         public string $title,

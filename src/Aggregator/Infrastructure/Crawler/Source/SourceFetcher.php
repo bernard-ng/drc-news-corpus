@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Aggregator\Infrastructure\Source;
+namespace App\Aggregator\Infrastructure\Crawler\Source;
 
 use App\Aggregator\Domain\Service\SourceFetcher as SourceFetcherInterface;
 use App\Aggregator\Domain\ValueObject\DateRange;

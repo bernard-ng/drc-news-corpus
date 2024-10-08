@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Aggregator\Domain\Service;
 
 /**
- * Class DateNormalizer.
+ * Class DateParser.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final readonly class DateNormalizer
+final readonly class DateParser
 {
     public const array MONTHS = [
         'janvier' => '01',

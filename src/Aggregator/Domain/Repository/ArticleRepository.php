@@ -24,5 +24,5 @@ interface ArticleRepository
 
     public function getByLink(string $link): ?Article;
 
-    public function export(?string $source, ?DateRange $date);
+    public function export(?string $source, ?DateRange $date): array;
 }

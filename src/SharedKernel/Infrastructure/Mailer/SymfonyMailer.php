@@ -34,8 +34,8 @@ final readonly class SymfonyMailer implements Mailer
     {
         $sender = new Address($email->senderAddress(), $email->senderName());
 
-        $htmlTemplate = sprintf('shared/emails/%s.html.twig', $email->template());
-        $txtTemplate = sprintf('shared/emails/%s.txt.twig', $email->template());
+        $htmlTemplate = sprintf('emails/%s.html.twig', $email->template());
+        $txtTemplate = sprintf('emails/%s.txt.twig', $email->template());
 
         $message = (new TemplatedEmail())
             ->from($sender)

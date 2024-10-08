@@ -20,7 +20,7 @@
         <field name="link" unique="true" />
         <field name="source" />
         <field name="categories" nullable="true" />
-        <field name="publishedAt" type="date_immutable" />
-        <field name="createdAt" type="datetime_immutable" />
+        <field name="publishedAt" type="datetime_immutable" />
+        <field name="crawledAt" type="datetime_immutable" />
     </entity>
 </doctrine-mapping>

@@ -1,0 +1,9 @@
+--- a/vendor/symfony/monolog-bundle/DependencyInjection/MonologExtension.php	2023-11-06 11:08:12.000000000 +0200
++++ b/vendor/symfony/monolog-bundle/DependencyInjection/MonologExtension.php	2024-08-16 05:05:49.266417128 +0200
+@@ -351,6 +351,7 @@
+                 $handler['disable_notification'],
+                 $handler['split_long_messages'],
+                 $handler['delay_between_messages'],
++                $handler['topic']
+             ]);
+             break;

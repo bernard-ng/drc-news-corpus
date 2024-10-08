@@ -42,17 +42,23 @@ abstract class AbstractController extends SymfonyController
 
     protected function handleCommand(object $command): mixed
     {
-        return $this->container->get(CommandBus::class)->handle($command);
+        /** @var CommandBus $commandBus */
+        $commandBus = $this->container->get(CommandBus::class);
+        return $commandBus->handle($command);
     }
 
     protected function handleQuery(object $query): mixed
     {
-        return $this->container->get(QueryBus::class)->handle($query);
+        /** @var QueryBus $queryBus */
+        $queryBus = $this->container->get(QueryBus::class);
+        return $queryBus->handle($query);
     }
 
     protected function trans(string $key, array $params = [], string $domain = 'messages'): string
     {
-        return $this->container->get(TranslatorInterface::class)->trans($key, $params, $domain);
+        /** @var TranslatorInterface $trans */
+        $trans = $this->container->get(TranslatorInterface::class);
+        return $trans->trans($key, $params, $domain);
     }
 
     protected function addErrorFlash(string $id, string $domain = 'messages', array $params = []): void
