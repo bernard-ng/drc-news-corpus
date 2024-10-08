@@ -54,6 +54,7 @@ composer corpus:migrations
 See supported sources above. you can also add your own source by extending the `Source` abstract class.
 if you want to crawl `radiookapi.net` you can run the following command:
 
+1. **Crawling**
 ```bash
 php bin/console app:crawl radiookapi.net
 
@@ -68,6 +69,15 @@ php bin/console app:crawl actualite.cd --date="2022-01-01:2022-12-31" --page="0:
 
 # some sources require a category to crawl articles.
 php bin/console app:crawl 7sur7.cd --category=politique
+
+# You can crawl multiple pages in parallel.
+php bin/console app:crawl radiookapi.net --parallel=20
+```
+
+2. **Updating**
+```bash
+# Update the database with the latest articles.
+php bin/console app:update radiookapi.net
 ```
 
 Notice that this can take a while depending on the number of articles you want to crawl and will store the articles in the database.
