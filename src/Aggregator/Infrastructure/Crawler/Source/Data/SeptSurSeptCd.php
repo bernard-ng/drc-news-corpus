@@ -31,9 +31,7 @@ final class SeptSurSeptCd extends Source
     {
         $this->initialize();
         $this->category = $config->category ?? 'politique';
-        $page = $config->page ?? PageRange::from(
-            sprintf('0:%d', $this->getLastPage(self::URL . "/index.php/category/{$this->category}"))
-        );
+        $page = $config->page ?? $this->getPagination($this->category);
 
         for ($i = $page->start; $i < $page->end; $i++) {
             try {
@@ -80,8 +78,16 @@ final class SeptSurSeptCd extends Source
                 $this->skip($interval, $timestamp, $title, $date);
             }
         } catch (\Throwable $e) {
-            $this->logger->critical("> {$e->getMessage()} [Failed] ❌");
+            $this->logger->error("> {$e->getMessage()} [Failed] ❌");
             return;
         }
+    }
+
+    #[\Override]
+    public function getPagination(?string $category = null): PageRange
+    {
+        return PageRange::from(
+            sprintf('0:%d', $this->getLastPage(self::URL . "/index.php/category/{$category}"))
+        );
     }
 }

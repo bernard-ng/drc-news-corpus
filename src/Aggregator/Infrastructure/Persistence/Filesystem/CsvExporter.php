@@ -6,6 +6,7 @@ namespace App\Aggregator\Infrastructure\Persistence\Filesystem;
 
 use App\Aggregator\Domain\Service\Exporter;
 use League\Csv\Writer;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
  * Class CsvExporter.
@@ -15,6 +16,7 @@ use League\Csv\Writer;
 final readonly class CsvExporter implements Exporter
 {
     public function __construct(
+        #[Autowire(value: '%kernel.project_dir%')]
         private string $projectDir
     ) {
     }
@@ -25,7 +27,7 @@ final readonly class CsvExporter implements Exporter
         $filename = sprintf('%s/data/export-%s.csv', $this->projectDir, (new \DateTimeImmutable('now'))->format('U'));
         $writer = Writer::createFromPath($filename, open_mode: 'a+');
 
-        if (! file_exists($filename)) {
+        if (file_get_contents($filename) === '') {
             $writer->insertOne(['title', 'link', 'categories', 'body', 'published_at', 'source']);
         }
 
@@ -35,7 +37,7 @@ final readonly class CsvExporter implements Exporter
                 $article->link,
                 $article->categories,
                 $article->body,
-                $article->publishedAt->format('U'),
+                $article->publishedAt->format('Y-m-d H:i:s'),
                 $article->source,
             ]);
         }

@@ -9,6 +9,7 @@ use App\Aggregator\Domain\Event\SourceFetched;
 use App\Aggregator\Domain\Service\DateParser;
 use App\Aggregator\Domain\Service\SourceFetcher;
 use App\Aggregator\Domain\ValueObject\DateRange;
+use App\Aggregator\Domain\ValueObject\PageRange;
 use App\SharedKernel\Application\Bus\CommandBus;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
@@ -48,6 +49,8 @@ abstract class Source implements SourceFetcher
         return $source === static::ID;
     }
 
+    abstract public function getPagination(?string $category = null): PageRange;
+
     /**
      * @throws \Throwable
      */
@@ -77,7 +80,7 @@ abstract class Source implements SourceFetcher
             );
             $this->logger->debug("> {$id} : {$title} ✅");
         } catch (\Throwable $e) {
-            $this->logger->critical("> {$e->getMessage()} [Failed] ❌");
+            $this->logger->error("> {$e->getMessage()} [Failed] ❌");
         }
     }
 

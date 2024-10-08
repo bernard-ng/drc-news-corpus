@@ -56,7 +56,7 @@ final class ExportCommand extends Command
             date: $date !== null ? DateRange::from($date) : null
         ));
 
-        $this->io->success('website crawled successfully');
+        $this->io->success('articles exported successfully');
         return Command::SUCCESS;
     }
 }

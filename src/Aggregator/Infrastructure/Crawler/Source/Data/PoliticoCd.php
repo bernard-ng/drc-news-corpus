@@ -29,7 +29,7 @@ final class PoliticoCd extends Source
     {
         $this->initialize();
         $category = $config->category ?? 'politique';
-        $page = $config->page ?? PageRange::from(sprintf('0:%d', $this->getLastPage(self::URL . "/rubrique/{$category}")));
+        $page = $config->page ?? $this->getPagination($category);
 
         for ($i = $page->start; $i < $page->end; $i++) {
             try {
@@ -74,8 +74,14 @@ final class PoliticoCd extends Source
                 $this->skip($interval, $timestamp, $title, $date);
             }
         } catch (\Throwable $e) {
-            $this->logger->critical("> {$e->getMessage()} [Failed] ❌");
+            $this->logger->error("> {$e->getMessage()} [Failed] ❌");
             return;
         }
+    }
+
+    #[\Override]
+    public function getPagination(?string $category = null): PageRange
+    {
+        return PageRange::from(sprintf('0:%d', $this->getLastPage(self::URL . "/rubrique/{$category}")));
     }
 }

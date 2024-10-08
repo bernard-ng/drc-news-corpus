@@ -49,4 +49,16 @@ final readonly class SourceFetcher implements SourceFetcherInterface
     {
         throw new \RuntimeException('Not implemented');
     }
+
+    public function get(string $id): Source
+    {
+        /** @var Source $source */
+        foreach ($this->sources as $source) {
+            if ($source->supports($id)) {
+                return $source;
+            }
+        }
+
+        throw new \RuntimeException('Source not found');
+    }
 }

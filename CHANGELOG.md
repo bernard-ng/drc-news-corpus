@@ -3,11 +3,13 @@
 This changelog references the relevant changes (bug and security fixes) done
 
 ## [Unreleased]
-- Added: 'app:update' command to update the database with the latest articles
+- Added: `getPagination` method to `Source` abstract class
+- Added: `--parallel` option to `app:crawl` command to crawl multiple pages in parallel
+- Added: `app:update` command to update the database with the latest articles
 - Added: `$sep` parameter to `DateRange::from` method
 - Added: support for mysql database
 - Added: export to csv feature
-- Removed: '--filename' option from 'app:crawl' command
+- Removed: `--filename` option from `app:crawl` command
 
 
 ### 1.2.1

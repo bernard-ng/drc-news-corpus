@@ -15,6 +15,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Process\PhpSubprocess;
 
 #[AsCommand(
     name: 'app:crawl',
@@ -37,6 +38,7 @@ class CrawlCommand extends Command
         $this->addOption('date', null, InputOption::VALUE_OPTIONAL, 'Date interval to crawle');
         $this->addOption('page', null, InputOption::VALUE_OPTIONAL, 'PageRange interval to crawle');
         $this->addOption('category', null, InputOption::VALUE_OPTIONAL, 'the category to crawle');
+        $this->addOption('parallel', null, InputOption::VALUE_OPTIONAL, 'the number of parallel requests', default: 1);
     }
 
     #[\Override]
@@ -60,6 +62,14 @@ class CrawlCommand extends Command
         /** @var string|null $category */
         $category = $input->getOption('category');
 
+        /** @var string $parallel */
+        $parallel = $input->getOption('parallel');
+        $parallel = intval($parallel);
+
+        if ($parallel > 1) {
+            return $this->parallel($parallel, $source, $category);
+        }
+
         $this->sourceFetcher->fetch(
             config: new FetchConfig(
                 id: $source,
@@ -70,6 +80,40 @@ class CrawlCommand extends Command
         );
 
         $this->io->success('website crawled successfully');
+        return Command::SUCCESS;
+    }
+
+    private function parallel(int $workers, string $source, ?string $category): int
+    {
+        $fetcher = $this->sourceFetcher->get($source);
+        $range = $fetcher->getPagination($category);
+        $workPerWorker = ceil(($range->end - $range->start + 1) / $workers);
+
+        $this->io->title(sprintf('Crawling %d pages with %d workers, %d pages per worker', $range->end - $range->start + 1, $workers, $workPerWorker));
+
+        $processes = [];
+        for ($i = 0; $i < $workers; $i++) {
+            $start = $range->start + ($i * $workPerWorker);
+            $end = min($range->start + (($i + 1) * $workPerWorker) - 1, $range->end);
+
+            $process = new PhpSubprocess(['bin/console', 'app:crawl', $source, sprintf('--page=%d:%d', $start, $end), '-v']);
+            $process->start();
+            $processes[] = $process;
+
+            if ($start > $range->end) {
+                break;
+            }
+        }
+
+        foreach ($processes as $process) {
+            while ($process->isRunning()) {
+                // waiting for process to finish
+            }
+
+            $this->io->writeln($process->getOutput());
+        }
+
+        $this->io->success('Website crawled successfully');
         return Command::SUCCESS;
     }
 }
