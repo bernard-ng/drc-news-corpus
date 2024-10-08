@@ -22,6 +22,9 @@ Efforts have been made to ensure the dataset's integrity and quality by includin
 | 7sur7.cd       | Yes       | +16k     | https://7sur7.cd                            | NA           |
 | politico.cd    | Yes       | +50k     | https://www.politico.cd/rubrique/encontinu/ | NA           |
 | mediacongo.cd  | Yes       | +25k     | https://www.mediacongo.net/                 | NA           |
+| rfi.fr         | No        | +13k     | https://www.rfi.fr/fr/tag/rdc               | NA           |
+| lemonde.fr     | NO        |          | https://www.lemonde.fr/congo-rdc/2          | NA           |
+| lefigaro.fr    | NO        |          | https://www.lefigaro.fr/tag/rdc             |              |
 
 
 ## Download the dataset

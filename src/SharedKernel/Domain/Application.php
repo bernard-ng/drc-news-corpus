@@ -15,9 +15,9 @@ final class Application
 
     public string $website = 'https://research.devscast.org/drc-news-corpus';
 
-    public string $emailAddress = 'noreply@research.devscast.org';
+    public string $emailAddress = 'contact@devscast.tech';
 
-    public string $infoAddress = 'info@research.devscast.org';
+    public string $infoAddress = 'contact@devscast.tech';
 
     public string $emailName = 'DRC News Corpus';
 

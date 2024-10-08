@@ -3,6 +3,8 @@
 This changelog references the relevant changes (bug and security fixes) done
 
 ## [Unreleased]
+- Added: 'app:update' command to update the database with the latest articles
+- Added: `$sep` parameter to `DateRange::from` method
 - Added: support for mysql database
 - Added: export to csv feature
 - Removed: '--filename' option from 'app:crawl' command

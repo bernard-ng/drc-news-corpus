@@ -38,8 +38,10 @@
         "phpunit/phpunit": "^10.4",
         "qossmic/deptrac": "^2.0",
         "rector/rector": "^1.2",
+        "shipmonk/composer-dependency-analyser": "^1.7",
         "symfony/maker-bundle": "^1.51",
-        "symplify/easy-coding-standard": "^12.3"
+        "symplify/easy-coding-standard": "^12.3",
+        "tomasvotruba/class-leak": "^1.0"
     },
     "config": {
         "allow-plugins": {
@@ -87,7 +89,7 @@
             "./vendor/bin/ecs check",
             "bin/console lint:yaml config --parse-tags",
             "bin/console lint:container",
-            "./vendor/bin/phpstan analyse --memory-limit=-1 --configuration=phpstan.neon",
+            "./vendor/bin/phpstan analyse --memory-limit=-1 --configuration=phpstan.dist.neon",
             "./vendor/bin/rector --dry-run",
             "./vendor/bin/deptrac"
         ],

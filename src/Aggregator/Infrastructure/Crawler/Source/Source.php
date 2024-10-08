@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Aggregator\Infrastructure\Crawler\Source;
 
 use App\Aggregator\Application\UseCase\Command\SaveArticle;
+use App\Aggregator\Domain\Event\SourceFetched;
 use App\Aggregator\Domain\Service\DateParser;
 use App\Aggregator\Domain\Service\SourceFetcher;
 use App\Aggregator\Domain\ValueObject\DateRange;
-use App\Aggregator\Domain\Event\SourceFetched;
 use App\SharedKernel\Application\Bus\CommandBus;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
@@ -54,7 +54,7 @@ abstract class Source implements SourceFetcher
     protected function crawle(string $url, ?int $page = null): Crawler
     {
         if ($page !== null) {
-            $this->logger->info("> Page {$page}");
+            $this->logger->debug("> Page {$page}");
         }
 
         $response = $this->client->request('GET', $url)->getContent();
@@ -75,7 +75,7 @@ abstract class Source implements SourceFetcher
                     timestamp: (int) $timestamp
                 )
             );
-            $this->logger->info("> {$id} : {$title} ✅");
+            $this->logger->debug("> {$id} : {$title} ✅");
         } catch (\Throwable $e) {
             $this->logger->critical("> {$e->getMessage()} [Failed] ❌");
         }
@@ -85,14 +85,14 @@ abstract class Source implements SourceFetcher
     {
         $this->stopwatch = new Stopwatch();
         $this->stopwatch->start(self::WATCH_EVENT_NAME);
-        $this->logger->info('Initialized');
+        $this->logger->debug('Initialized');
     }
 
     protected function completed(): void
     {
         $event = $this->stopwatch->stop(self::WATCH_EVENT_NAME);
         $this->dispatcher->dispatch(new SourceFetched((string) $event, static::ID));
-        $this->logger->info('Done');
+        $this->logger->debug('Done');
     }
 
     protected function skip(DateRange $interval, string $timestamp, string $title, string $date): void
@@ -102,7 +102,7 @@ abstract class Source implements SourceFetcher
             exit; // force process to stop
         }
 
-        $this->logger->info("> {$title} [Skipped {$date}]");
+        $this->logger->debug("> {$title} [Skipped {$date}]");
     }
 
     /**

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Aggregator\Domain\ValueObject;
 
 use DateTime;
+use Webmozart\Assert\Assert;
 
 /**
  * Class DateRange.
@@ -17,17 +18,22 @@ final readonly class DateRange implements \Stringable
         public int $start,
         public int $end
     ) {
+        Assert::greaterThanEq($end, $start);
     }
 
     #[\Override]
     public function __toString(): string
     {
-        return $this->start . ':' . $this->end;
+        return sprintf('%d:%d', $this->start, $this->end);
     }
 
-    public static function from(string $interval, string $format = 'Y-m-d'): self
+    public static function from(string $interval, string $format = 'Y-m-d', string $separator = ':'): self
     {
-        [$startDate, $endDate] = explode(':', $interval);
+        if ($separator === '') {
+            throw new \InvalidArgumentException('Separator cannot be empty');
+        }
+
+        [$startDate, $endDate] = explode($separator, $interval);
 
         /** @var DateTime $start */
         $start = DateTime::createFromFormat($format, $startDate);

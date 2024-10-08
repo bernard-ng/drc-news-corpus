@@ -92,4 +92,28 @@ final class ArticleOrmRepository extends ServiceEntityRepository implements Arti
 
         return $result;
     }
+
+    #[\Override]
+    public function getLastCrawlDate(string $source, ?string $category): string
+    {
+        try {
+            $qb = $this->createQueryBuilder('a');
+
+            $qb->select('MAX(a.publishedAt)')
+                ->andWhere('a.source = :source')
+                ->setParameter('source', $source);
+
+            if ($category !== null) {
+                $qb->andWhere('a.categories LIKE :category')
+                    ->setParameter('category', "%{$category}%");
+            }
+
+            /** @var string $result */
+            $result = $qb->getQuery()->getSingleScalarResult();
+
+            return (new \DateTimeImmutable($result))->format('Y-m-d H:i:s');
+        } catch (\Throwable) {
+            return date('Y-m-d H:i:s');
+        }
+    }
 }
