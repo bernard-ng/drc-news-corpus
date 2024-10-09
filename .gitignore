@@ -2,6 +2,8 @@
 /data/
 data*
 .deptrac.cache
+.nohup.out
+.*.out
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
