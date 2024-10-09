@@ -72,7 +72,8 @@ final class ArticleOrmRepository extends ServiceEntityRepository implements Arti
     #[\Override]
     public function export(?string $source, ?DateRange $date): array
     {
-        $qb = $this->createQueryBuilder('a');
+        $qb = $this->createQueryBuilder('a')
+            ->orderBy('a.publishedAt', 'DESC');
 
         if ($source !== null) {
             $qb->andWhere('a.source = :source')
