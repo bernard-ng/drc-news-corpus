@@ -6,7 +6,7 @@ doctrine:
         # either here or in the DATABASE_URL env var (see .env file)
         #server_version: '16'
 
-        profiling_collect_backtrace: '%kernel.debug%'
+        profiling_collect_backtrace: '%app_enable_backtrace%'
         use_savepoints: true
     orm:
         auto_generate_proxy_classes: true

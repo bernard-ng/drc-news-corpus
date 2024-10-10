@@ -117,4 +117,15 @@ final class ArticleOrmRepository extends ServiceEntityRepository implements Arti
             return date('Y-m-d H:i:s');
         }
     }
+
+    #[\Override]
+    public function getByHash(string $hash): ?Article
+    {
+        /** @var Article|null $article */
+        $article = $this->findOneBy([
+            'hash' => $hash,
+        ]);
+
+        return $article;
+    }
 }

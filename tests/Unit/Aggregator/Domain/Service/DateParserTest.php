@@ -15,6 +15,7 @@ final class DateParserTest extends TestCase
 {
     private DateParser $dateParser;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->dateParser = new DateParser();

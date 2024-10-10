@@ -18,6 +18,7 @@ readonly class Article
         public string $categories,
         public string $body,
         public string $source,
+        public string $hash,
         public \DateTimeImmutable $publishedAt,
         public \DateTimeImmutable $crawledAt
     ) {

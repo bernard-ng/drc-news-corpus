@@ -3,6 +3,8 @@
 This changelog references the relevant changes (bug and security fixes) done
 
 ## [Unreleased]
+- Modified: use `hash` instead of `link` field as index in `articles` table
+- Added: support for wp-json plugin via `WordPressJson` class
 - Added: `getPagination` method to `Source` abstract class
 - Added: `--parallel` option to `app:crawl` command to crawl multiple pages in parallel
 - Added: `app:update` command to update the database with the latest articles

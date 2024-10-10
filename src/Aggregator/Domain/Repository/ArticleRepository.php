@@ -24,6 +24,8 @@ interface ArticleRepository
 
     public function getByLink(string $link): ?Article;
 
+    public function getByHash(string $hash): ?Article;
+
     public function export(?string $source, ?DateRange $date): array;
 
     public function getLastCrawlDate(string $source, ?string $category): string;

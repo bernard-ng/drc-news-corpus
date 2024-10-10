@@ -6,6 +6,7 @@
 parameters:
     app_from_email: '%env(APP_FROM_EMAIL)%'
     app_to_email: '%env(APP_TO_EMAIL)%'
+    app_enable_backtrace: '%env(bool:APP_ENABLE_BACKTRACE)%'
 
 services:
     # default configuration for services in *this* file

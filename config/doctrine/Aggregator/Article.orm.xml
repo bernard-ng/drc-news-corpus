@@ -13,11 +13,13 @@
         </id>
         <indexes>
             <index fields="source" />
+            <index fields="hash" />
         </indexes>
 
         <field name="title"/>
         <field name="body" type="text" />
-        <field name="link" unique="true" />
+        <field name="link" length="2048" />
+        <field name="hash" length="32" />
         <field name="source" />
         <field name="categories" nullable="true" />
         <field name="publishedAt" type="datetime_immutable" />

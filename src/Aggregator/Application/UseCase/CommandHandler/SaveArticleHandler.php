@@ -26,7 +26,8 @@ final readonly class SaveArticleHandler implements CommandHandler
 
     public function __invoke(SaveArticle $command): string
     {
-        $article = $this->articleRepository->getByLink($command->link);
+        $hash = md5($command->link);
+        $article = $this->articleRepository->getByHash($hash);
         if ($article !== null) {
             throw DuplicatedArticle::withLink($command->link);
         }
@@ -42,6 +43,7 @@ final readonly class SaveArticleHandler implements CommandHandler
             categories: $command->categories,
             body: $command->body,
             source: $command->source,
+            hash: $hash,
             publishedAt: $publishedAt,
             crawledAt: $createdAt
         );
