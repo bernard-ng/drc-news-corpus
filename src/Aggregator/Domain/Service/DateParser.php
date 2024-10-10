@@ -58,6 +58,11 @@ final readonly class DateParser
             );
         }
 
+        if ($format === 'c') {
+            $date = str_replace('t', ' ', $date);
+            $format = 'Y-m-d H:i:s';
+        }
+
         $datetime = \DateTime::createFromFormat($format ?? self::DEFAULT_DATE_FORMAT, $date);
 
         return $datetime !== false ?
