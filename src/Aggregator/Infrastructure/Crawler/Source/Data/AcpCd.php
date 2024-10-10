@@ -27,7 +27,7 @@ final class AcpCd extends source
 
         for ($i = $page->start; $i < $page->end; $i++) {
             try {
-                $crawler = $this->crawle(self::URL . "/acpcongo?page={$i}", $i);
+                $crawler = $this->crawle(self::URL . "/acp?page={$i}", $i);
                 $articles = $crawler->filter('.td-main-content-wrap .td-main-page-wrap .td-container-wrap');
 
             } catch (\Throwable) {
