@@ -79,6 +79,6 @@ final class ActualiteCd extends Source
     #[\Override]
     public function getPagination(?string $category = null): PageRange
     {
-        return PageRange::from(sprintf('0:%d', $this->getLastPage(self::URL . '/actualite')));
+        return PageRange::from(sprintf('0:%d', $this->getLastPage(self::URL . '/acp')));
     }
 }

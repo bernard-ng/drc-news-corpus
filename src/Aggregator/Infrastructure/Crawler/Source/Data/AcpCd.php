@@ -12,7 +12,7 @@ use Symfony\Component\DomCrawler\Crawler;
 
 final class AcpCd extends source
 {
-    public const string URL = 'http://acp.cd';
+    public const string URL = 'https://acp.cd';
 
     public const string ID = 'acp.cd';
 
@@ -70,5 +70,11 @@ final class AcpCd extends source
             $this->logger->critical("> {$e->getMessage()} [Failed] ❌");
             return;
         }
+    }
+
+    #[\Override]
+    public function getPagination(?string $category = null): PageRange
+    {
+        return PageRange::from(sprintf('0:%d', $this->getLastPage(self::URL . "/rubrique/{$category}")));
     }
 }
