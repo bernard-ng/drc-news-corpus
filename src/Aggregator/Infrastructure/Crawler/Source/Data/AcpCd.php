@@ -23,11 +23,11 @@ final class AcpCd extends source
     public function fetch(FetchConfig $config): void
     {
         $this->initialize();
-        $page = $config->page ?? PageRange::from(sprintf('0:%d', $this->getLastPage(self::URL . '/acp')));
+        $page = $config->page ?? PageRange::from(sprintf('0:%d', $this->getLastPage(self::URL . '/fil-actu')));
 
         for ($i = $page->start; $i < $page->end; $i++) {
             try {
-                $crawler = $this->crawle(self::URL . "/acp?page={$i}", $i);
+                $crawler = $this->crawle(self::URL . "/fil-actu?page={$i}", $i);
                 $articles = $crawler->filter('.td-main-content-wrap .td-main-page-wrap .td-container-wrap');
 
             } catch (\Throwable) {
@@ -49,11 +49,11 @@ final class AcpCd extends source
         try {
             /** @var string $link */
             $link = $node->filter('.tdb-menu a')->attr('href');
-            $category = $node->filter('td-module-container td-category-pos-')->text();
-            $title = $node->filter('.entry-title .td-module-title a')->text();
+            $category = $node->filter('.td-module-container .td-category-pos-')->text();
+            $title = $node->filter('td-block-title')->text();
 
             $crawler = $this->crawle(self::URL . "/{$link}");
-            $body = $crawler->filter('body')->text();
+            $body = $crawler->filter('.home')->text();
             $date = $crawler->filter('.td-post-date')->text();
             $timestamp = $this->dateParser->createTimeStamp(
                 date: $date,
@@ -75,6 +75,6 @@ final class AcpCd extends source
     #[\Override]
     public function getPagination(?string $category = null): PageRange
     {
-        return PageRange::from(sprintf('0:%d', $this->getLastPage(self::URL . "/rubrique/{$category}")));
+        return PageRange::from(sprintf('0:%d', $this->getLastPage(self::URL . "/fil-actu")));
     }
 }
