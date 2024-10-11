@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Aggregator\Application\UseCase\Query;
+namespace App\Aggregator\Application\UseCase\QueryHandler;
 
+use App\Aggregator\Application\UseCase\Query\GetStatsQuery;
 use App\SharedKernel\Application\Bus\QueryHandler;
 
 /**
