@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL;
 
 use App\Aggregator\Application\ReadModel\SourceStatistics;
-use App\Aggregator\Application\UseCase\Query\GetStatsHandler;
 use App\Aggregator\Application\UseCase\Query\GetStatsQuery;
+use App\Aggregator\Application\UseCase\QueryHandler\GetStatsHandler;
 use Doctrine\DBAL\Connection;
 
 /**
