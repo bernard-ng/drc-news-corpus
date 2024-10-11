@@ -1,6 +1,7 @@
 # DRC News Corpus
 
 ![Coding Standard](https://github.com/bernard-ng/drc-news-corpus/actions/workflows/quality.yaml/badge.svg)
+![Unit Tests](https://github.com/bernard-ng/drc-news-corpus/actions/workflows/test.yaml/badge.svg)
 [![Latest Stable Version](https://poser.pugx.org/bernard-ng/drc-news-corpus/version)](https://packagist.org/packages/bernard-ng/drc-news-corpus)
 [![License](https://poser.pugx.org/bernard-ng/drc-news-corpus/license)](https://packagist.org/packages/bernard-ng/drc-news-corpus)
 
@@ -15,16 +16,13 @@ Efforts have been made to ensure the dataset's integrity and quality by includin
 
 ## Sources
 
-| Source         | Supported | Articles | Link                                        | Last Crawled |
-|----------------|-----------|----------|---------------------------------------------|--------------|
-| radiookapi.net | Yes       | +90k     | https://www.radiookapi.net/actualite        | NA           |
-| actualite.cd   | Yes       | +16k     | https://actualite.cd/                       | NA           |
-| 7sur7.cd       | Yes       | +16k     | https://7sur7.cd                            | NA           |
-| politico.cd    | Yes       | +50k     | https://www.politico.cd/rubrique/encontinu/ | NA           |
-| mediacongo.cd  | Yes       | +25k     | https://www.mediacongo.net/                 | NA           |
-| rfi.fr         | No        | +13k     | https://www.rfi.fr/fr/tag/rdc               | NA           |
-| lemonde.fr     | NO        |          | https://www.lemonde.fr/congo-rdc/2          | NA           |
-| lefigaro.fr    | NO        |          | https://www.lefigaro.fr/tag/rdc             |              |
+| Source         | Supported | Articles | Link                                 | Last Crawled |
+|----------------|-----------|----------|--------------------------------------|--------------|
+| radiookapi.net | Yes       | +100k    | https://www.radiookapi.net/actualite | 2024-10-09   |
+| mediacongo.cd  | Yes       | +100k    | https://www.mediacongo.net/          | 2024-10-11   |
+| politico.cd    | Yes       | +50k     | https://www.politico.cd/             | NA           |
+| actualite.cd   | Yes       | NA       | https://actualite.cd/                | NA           |
+| 7sur7.cd       | Yes       | NA       | https://7sur7.cd                     | NA           |
 
 
 ## Download the dataset
@@ -85,6 +83,12 @@ running this command in the background is recommended. by default no output is g
 
 ```bash
 nohup php bin/console app:crawl radiookapi.net -v > crawling.log
+```
+
+3. **Statistics**
+```bash
+# Get the number of articles in the database.
+php bin/console app:stats
 ```
 
 ## Export the dataset

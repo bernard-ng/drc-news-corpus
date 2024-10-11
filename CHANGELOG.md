@@ -3,6 +3,7 @@
 This changelog references the relevant changes (bug and security fixes) done
 
 ## [Unreleased]
+- Added: `app:stats' command to get the number of articles in the database
 - Modified: use `hash` instead of `link` field as index in `articles` table
 - Added: support for wp-json plugin via `WordPressJson` class
 - Added: `getPagination` method to `Source` abstract class
