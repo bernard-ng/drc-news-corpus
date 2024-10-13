@@ -46,7 +46,7 @@ when@prod:
                 buffer_size: 50 # How many messages should be saved? Prevent memory leaks
             telegram:
                 type: telegram
-                level: error
+                level: critical
                 channels: [ "!event" ]
                 token: "%env(DEVY_TOKEN)%"
                 channel: "%env(DEVY_CHANNEL)%"
