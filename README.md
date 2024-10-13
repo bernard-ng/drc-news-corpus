@@ -20,7 +20,7 @@ Efforts have been made to ensure the dataset's integrity and quality by includin
 |----------------|-----------|----------|--------------------------------------|--------------|
 | radiookapi.net | Yes       | +100k    | https://www.radiookapi.net/actualite | 2024-10-09   |
 | mediacongo.cd  | Yes       | +100k    | https://www.mediacongo.net/          | 2024-10-11   |
-| politico.cd    | Yes       | +50k     | https://www.politico.cd/             | NA           |
+| beto.cd        | Yes       | +50k     | https://www.beto.cd/                 | NA           |
 | actualite.cd   | Yes       | NA       | https://actualite.cd/                | NA           |
 | 7sur7.cd       | Yes       | NA       | https://7sur7.cd                     | NA           |
 
