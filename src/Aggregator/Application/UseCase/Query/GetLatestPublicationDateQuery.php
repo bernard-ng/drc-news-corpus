@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Aggregator\Application\UseCase\Query;
 
 /**
- * Class GetLastCrawlDateQuery.
+ * Class GetLatestPublicationDateQuery.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final readonly class GetLastCrawlDateQuery
+final readonly class GetLatestPublicationDateQuery
 {
     public function __construct(
         public string $source,

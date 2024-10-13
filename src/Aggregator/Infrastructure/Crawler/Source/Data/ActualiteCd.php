@@ -11,7 +11,7 @@ use App\Aggregator\Infrastructure\Crawler\Source\Source;
 use Symfony\Component\DomCrawler\Crawler;
 
 /**
- * Class Politique7sur7Service.
+ * Class ActualiteCd.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */

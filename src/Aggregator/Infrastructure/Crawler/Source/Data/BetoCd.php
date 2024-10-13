@@ -7,13 +7,13 @@ namespace App\Aggregator\Infrastructure\Crawler\Source\Data;
 use App\Aggregator\Infrastructure\Crawler\Source\WordPressJson;
 
 /**
- * Class PoliticoCdAbstractSource.
+ * Class BetoCd.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final class PoliticoCd extends WordPressJson
+final class BetoCd extends WordPressJson
 {
-    public const string URL = 'https://politico.cd';
+    public const string URL = 'https://beto.cd';
 
-    public const string ID = 'politico.cd';
+    public const string ID = 'beto.cd';
 }
