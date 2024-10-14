@@ -28,7 +28,7 @@ final readonly class CsvExporter implements Exporter
         $writer = Writer::createFromPath($filename, open_mode: 'a+');
 
         if (file_get_contents($filename) === '') {
-            $writer->insertOne(['title', 'link', 'categories', 'body', 'published_at', 'source']);
+            $writer->insertOne(['title', 'link', 'categories', 'body', 'source', 'published_at', 'crawled_at']);
         }
 
         foreach ($data as $article) {
@@ -37,8 +37,9 @@ final readonly class CsvExporter implements Exporter
                 $article->link,
                 $article->categories,
                 $article->body,
-                $article->publishedAt->format('Y-m-d H:i:s'),
                 $article->source,
+                $article->publishedAt->format('Y-m-d H:i:s'),
+                $article->crawledAt->format('Y-m-d H:i:s'),
             ]);
         }
 
