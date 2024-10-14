@@ -70,7 +70,7 @@ final class ArticleOrmRepository extends ServiceEntityRepository implements Arti
     }
 
     #[\Override]
-    public function export(?string $source, ?DateRange $date): array
+    public function export(?string $source, ?DateRange $date): \Generator
     {
         $qb = $this->createQueryBuilder('a')
             ->orderBy('a.publishedAt', 'DESC');
@@ -86,12 +86,26 @@ final class ArticleOrmRepository extends ServiceEntityRepository implements Arti
                 ->setParameter('end', $date->end);
         }
 
-        /** @var Article[] $result */
-        $result = $qb
-            ->getQuery()
-            ->getResult();
+        $limit = 1000;
+        $offset = 0;
 
-        return $result;
+        while (true) {
+            $qb->setFirstResult($offset);
+            $qb->setMaxResults($limit);
+
+            /** @var Article[] $articles */
+            $articles = $qb->getQuery()->getResult();
+            if (count($articles) === 0) {
+                break;
+            }
+
+            foreach ($articles as $article) {
+                yield $article;
+                $this->getEntityManager()->detach($article);
+            }
+
+            $offset += $limit;
+        }
     }
 
     #[\Override]

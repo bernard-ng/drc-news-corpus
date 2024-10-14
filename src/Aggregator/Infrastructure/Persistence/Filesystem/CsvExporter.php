@@ -22,7 +22,7 @@ final readonly class CsvExporter implements Exporter
     }
 
     #[\Override]
-    public function export(array $data): string
+    public function export(iterable $data): string
     {
         $filename = sprintf('%s/data/export-%s.csv', $this->projectDir, (new \DateTimeImmutable('now'))->format('U'));
         $writer = Writer::createFromPath($filename, open_mode: 'a+');
