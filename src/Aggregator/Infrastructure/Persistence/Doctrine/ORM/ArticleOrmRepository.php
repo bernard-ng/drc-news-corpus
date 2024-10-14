@@ -104,4 +104,24 @@ final class ArticleOrmRepository extends ServiceEntityRepository implements Arti
 
         return $article;
     }
+
+    #[\Override]
+    public function clear(string $source, ?string $category): int
+    {
+        $qb = $this->createQueryBuilder('a')
+            ->where('a.source = :source')
+            ->setParameter('source', $source);
+
+        if ($category !== null) {
+            $qb->andWhere('a.categories LIKE :category')
+                ->setParameter('category', "%{$category}%");
+        }
+
+        /** @var int $result */
+        $result = $qb->delete(Article::class, 'a')
+            ->getQuery()
+            ->execute();
+
+        return $result;
+    }
 }

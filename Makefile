@@ -24,7 +24,7 @@ build: ## Build & start docker containers for development
 
 .PHONY: lint
 lint: vendor/autoload.php ## code quality analysis
-	$(dc) run --rm php composer juro:code-quality
+	$(dc) run --rm php composer corpus:code-quality
 
 .PHONY: test
 test: vendor/autoload.php ## unit and functional tests

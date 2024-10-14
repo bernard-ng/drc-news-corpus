@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Infrastructure\Crawler\Source;
 
-use App\Aggregator\Application\UseCase\Command\SaveArticle;
+use App\Aggregator\Application\UseCase\Command\Save;
 use App\Aggregator\Domain\Event\SourceFetched;
 use App\Aggregator\Domain\Service\DateParser;
 use App\Aggregator\Domain\Service\SourceFetcher;
@@ -69,7 +69,7 @@ abstract class Source implements SourceFetcher
         try {
             /** @var string $id */
             $id = $this->commandBus->handle(
-                new SaveArticle(
+                new Save(
                     title: $title,
                     link: $link,
                     categories: $categories,

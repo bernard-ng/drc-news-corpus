@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Application\UseCase\CommandHandler;
 
-use App\Aggregator\Application\UseCase\Command\SaveArticle;
+use App\Aggregator\Application\UseCase\Command\Save;
 use App\Aggregator\Domain\Entity\Article;
 use App\Aggregator\Domain\Exception\DuplicatedArticle;
 use App\Aggregator\Domain\Repository\ArticleRepository;
@@ -12,11 +12,11 @@ use App\SharedKernel\Application\Bus\CommandHandler;
 use App\SharedKernel\Domain\Model\IdGenerator;
 
 /**
- * Class SaveArticleHandler.
+ * Class SaveHandler.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final readonly class SaveArticleHandler implements CommandHandler
+final readonly class SaveHandler implements CommandHandler
 {
     public function __construct(
         private IdGenerator $idGenerator,
@@ -24,7 +24,7 @@ final readonly class SaveArticleHandler implements CommandHandler
     ) {
     }
 
-    public function __invoke(SaveArticle $command): string
+    public function __invoke(Save $command): string
     {
         $hash = md5($command->link);
         $article = $this->articleRepository->getByHash($hash);
