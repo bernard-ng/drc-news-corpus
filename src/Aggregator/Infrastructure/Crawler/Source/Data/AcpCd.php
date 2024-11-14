@@ -28,17 +28,15 @@ final class AcpCd extends Source
 
         for ($i = $page->start; $i <= $page->end; $i++) {
             try {
-                // Appel AJAX pour obtenir le contenu de la page paginée
+
                 $ajaxUrl = self::URL . "/ajax/fil-actu?page={$i}";
                 $crawler = $this->crawle($ajaxUrl, $i);
 
-                // Sélecteurs spécifiques au contenu des articles sur ACP.cd
                 $articles = $crawler->filter('.td-main-content-wrap .td-module-container');
             } catch (\Throwable) {
                 continue;
             }
 
-            // Boucle pour extraire les données de chaque article
             $articles->each(fn (Crawler $node) => $this->fetchOne($node->html(), $config->date));
         }
 
