@@ -11,7 +11,7 @@ use App\Aggregator\Infrastructure\Crawler\Source\Source;
 use Symfony\Component\DomCrawler\Crawler;
 
 /**
- * Class Politique7sur7Service.
+ * Class ActualiteCd.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
@@ -61,7 +61,7 @@ final class ActualiteCd extends Source
             $date = $crawler->filter('#p-date')->text();
             $timestamp = $this->dateParser->createTimeStamp(
                 date: $date,
-                pattern: '/(\d{1}) (\d{2}) (\d{2}) (\d{4}) - (\d{2}:\d{2})/',
+                pattern: '/(\d{1}) (\d{1,2}) (\d{2}) (\d{4}) - (\d{2}:\d{2})/',
                 replacement: '$4-$3-$2 $5'
             );
 

@@ -21,7 +21,7 @@ final class MediaCongoNet extends Source
 
     public const string ID = 'mediacongo.net';
 
-    protected const string DATE_FORMAT = 'd.m.Y';
+    protected const string DATE_FORMAT = 'd.m.Y H:i';
 
     /**
      * @throws \Throwable
@@ -64,7 +64,7 @@ final class MediaCongoNet extends Source
             $crawler = $this->crawle(self::URL . "/{$link}");
             $body = $crawler->filter('.article_ttext')->text();
             $timestamp = $this->dateParser->createTimeStamp(
-                date: substr($date, 0, 10),
+                date: sprintf('%s %s', substr($date, 0, 10), '00:00'),
                 format: self::DATE_FORMAT,
             );
 

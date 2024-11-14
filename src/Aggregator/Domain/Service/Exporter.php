@@ -14,7 +14,7 @@ use App\Aggregator\Domain\Entity\Article;
 interface Exporter
 {
     /**
-     * @param Article[] $data
+     * @param iterable<Article> $data
      */
-    public function export(array $data): string;
+    public function export(iterable $data): string;
 }

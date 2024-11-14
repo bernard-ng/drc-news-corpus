@@ -70,7 +70,7 @@ final class ArticleOrmRepository extends ServiceEntityRepository implements Arti
     }
 
     #[\Override]
-    public function export(?string $source, ?DateRange $date): array
+    public function export(?string $source, ?DateRange $date): \Generator
     {
         $qb = $this->createQueryBuilder('a')
             ->orderBy('a.publishedAt', 'DESC');
@@ -86,35 +86,56 @@ final class ArticleOrmRepository extends ServiceEntityRepository implements Arti
                 ->setParameter('end', $date->end);
         }
 
-        /** @var Article[] $result */
-        $result = $qb
-            ->getQuery()
-            ->getResult();
+        $limit = 1000;
+        $offset = 0;
 
-        return $result;
+        while (true) {
+            $qb->setFirstResult($offset);
+            $qb->setMaxResults($limit);
+
+            /** @var Article[] $articles */
+            $articles = $qb->getQuery()->getResult();
+            if (count($articles) === 0) {
+                break;
+            }
+
+            foreach ($articles as $article) {
+                yield $article;
+                $this->getEntityManager()->detach($article);
+            }
+
+            $offset += $limit;
+        }
     }
 
     #[\Override]
-    public function getLastCrawlDate(string $source, ?string $category): string
+    public function getByHash(string $hash): ?Article
     {
-        try {
-            $qb = $this->createQueryBuilder('a');
+        /** @var Article|null $article */
+        $article = $this->findOneBy([
+            'hash' => $hash,
+        ]);
 
-            $qb->select('MAX(a.publishedAt)')
-                ->andWhere('a.source = :source')
-                ->setParameter('source', $source);
+        return $article;
+    }
 
-            if ($category !== null) {
-                $qb->andWhere('a.categories LIKE :category')
-                    ->setParameter('category', "%{$category}%");
-            }
+    #[\Override]
+    public function clear(string $source, ?string $category): int
+    {
+        $qb = $this->createQueryBuilder('a')
+            ->where('a.source = :source')
+            ->setParameter('source', $source);
 
-            /** @var string $result */
-            $result = $qb->getQuery()->getSingleScalarResult();
-
-            return (new \DateTimeImmutable($result))->format('Y-m-d H:i:s');
-        } catch (\Throwable) {
-            return date('Y-m-d H:i:s');
+        if ($category !== null) {
+            $qb->andWhere('a.categories LIKE :category')
+                ->setParameter('category', "%{$category}%");
         }
+
+        /** @var int $result */
+        $result = $qb->delete(Article::class, 'a')
+            ->getQuery()
+            ->execute();
+
+        return $result;
     }
 }

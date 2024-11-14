@@ -21,6 +21,7 @@ final readonly class PageRange implements \Stringable
     {
         Assert::greaterThanEq($start, 0);
         Assert::greaterThanEq($end, 0);
+        Assert::greaterThan($end, $start);
 
         $this->start = $start;
         $this->end = $end;

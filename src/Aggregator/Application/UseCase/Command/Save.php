@@ -2,25 +2,22 @@
 
 declare(strict_types=1);
 
-namespace App\Aggregator\Domain\Entity;
+namespace App\Aggregator\Application\UseCase\Command;
 
 /**
- * Class Article.
+ * Class Save.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-readonly class Article
+final readonly class Save
 {
     public function __construct(
-        public string $id,
         public string $title,
         public string $link,
         public string $categories,
         public string $body,
         public string $source,
-        public string $hash,
-        public \DateTimeImmutable $publishedAt,
-        public \DateTimeImmutable $crawledAt
+        public int $timestamp
     ) {
     }
 }

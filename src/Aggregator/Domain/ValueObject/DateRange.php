@@ -18,6 +18,8 @@ final readonly class DateRange implements \Stringable
         public int $start,
         public int $end
     ) {
+        Assert::notEq($this->start, 0);
+        Assert::notEq($this->end, 0);
         Assert::greaterThanEq($end, $start);
     }
 
@@ -42,6 +44,27 @@ final readonly class DateRange implements \Stringable
         $end = DateTime::createFromFormat($format, $endDate);
 
         return new self((int) $start->format('U'), (int) $end->format('U'));
+    }
+
+    public static function backward(\DateTimeImmutable $date, int $years = 100): self
+    {
+        $start = $date->modify(sprintf('-%d years', $years));
+        $end = $date;
+
+        return new self((int) $start->format('U'), (int) $end->format('U'));
+    }
+
+    public static function forward(\DateTimeImmutable $date, int $years = 100): self
+    {
+        $start = $date;
+        $end = $date->modify(sprintf('+%d years', $years));
+
+        return new self((int) $start->format('U'), (int) $end->format('U'));
+    }
+
+    public function format(string $format = 'Y-m-d'): string
+    {
+        return sprintf('%s:%s', date($format, $this->start), date($format, $this->end));
     }
 
     public function inRange(int $date): bool
