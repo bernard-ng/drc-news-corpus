@@ -10,7 +10,7 @@ use App\Aggregator\Domain\ValueObject\PageRange;
 use App\Aggregator\Infrastructure\Crawler\Source\Source;
 use Symfony\Component\DomCrawler\Crawler;
 
-final class AcpCd extends source
+final class AcpCd extends Source
 {
     public const string URL = 'https://acp.cd';
 
@@ -23,18 +23,22 @@ final class AcpCd extends source
     public function fetch(FetchConfig $config): void
     {
         $this->initialize();
-        $page = $config->page ?? PageRange::from(sprintf('0:%d', $this->getLastPage(self::URL . '/fil-actu')));
 
-        for ($i = $page->start; $i < $page->end; $i++) {
+        $page = $config->page ?? PageRange::from('1:10'); // Exemples de pages, ajustables
+
+        for ($i = $page->start; $i <= $page->end; $i++) {
             try {
-                $crawler = $this->crawle(self::URL . "/fil-actu?page={$i}", $i);
-                $articles = $crawler->filter('.td-main-content-wrap .td-main-page-wrap .td-container-wrap');
+                // Appel AJAX pour obtenir le contenu de la page paginée
+                $ajaxUrl = self::URL . "/ajax/fil-actu?page={$i}";
+                $crawler = $this->crawle($ajaxUrl, $i);
 
+                // Sélecteurs spécifiques au contenu des articles sur ACP.cd
+                $articles = $crawler->filter('.td-main-content-wrap .td-module-container');
             } catch (\Throwable) {
                 continue;
             }
 
-            // loop through the articles and get the title, link, date, categories and body
+            // Boucle pour extraire les données de chaque article
             $articles->each(fn (Crawler $node) => $this->fetchOne($node->html(), $config->date));
         }
 
@@ -48,21 +52,32 @@ final class AcpCd extends source
 
         try {
             /** @var string $link */
-            $link = $node->filter('.tdb-menu a')->attr('href');
-            $category = $node->filter('.td-module-container .td-category-pos-')->text();
-            $title = $node->filter('td-block-title')->text();
+            $link = $node->filter('.td-module-thumb a')->attr('href');
 
-            $crawler = $this->crawle(self::URL . "/{$link}");
-            $body = $crawler->filter('.home')->text();
+            // Vérifiez si le lien commence par 'http' ou 'https' et nettoyez-le
+            if (strpos($link, 'http') === 0) {
+                // Si le lien est absolu, ne pas le préfixer avec self::URL
+                $absoluteLink = $link;
+            } else {
+                // Si le lien est relatif, le préfixer avec self::URL
+                $absoluteLink = self::URL . '/' . ltrim($link, '/');
+            }
+
+            $category = $node->filter('.td-module-meta-info .td-post-category')->text();
+            $title = $node->filter('.td-module-title a')->text();
+
+            // Utilisez l'URL correctement construite
+            $crawler = $this->crawle($absoluteLink);
+            $body = $crawler->filter('.td-post-content')->text();
             $date = $crawler->filter('.td-post-date')->text();
             $timestamp = $this->dateParser->createTimeStamp(
                 date: $date,
-                pattern: '/(\d{1}) (\d{2}) (\d{2}) (\d{4}) - (\d{2}:\d{2})/',
-                replacement: '$4-$3-$2 $5'
+                pattern: '/(\d{2})-(\d{2})-(\d{4}) (\d{2}:\d{2})/',
+                replacement: '$3-$2-$1 $4'
             );
 
             if ($interval === null || $interval->inRange((int) $timestamp)) {
-                $this->save($title, $link, $category, $body, $timestamp);
+                $this->save($title, $absoluteLink, $category, $body, $timestamp);
             } else {
                 $this->skip($interval, $timestamp, $title, $date);
             }
@@ -75,6 +90,6 @@ final class AcpCd extends source
     #[\Override]
     public function getPagination(?string $category = null): PageRange
     {
-        return PageRange::from(sprintf('0:%d', $this->getLastPage(self::URL . "/fil-actu")));
+        return PageRange::from('1:10'); // Nombre de pages à adapter dynamiquement
     }
 }
