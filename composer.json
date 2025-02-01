@@ -7,42 +7,42 @@
         "php": ">=8.3",
         "ext-ctype": "*",
         "ext-iconv": "*",
-        "cweagans/composer-patches": "^1.7",
-        "doctrine/dbal": "^3",
-        "doctrine/doctrine-bundle": "^2.13",
-        "doctrine/doctrine-migrations-bundle": "^3.3",
-        "doctrine/orm": "^3.2",
-        "league/csv": "^9.11",
-        "symfony/console": "7.1.*",
-        "symfony/css-selector": "7.1.*",
-        "symfony/dom-crawler": "7.1.*",
-        "symfony/dotenv": "7.1.*",
-        "symfony/flex": "^2",
-        "symfony/framework-bundle": "7.1.*",
-        "symfony/http-client": "7.1.*",
-        "symfony/mailer": "7.1.*",
-        "symfony/messenger": "7.1.*",
+        "cweagans/composer-patches": "^1.7.3",
+        "doctrine/dbal": "^3.9.4",
+        "doctrine/doctrine-bundle": "^2.13.2",
+        "doctrine/doctrine-migrations-bundle": "^3.4.1",
+        "doctrine/orm": "^3.3.1",
+        "league/csv": "^9.21",
+        "symfony/console": "7.2.*",
+        "symfony/css-selector": "7.2.*",
+        "symfony/dom-crawler": "7.2.*",
+        "symfony/dotenv": "7.2.*",
+        "symfony/flex": "^2.4.7",
+        "symfony/framework-bundle": "7.2.*",
+        "symfony/http-client": "7.2.*",
+        "symfony/mailer": "7.2.*",
+        "symfony/messenger": "7.2.*",
         "symfony/monolog-bundle": "^3.10",
-        "symfony/runtime": "7.1.*",
-        "symfony/stopwatch": "7.1.*",
-        "symfony/twig-bundle": "7.1.*",
-        "symfony/uid": "7.1.*",
-        "symfony/yaml": "7.1.*",
-        "twig/extra-bundle": "^2.12|^3.0",
-        "twig/twig": "^2.12|^3.0",
+        "symfony/runtime": "7.2.*",
+        "symfony/stopwatch": "7.2.*",
+        "symfony/twig-bundle": "7.2.*",
+        "symfony/uid": "7.2.*",
+        "symfony/yaml": "7.2.*",
+        "twig/extra-bundle": "^2.12|^3.19",
+        "twig/twig": "^2.12|^3.19",
         "webmozart/assert": "^1.11"
     },
     "require-dev": {
-        "behat/behat": "^3.14",
-        "phpstan/phpstan": "^1.12",
-        "phpstan/phpstan-doctrine": "^1.5",
-        "phpunit/phpunit": "^10.4",
-        "qossmic/deptrac": "^2.0",
-        "rector/rector": "^1.2",
-        "shipmonk/composer-dependency-analyser": "^1.7",
-        "symfony/maker-bundle": "^1.51",
-        "symplify/easy-coding-standard": "^12.3",
-        "tomasvotruba/class-leak": "^1.0"
+        "behat/behat": "^3.18.1",
+        "phpstan/phpstan": "^1.12.16",
+        "phpstan/phpstan-doctrine": "^1.5.7",
+        "phpunit/phpunit": "^10.5.44",
+        "qossmic/deptrac": "^2.0.4",
+        "rector/rector": "^1.2.10",
+        "shipmonk/composer-dependency-analyser": "^1.8.2",
+        "symfony/maker-bundle": "^1.62.1",
+        "symplify/easy-coding-standard": "^12.5.8",
+        "tomasvotruba/class-leak": "^1.2.7"
     },
     "config": {
         "allow-plugins": {
@@ -83,11 +83,11 @@
         "post-update-cmd": [
             "@auto-scripts"
         ],
-        "corpus:migrations": [
+        "app:migrate": [
             "bin/console doctrine:database:create --if-not-exists",
             "bin/console doctrine:migration:migrate --no-interaction --allow-no-migration"
         ],
-        "corpus:code-quality": [
+        "app:cs": [
             "./vendor/bin/ecs check",
             "bin/console lint:yaml config --parse-tags",
             "bin/console lint:container",
@@ -95,17 +95,15 @@
             "./vendor/bin/rector --dry-run",
             "./vendor/bin/deptrac"
         ],
-        "corpus:tests": [
-            "APP_ENV=test bin/console doctrine:database:create",
-            "APP_ENV=test bin/console doctrine:migration:migrate --no-interaction --allow-no-migration",
+        "app:tests": [
             "APP_ENV=test ./vendor/bin/phpunit"
         ],
-        "corpus:behat": [
+        "app:behat": [
             "APP_ENV=test bin/console doctrine:database:create",
             "APP_ENV=test bin/console doctrine:migration:migrate --no-interaction --allow-no-migration",
             "APP_ENV=test ./vendor/bin/behat --format=progress --no-interaction"
         ],
-        "corpus:env": [
+        "app:env": [
             "APP_RUNTIME_ENV=prod bin/console secrets:decrypt-to-local --force",
             "bin/console dotenv:dump prod"
         ]
@@ -116,7 +114,7 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "7.1.*"
+            "require": "7.2.*"
         },
         "patches": {
             "symfony/monolog-bundle": {

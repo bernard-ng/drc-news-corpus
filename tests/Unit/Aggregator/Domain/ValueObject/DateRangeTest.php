@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Aggregator\Domain\ValueObject;
 
 use App\Aggregator\Domain\ValueObject\DateRange;
+use App\SharedKernel\Domain\Exception\InvalidArgument;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -29,7 +30,7 @@ final class DateRangeTest extends TestCase
 
     public function testEndShouldBeGreaterThanStart(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgument::class);
         DateRange::from('2021-10-10:2021-10-01');
     }
 }

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\SharedKernel\Domain\Model;
 
 /**
- * Interface IdGenerator.
+ * Interface SymfonyUuIdGenerator.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */

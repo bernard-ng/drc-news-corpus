@@ -24,7 +24,7 @@ trait EventEmitterTrait
     /**
      * @return array<int, object>
      */
-    public function emitEvents(): array
+    public function releaseEvents(): array
     {
         return $this->emittedEvents;
     }

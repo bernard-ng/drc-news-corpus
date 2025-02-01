@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Domain\ValueObject;
 
-use Webmozart\Assert\Assert;
+use App\SharedKernel\Domain\Assert;
 
 /**
  * Class FetchConfig.

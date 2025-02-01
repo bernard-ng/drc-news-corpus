@@ -32,9 +32,9 @@ services:
     App\:
         resource: '../src/'
         exclude:
-            - '../src/DependencyInjection/'
-            - '../src/Entity/'
-            - '../src/Kernel.php'
+            - '../src/SharedKernel/Infrastructure/Framework/Symfony/Kernel.php'
+            - '../src/**/Domain/Model/Entity/*'
+            - '../src/**/Domain/Model/ValueObject/*'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

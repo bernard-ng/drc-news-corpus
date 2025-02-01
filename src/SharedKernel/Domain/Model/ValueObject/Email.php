@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\SharedKernel\Domain\Model\ValueObject;
 
-use App\SharedKernel\Domain\Model\Exception\InvalidEmailAddress;
+use App\SharedKernel\Domain\Exception\InvalidEmailAddress;
 
 /**
  * Class Email.

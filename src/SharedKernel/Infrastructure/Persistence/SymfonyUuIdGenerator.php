@@ -8,11 +8,11 @@ use App\SharedKernel\Domain\Model\IdGenerator as IdGeneratorInterface;
 use Symfony\Component\Uid\Uuid;
 
 /**
- * Class IdGenerator.
+ * Class SymfonyUuIdGenerator.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final readonly class IdGenerator implements IdGeneratorInterface
+final readonly class SymfonyUuIdGenerator implements IdGeneratorInterface
 {
     #[\Override]
     public function uuid(): string

@@ -5,8 +5,14 @@ declare(strict_types=1);
 namespace Tests\Unit\Aggregator\Domain\ValueObject;
 
 use App\Aggregator\Domain\ValueObject\PageRange;
+use App\SharedKernel\Domain\Exception\InvalidArgument;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class PageRangeTest.
+ *
+ * @author bernard-ng <bernard@devscast.tech>
+ */
 final class PageRangeTest extends TestCase
 {
     public function testItShouldCreatePageRange(): void
@@ -20,13 +26,13 @@ final class PageRangeTest extends TestCase
 
     public function testEndPageShouldBeGreaterThanStartPage(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgument::class);
         PageRange::from('10:1');
     }
 
     public function testNonNegativePages(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgument::class);
         PageRange::from('-1:-10');
     }
 }

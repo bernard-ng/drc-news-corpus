@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Domain\ValueObject;
 
+use App\SharedKernel\Domain\Assert;
 use DateTime;
-use Webmozart\Assert\Assert;
 
 /**
  * Class DateRange.

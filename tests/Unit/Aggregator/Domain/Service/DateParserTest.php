@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Aggregator\Domain\Service;
 
 use App\Aggregator\Domain\Service\DateParser;

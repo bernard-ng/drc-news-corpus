@@ -6,7 +6,7 @@ namespace App\SharedKernel\Presentation\Web\Controller;
 
 use App\SharedKernel\Application\Bus\CommandBus;
 use App\SharedKernel\Application\Bus\QueryBus;
-use App\SharedKernel\Domain\Model\Exception\UserFacingError;
+use App\SharedKernel\Domain\Exception\UserFacingError;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController as SymfonyController;
 use Symfony\Component\HttpFoundation\Response;

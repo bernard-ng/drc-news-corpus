@@ -6,6 +6,7 @@ namespace App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL;
 
 use App\Aggregator\Application\UseCase\Query\GetLatestPublicationDateQuery;
 use App\Aggregator\Application\UseCase\QueryHandler\GetLatestPublicationDateHandler;
+use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\NoResult;
 use Doctrine\DBAL\Connection;
 use Psr\Log\LoggerInterface;
 
@@ -25,37 +26,25 @@ final readonly class GetLatestPublicationDateDBalHandler implements GetLatestPub
     #[\Override]
     public function __invoke(GetLatestPublicationDateQuery $query): \DateTimeImmutable
     {
+        $qb = $this->connection->createQueryBuilder()
+            ->from('article', 'a')
+            ->select('MAX(a.published_at)')
+            ->andWhere('a.source = :source')
+            ->setParameter('source', $query->source);
+
+        if ($query->category !== null) {
+            $qb->andWhere('a.categories LIKE :category')
+                ->setParameter('category', "%{$query->category}%");
+        }
+
         try {
-            $qb = $this->connection->createQueryBuilder();
-            $qb
-                ->from('article', 'a')
-                ->select('MAX(a.published_at)')
-                ->andWhere('a.source = :source');
+            /** @var string|null $date */
+            $date = $qb->executeQuery()->fetchOne();
 
-            if ($query->category !== null) {
-                $qb->andWhere('a.categories LIKE :category');
-            }
-
-            $statement = $this->connection->prepare($qb->getSQL());
-            $statement->bindValue('source', $query->source);
-            if ($query->category !== null) {
-                $statement->bindValue('category', "%{$query->category}%");
-            }
-
-            /** @var string|false|null $result */
-            $result = $statement->executeQuery()->fetchOne();
-            if ($result === false || $result === null) {
-                throw new \RuntimeException('Unable to fetch latest publication date');
-            }
-
-            return new \DateTimeImmutable($result);
+            return new \DateTimeImmutable($date ?? 'now');
         } catch (\Throwable $e) {
-            $this->logger->critical($e->getMessage(), [
-                'exception' => $e,
-                'query' => $query,
-            ]);
-
-            throw new \RuntimeException('Unable to fetch latest publication date', previous: $e);
+            $this->logger->critical('Unable to fetch latest publication date');
+            throw NoResult::forQuery($qb->getSQL(), $qb->getParameters(), $e);
         }
     }
 }

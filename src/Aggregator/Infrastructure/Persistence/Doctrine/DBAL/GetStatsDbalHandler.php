@@ -7,6 +7,7 @@ namespace App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL;
 use App\Aggregator\Application\ReadModel\SourceStatistics;
 use App\Aggregator\Application\UseCase\Query\GetStatsQuery;
 use App\Aggregator\Application\UseCase\QueryHandler\GetStatsHandler;
+use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\NoResult;
 use Doctrine\DBAL\Connection;
 
 /**
@@ -24,13 +25,13 @@ final readonly class GetStatsDbalHandler implements GetStatsHandler
     #[\Override]
     public function __invoke(GetStatsQuery $query): array
     {
-        try {
-            $qb = $this->connexion->createQueryBuilder()
-                ->select('COUNT(link) AS total, MAX(crawled_at) AS last_crawl_at, source')
-                ->from('article')
-                ->groupBy('source')
-                ->orderBy('source', 'DESC');
+        $qb = $this->connexion->createQueryBuilder()
+            ->select('COUNT(link) AS total, MAX(crawled_at) AS last_crawl_at, source')
+            ->from('article')
+            ->groupBy('source')
+            ->orderBy('source', 'DESC');
 
+        try {
             /** @var array{total: int, source: string, last_crawl_at: string}[] $result */
             $result = $qb->executeQuery()->fetchAllAssociative();
 
@@ -40,7 +41,7 @@ final readonly class GetStatsDbalHandler implements GetStatsHandler
                 lastCrawledAt: $row['last_crawl_at']
             ), $result);
         } catch (\Throwable $e) {
-            throw new \RuntimeException('An error occurred while fetching stats', previous: $e);
+            throw NoResult::forQuery($qb->getSQL(), $qb->getParameters(), $e);
         }
     }
 }
