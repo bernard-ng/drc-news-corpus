@@ -16,7 +16,7 @@ authors:
     orcid: 'https://orcid.org/0009-0003-9777-6349'
 repository-code: 'https://github.com/bernard-ng/drc-news-corpus'
 repository: >-
-  https://www.kaggle.com/datasets/bernardngandu/drc-news-corpus
+  https://www.huggingface.c0/datasets/bernard-ng/drc-news-corpus
 abstract: >-
   The "DRC News Corpus" is a curated collection of news
   articles sourced from major media outlets covering a wide

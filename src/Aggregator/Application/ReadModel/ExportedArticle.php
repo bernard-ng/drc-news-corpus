@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Application\ReadModel;
 
+use DateTimeInterface;
 use Symfony\Component\Uid\Uuid;
 
 /**
@@ -11,7 +12,7 @@ use Symfony\Component\Uid\Uuid;
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final readonly class ExportedArticle
+final readonly class ExportedArticle implements \JsonSerializable
 {
     public function __construct(
         public Uuid $id,
@@ -24,5 +25,21 @@ final readonly class ExportedArticle
         public \DateTimeImmutable $publishedAt,
         public \DateTimeImmutable $crawledAt
     ) {
+    }
+
+    #[\Override]
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->id->toRfc4122(),
+            'title' => $this->title,
+            'link' => $this->link,
+            'categories' => $this->categories,
+            'body' => $this->body,
+            'source' => $this->source,
+            'hash' => $this->hash,
+            'published_at' => $this->publishedAt->format(DateTimeInterface::RFC3339),
+            'crawled_at' => $this->crawledAt->format(DateTimeInterface::RFC3339),
+        ];
     }
 }
