@@ -1,35 +1,34 @@
-# DRC News Corpus
+# Towards a Scalable and Efficient System for Congolese News Dataset Curation
 
 ![Coding Standard](https://github.com/bernard-ng/drc-news-corpus/actions/workflows/quality.yaml/badge.svg)
-![Unit Tests](https://github.com/bernard-ng/drc-news-corpus/actions/workflows/test.yaml/badge.svg)
+![Tests](https://github.com/bernard-ng/drc-news-corpus/actions/workflows/tests.yaml/badge.svg)
+![Security](https://github.com/bernard-ng/drc-news-corpus/actions/workflows/audit.yaml/badge.svg)
 [![Latest Stable Version](https://poser.pugx.org/bernard-ng/drc-news-corpus/version)](https://packagist.org/packages/bernard-ng/drc-news-corpus)
 [![License](https://poser.pugx.org/bernard-ng/drc-news-corpus/license)](https://packagist.org/packages/bernard-ng/drc-news-corpus)
 
-The "DRC News Corpus" is a curated collection of news articles sourced from major media outlets covering a wide spectrum of topics related to the Democratic Republic of Congo (DRC). 
-This dataset encompasses a diverse range of news stories, including but not limited to politics, economy, social issues, culture, environment, and international relations, providing comprehensive coverage of events and developments within the country.
+The **"DRC News Corpus"** is a structured and scalable dataset of news articles sourced from major media outlets covering diverse aspects of the Democratic Republic of Congo (DRC). Designed for efficiency, this system enables the automated collection, processing, and organization of news stories spanning politics, economy, society, culture, environment, and international affairs.
 
-**Use Cases:**
+## Scalability and Use Cases:
 
-Researchers, journalists, policymakers, and data enthusiasts interested in understanding the socio-political climate, economic dynamics, and other facets of the DRC will find this dataset valuable. It serves as a resource for sentiment analysis, trend identification, language modeling, and other natural language processing (NLP) tasks.
+This dataset is built to support large-scale text analysis, making it a valuable resource for researchers, journalists, policymakers, and data scientists. It facilitates tasks such as sentiment analysis, trend detection, entity recognition, and language modeling, providing deep insights into the evolving socio-political and economic landscape of the DRC.
 
-Efforts have been made to ensure the dataset's integrity and quality by including articles from reputable news outlets. However, users are encouraged to exercise discretion and validate the information independently as journalistic standards and perspectives may vary among sources.
+To ensure quality and reliability, the dataset prioritizes reputable news sources while maintaining an adaptable framework for continuous expansion. However, users are encouraged to critically assess the content, as journalistic standards and perspectives may vary.
 
 ## Sources
 
 | Source         | Supported | Articles | Link                                 | Last Crawled |
 |----------------|-----------|----------|--------------------------------------|--------------|
-| radiookapi.net | Yes       | +100k    | https://www.radiookapi.net/actualite | 2024-10-09   |
-| mediacongo.cd  | Yes       | +100k    | https://www.mediacongo.net/          | 2024-10-11   |
-| beto.cd        | Yes       | +30k     | https://www.beto.cd/                 | 2024-10-13   |
-| actualite.cd   | Yes       | NA       | https://actualite.cd/                | NA           |
+| radiookapi.net | Yes       | +100k    | https://www.radiookapi.net/actualite | 2025-02-28   |
+| mediacongo.cd  | Yes       | +100k    | https://www.mediacongo.net/          | 2025-02-28   |
+| beto.cd        | Yes       | +30k     | https://www.beto.cd/                 | 2025-02-28   |
+| actualite.cd   | Yes       | +57k     | https://actualite.cd/                | 2025-02-28   |
 | 7sur7.cd       | Yes       | NA       | https://7sur7.cd                     | NA           |
 
 
 ## Download the dataset
-- timespan : 2004-2023
-- last update : 2023-11-30
+- timespan : 2004-2025
+- last update : 2025-02-28
 
-[DRC News Corpus on Kaggle](https://www.kaggle.com/datasets/bernardngandu/drc-news-corpus)
 
 ## Build the dataset
 If you want to rebuild the dataset follow the steps bellow : 
@@ -52,7 +51,7 @@ composer corpus:migrations
 See supported sources above. you can also add your own source by extending the `Source` abstract class.
 if you want to crawl `radiookapi.net` you can run the following command:
 
-1. **Crawling**
+#### 1. **Crawling**
 ```bash
 php bin/console app:crawl radiookapi.net
 
@@ -72,7 +71,7 @@ php bin/console app:crawl 7sur7.cd --category=politique
 php bin/console app:crawl radiookapi.net --parallel=20
 ```
 
-2. **Updating**
+#### 2. **Updating**
 ```bash
 # Update the database with the latest articles.
 php bin/console app:update radiookapi.net
@@ -85,7 +84,7 @@ running this command in the background is recommended. by default no output is g
 nohup php bin/console app:crawl radiookapi.net -v > crawling.log
 ```
 
-3. **Statistics**
+#### 3. **Statistics**
 ```bash
 # Get the number of articles in the database.
 php bin/console app:stats
@@ -116,6 +115,19 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 </a>
 
 ## Acknowledgment:
+
+Dataset is available on Hugging Face Datasets: [drc-news-corpus](https://huggingface.co/datasets/bernard-ng/drc-news-corpus)
+
+```tex
+@misc {bernard_ngandu_2025,
+	author       = { {Bernard Ngandu} },
+	title        = { drc-news-corpus (Revision 2b3b24c) },
+	year         = 2025,
+	url          = { https://huggingface.co/datasets/bernard-ng/drc-news-corpus },
+	doi          = { 10.57967/hf/4662 },
+	publisher    = { Hugging Face }
+}
+```
 
 The compilation and curation of the "DRC News Corpus" were conducted by Tshabu Ngandu Bernard with the primary objective of facilitating research and analysis related to the Democratic Republic of Congo. 
 I don't forget to cite this repository if you consider to use the data or this software. 
