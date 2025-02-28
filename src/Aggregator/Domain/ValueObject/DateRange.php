@@ -46,18 +46,19 @@ final readonly class DateRange implements \Stringable
         return new self((int) $start->format('U'), (int) $end->format('U'));
     }
 
-    public static function backward(\DateTimeImmutable $date, int $years = 100): self
+    public static function backward(\DateTimeImmutable $date, ?int $days = null): self
     {
-        $start = $date->modify(sprintf('-%d years', $years));
+        $days ??= 30;
+        $start = $date->modify(sprintf('-%d days', $days));
         $end = $date;
 
         return new self((int) $start->format('U'), (int) $end->format('U'));
     }
 
-    public static function forward(\DateTimeImmutable $date, int $years = 100): self
+    public static function forward(\DateTimeImmutable $date): self
     {
         $start = $date;
-        $end = $date->modify(sprintf('+%d years', $years));
+        $end = new \DateTimeImmutable('now');
 
         return new self((int) $start->format('U'), (int) $end->format('U'));
     }

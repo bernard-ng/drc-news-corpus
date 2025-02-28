@@ -4,16 +4,18 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Application\UseCase\Query;
 
+use App\Aggregator\Domain\ValueObject\DateRange;
+
 /**
- * Class GetLatestPublicationDateQuery.
+ * Class ExportQuery.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final readonly class GetLatestPublicationDateQuery
+final readonly class ExportQuery
 {
     public function __construct(
-        public string $source,
-        public ?string $category = null
+        public ?string $source = null,
+        public ?DateRange $date = null
     ) {
     }
 }

@@ -9,7 +9,7 @@ use App\Aggregator\Domain\Entity\Article;
 use App\Aggregator\Domain\Exception\DuplicatedArticle;
 use App\Aggregator\Domain\Repository\ArticleRepository;
 use App\SharedKernel\Application\Bus\CommandHandler;
-use App\SharedKernel\Domain\Model\IdGenerator;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * Class SaveHandler.
@@ -19,12 +19,11 @@ use App\SharedKernel\Domain\Model\IdGenerator;
 final readonly class SaveHandler implements CommandHandler
 {
     public function __construct(
-        private IdGenerator $idGenerator,
         private ArticleRepository $articleRepository
     ) {
     }
 
-    public function __invoke(Save $command): string
+    public function __invoke(Save $command): Uuid
     {
         $hash = md5($command->link);
         $article = $this->articleRepository->getByHash($hash);
@@ -37,7 +36,6 @@ final readonly class SaveHandler implements CommandHandler
         $createdAt = new \DateTimeImmutable('now');
 
         $article = new Article(
-            id: $this->idGenerator->uuid(),
             title: $command->title,
             link: $command->link,
             categories: $command->categories,

@@ -9,7 +9,7 @@ use App\Aggregator\Domain\Repository\ArticleRepository;
 use App\SharedKernel\Application\Bus\CommandHandler;
 
 /**
- * Class ExportHandler.
+ * Class ClearHandler.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */

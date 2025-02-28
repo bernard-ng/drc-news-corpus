@@ -24,6 +24,7 @@
         "symfony/messenger": "7.2.*",
         "symfony/monolog-bundle": "^3.10",
         "symfony/runtime": "7.2.*",
+        "symfony/serializer": "7.2.*",
         "symfony/stopwatch": "7.2.*",
         "symfony/twig-bundle": "7.2.*",
         "symfony/uid": "7.2.*",

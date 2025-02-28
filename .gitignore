@@ -1,6 +1,5 @@
 .idea
 /data/
-data*
 .deptrac.cache
 .nohup.out
 .*.out

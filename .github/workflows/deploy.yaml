@@ -1,0 +1,37 @@
+name: deploy
+on:
+  push:
+    branches:
+      - main
+jobs:
+  audit:
+    uses: ./.github/workflows/audit.yaml
+  quality:
+    uses: ./.github/workflows/quality.yaml
+  tests:
+    uses: ./.github/workflows/tests.yaml
+    needs: [audit, quality]
+
+  deploy:
+    name: Deploy
+    needs: [tests]
+    runs-on: ubuntu-latest
+    steps:
+      -   name: execute ssh command
+          uses: appleboy/ssh-action@v1.2.0
+          with:
+            host: ${{ secrets.SSH_HOST }}
+            username: ${{ secrets.SSH_USER }}
+            key: ${{ secrets.SSH_KEY }}
+            port: ${{ secrets.SSH_PORT }}
+            script: |
+              cd ~/repositories/drc-news-corpus
+              git pull origin main --rebase
+              make deploy
+              curl -X POST "https://api.telegram.org/bot${{ secrets.DEVY_TOKEN }}/sendMessage" \
+                  -H "Content-Type: application/json" \
+                  -d '{
+                    "chat_id": "${{ secrets.DEVY_CHAT_ID }}",
+                    "text": "drc-news-corpus : `'"$(git rev-parse --short HEAD)"'` has been deployed! 🎉",
+                    "parse_mode": "Markdown"
+                  }'

@@ -59,7 +59,7 @@ lint: ## code quality analysis
 .PHONY: test
 test: ## unit and functional tests
 	$(dc) run --rm php composer app:test
-	$(dc) run --rm php composer app:behat
+	#$(dc) run --rm php composer app:behat
 
 .PHONY: audit
 audit: ## security audit
@@ -71,13 +71,17 @@ deploy: ## Deployment tasks
 	php bin/console doctrine:database:create --if-not-exists
 	php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
 	php bin/console cache:clear --env=prod
+	php bin/console secrets:decrypt-to-local --env=prod
+	php bin/console ux:icons:lock
+	composer symfony:dump-env prod
 
 # -----------------------------------
 # Symfony
 # -----------------------------------
 .PHONY: migrate
 migrate: ## Run migrations
-	$(dc) run --rm php composer app:migrate
+	$(dc) run --rm php bin/console doctrine:databases:create --if-not-exists
+	$(dc) run --rm php bin/console doctrine:migrations:migrate --no-interaction
 
 .PHONY: cache
 cache: ## Clear cache

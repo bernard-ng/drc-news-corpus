@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Application\UseCase\CommandHandler;
 
+use App\Aggregator\Application\ReadModel\ExportedArticle;
 use App\Aggregator\Application\UseCase\Command\Export;
-use App\Aggregator\Domain\Repository\ArticleRepository;
-use App\Aggregator\Domain\Service\Exporter;
+use App\Aggregator\Application\UseCase\Query\ExportQuery;
 use App\SharedKernel\Application\Bus\CommandHandler;
+use App\SharedKernel\Application\Bus\QueryBus;
+use App\SharedKernel\Domain\DataTransfert\DataExporter;
+use App\SharedKernel\Domain\DataTransfert\TransfertSetting;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
  * Class ExportHandler.
@@ -17,14 +21,24 @@ use App\SharedKernel\Application\Bus\CommandHandler;
 final readonly class ExportHandler implements CommandHandler
 {
     public function __construct(
-        private ArticleRepository $articleRepository,
-        private Exporter $exporter
+        private QueryBus $queryBus,
+        private DataExporter $exporter,
+        #[Autowire(param: 'kernel.project_dir')]
+        private string $projectDir
     ) {
     }
 
     public function __invoke(Export $command): void
     {
-        $articles = $this->articleRepository->export($command->source, $command->date);
-        $this->exporter->export($articles);
+        $filename = sprintf(
+            '%s/data/export-%s.csv',
+            $this->projectDir,
+            (new \DateTimeImmutable('now'))->format('U')
+        );
+
+        /** @var iterable<ExportedArticle> $articles */
+        $articles = $this->queryBus->handle(new ExportQuery($command->source, $command->date));
+
+        $this->exporter->export($articles, new TransfertSetting($filename));
     }
 }

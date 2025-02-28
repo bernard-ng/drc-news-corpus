@@ -2,21 +2,19 @@
 
 declare(strict_types=1);
 
-namespace App\Aggregator\Domain\Entity;
+namespace App\Aggregator\Application\ReadModel;
 
 use Symfony\Component\Uid\Uuid;
 
 /**
- * Class Article.
- * This a scrapped article from a website.
+ * Class ExportedArticle.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-readonly class Article
+final readonly class ExportedArticle
 {
-    public Uuid $id;
-
     public function __construct(
+        public Uuid $id,
         public string $title,
         public string $link,
         public string $categories,
@@ -26,6 +24,5 @@ readonly class Article
         public \DateTimeImmutable $publishedAt,
         public \DateTimeImmutable $crawledAt
     ) {
-        $this->id = Uuid::v7();
     }
 }

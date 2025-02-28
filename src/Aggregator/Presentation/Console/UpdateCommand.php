@@ -40,6 +40,7 @@ class UpdateCommand extends Command
         $this->addArgument('source', InputArgument::REQUIRED, 'the website source to crawle');
         $this->addOption('category', null, InputOption::VALUE_OPTIONAL, 'the category to crawle');
         $this->addOption('direction', null, InputOption::VALUE_OPTIONAL, 'the direction to crawle', 'forward', ['forward', 'backward']);
+        $this->addOption('days', null, InputOption::VALUE_OPTIONAL, 'the number of days to crawle');
     }
 
     #[\Override]
@@ -51,6 +52,9 @@ class UpdateCommand extends Command
     #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        /** @var int|null $days */
+        $days = $input->getOption('days');
+
         /** @var string $source */
         $source = $input->getArgument('source');
 
@@ -69,7 +73,7 @@ class UpdateCommand extends Command
 
         $range = $direction === Direction::FORWARD ?
             DateRange::forward($date) :
-            DateRange::backward($date);
+            DateRange::backward($date, $days);
 
         $this->io->title(sprintf('[%s] Updating with range %s', $direction->value, $range->format()));
         $this->sourceFetcher->fetch(new FetchConfig($source, date: $range, category: $category));

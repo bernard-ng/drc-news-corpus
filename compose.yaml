@@ -1,18 +1,38 @@
-
 services:
   database:
-    image: mysql:8.0
-    command: --default-authentication-plugin=mysql_native_password
+    image: mariadb:10.11.11
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: app_dev
-      MYSQL_ALLOW_EMPTY_ROOT_PASSWORD: 'no'
+      MARIADB_USER: root
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE: app
+      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 'no'
     volumes:
       - database_data:/var/lib/mysql:rw
       - ./var/mysql:/var/www/var
     networks:
       - corpus_network
-
+  
+  nginx:
+    build: ./docker/nginx
+    ports:
+      - "8000:80"
+    volumes:
+      - ./public:/var/www/public:delegated
+    depends_on:
+      - php
+    networks:
+      - corpus_network
+  
+  node:
+    user: '${USER_ID}:${GROUP_ID}'
+    build: ./docker/node
+    command: yarn dev
+    working_dir: /home/node/app
+    volumes:
+      - ./:/home/node/app
+    networks:
+      - corpus_network
+  
   php:
     user: '${USER_ID}:${GROUP_ID}'
     build: ./docker/php
@@ -22,7 +42,7 @@ services:
       - database
     networks:
       - corpus_network
-
+  
   adminer:
     image: adminer:latest
     depends_on:
@@ -35,7 +55,7 @@ services:
       - "8082:8080"
     networks:
       - corpus_network
-
+  
   mailer:
     image: axllent/mailpit
     ports:
