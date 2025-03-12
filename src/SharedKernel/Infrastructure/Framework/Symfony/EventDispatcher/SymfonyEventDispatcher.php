@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\SharedKernel\Infrastructure\EventDispatcher;
+namespace App\SharedKernel\Infrastructure\Framework\Symfony\EventDispatcher;
 
 use App\SharedKernel\Domain\EventDispatcher\EventDispatcher;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;

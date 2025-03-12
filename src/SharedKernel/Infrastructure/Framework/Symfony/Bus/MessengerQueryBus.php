@@ -2,37 +2,37 @@
 
 declare(strict_types=1);
 
-namespace App\SharedKernel\Infrastructure\Bus;
+namespace App\SharedKernel\Infrastructure\Framework\Symfony\Bus;
 
-use App\SharedKernel\Application\Bus\CommandBus;
+use App\SharedKernel\Application\Bus\QueryBus;
 use Symfony\Component\Messenger\Exception\HandlerFailedException;
 use Symfony\Component\Messenger\HandleTrait;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 /**
- * Class MessengerCommandBus.
+ * Class MessengerQueryBus.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final class MessengerCommandBus implements CommandBus
+final class MessengerQueryBus implements QueryBus
 {
     use HandleTrait {
         HandleTrait::handle as messengerHandle;
     }
 
-    public function __construct(MessageBusInterface $commandBus)
+    public function __construct(MessageBusInterface $queryBus)
     {
-        $this->messageBus = $commandBus;
+        $this->messageBus = $queryBus;
     }
 
     /**
      * @throws \Throwable
      */
     #[\Override]
-    public function handle(object $command): mixed
+    public function handle(object $message): mixed
     {
         try {
-            return $this->messengerHandle($command);
+            return $this->messengerHandle($message);
         } catch (HandlerFailedException $e) {
             while ($e instanceof HandlerFailedException) {
                 /** @var \Throwable $e */

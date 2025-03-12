@@ -10,6 +10,7 @@ use App\SharedKernel\Domain\Exception\UserFacingError;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController as SymfonyController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -30,6 +31,7 @@ abstract class AbstractController extends SymfonyController
         $subscribedServices[] = QueryBus::class;
         $subscribedServices[] = TranslatorInterface::class;
         $subscribedServices[] = LoggerInterface::class;
+        $subscribedServices[] = SerializerInterface::class;
 
         return $subscribedServices;
     }
@@ -38,6 +40,13 @@ abstract class AbstractController extends SymfonyController
     public function render(string $view, array $parameters = [], ?Response $response = null): Response
     {
         return parent::render($view, $parameters, $response ?? $this->response);
+    }
+
+    public function serialize(mixed $data, string $format = 'json', array $context = []): string
+    {
+        /** @var SerializerInterface $serializer */
+        $serializer = $this->container->get(SerializerInterface::class);
+        return $serializer->serialize($data, $format, $context);
     }
 
     protected function handleCommand(object $command): mixed

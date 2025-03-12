@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Aggregator\Presentation\Console;
 
 use App\Aggregator\Application\ReadModel\SourceStatistics;
+use App\Aggregator\Application\ReadModel\Statistics;
 use App\Aggregator\Application\UseCase\Query\GetStatsQuery;
 use App\SharedKernel\Application\Bus\QueryBus;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -36,7 +37,7 @@ class StatsCommand extends Command
     #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        /** @var SourceStatistics[] $stats */
+        /** @var Statistics $stats */
         $stats = $this->queryBus->handle(new GetStatsQuery());
 
         $this->io->title(sprintf('Stats about the articles in the database'));
@@ -48,7 +49,7 @@ class StatsCommand extends Command
                     number_format($stat->total, decimal_separator: '.', thousands_separator: ','),
                     $stat->lastCrawledAt,
                 ],
-                $stats
+                $stats->items
             )
         );
 

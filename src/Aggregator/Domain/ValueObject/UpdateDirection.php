@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Aggregator\Domain\ValueObject;
 
 /**
- * Class Direction.
+ * Class UpdateDirection.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-enum Direction: string
+enum UpdateDirection: string
 {
     case FORWARD = 'forward';
     case BACKWARD = 'backward';

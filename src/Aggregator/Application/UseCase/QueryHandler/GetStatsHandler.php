@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Application\UseCase\QueryHandler;
 
+use App\Aggregator\Application\ReadModel\Statistics;
 use App\Aggregator\Application\UseCase\Query\GetStatsQuery;
 use App\SharedKernel\Application\Bus\QueryHandler;
 
@@ -14,5 +15,5 @@ use App\SharedKernel\Application\Bus\QueryHandler;
  */
 interface GetStatsHandler extends QueryHandler
 {
-    public function __invoke(GetStatsQuery $query): array;
+    public function __invoke(GetStatsQuery $query): Statistics;
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\SharedKernel\Infrastructure\Mailer;
+namespace App\SharedKernel\Infrastructure\Framework\Symfony\Mailer;
 
 use App\SharedKernel\Application\Email\Definition;
 use App\SharedKernel\Application\Email\Mailer;

@@ -1,0 +1,15 @@
+meta {
+  name: statistics
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/aggregator/statistics
+  body: none
+  auth: none
+}
+
+headers {
+  accept: application/json
+}

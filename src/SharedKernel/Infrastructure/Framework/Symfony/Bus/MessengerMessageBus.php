@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\SharedKernel\Infrastructure\Bus;
+namespace App\SharedKernel\Infrastructure\Framework\Symfony\Bus;
 
 use App\SharedKernel\Application\Bus\AsyncMessage;
 use App\SharedKernel\Application\Bus\MessageBus;

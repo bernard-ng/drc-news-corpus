@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\SharedKernel\Infrastructure\Clock;
+namespace App\SharedKernel\Infrastructure\Framework\Symfony\Clock;
 
 use App\SharedKernel\Domain\Datetime\Clock;
 use Psr\Clock\ClockInterface;

@@ -7,8 +7,8 @@ namespace App\Aggregator\Presentation\Console;
 use App\Aggregator\Application\UseCase\Query\GetEarliestPublicationDateQuery;
 use App\Aggregator\Application\UseCase\Query\GetLatestPublicationDateQuery;
 use App\Aggregator\Domain\ValueObject\DateRange;
-use App\Aggregator\Domain\ValueObject\Direction;
 use App\Aggregator\Domain\ValueObject\FetchConfig;
+use App\Aggregator\Domain\ValueObject\UpdateDirection;
 use App\Aggregator\Infrastructure\Crawler\Source\SourceFetcher;
 use App\SharedKernel\Application\Bus\QueryBus;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -63,15 +63,15 @@ class UpdateCommand extends Command
 
         /** @var string $direction */
         $direction = $input->getOption('direction');
-        $direction = Direction::from($direction);
+        $direction = UpdateDirection::from($direction);
 
         /** @var \DateTimeImmutable $date */
         $date = $this->queryBus->handle(match ($direction) {
-            Direction::FORWARD => new GetLatestPublicationDateQuery($source, $category),
-            Direction::BACKWARD => new GetEarliestPublicationDateQuery($source, $category),
+            UpdateDirection::FORWARD => new GetLatestPublicationDateQuery($source, $category),
+            UpdateDirection::BACKWARD => new GetEarliestPublicationDateQuery($source, $category),
         });
 
-        $range = $direction === Direction::FORWARD ?
+        $range = $direction === UpdateDirection::FORWARD ?
             DateRange::forward($date) :
             DateRange::backward($date, $days);
 

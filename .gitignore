@@ -3,6 +3,7 @@
 .deptrac.cache
 .nohup.out
 .*.out
+.DS_Store
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
