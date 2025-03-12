@@ -55,7 +55,7 @@ when@prod:
                 disable_webpage_preview: true
                 disable_notification: false
                 split_long_messages: false
-                formatter: App\SharedKernel\Infrastructure\Logger\TelegramFormatter
+                formatter: App\SharedKernel\Infrastructure\Framework\Symfony\Logger\TelegramFormatter
             nested:
                 type: stream
                 path: "%kernel.logs_dir%/%kernel.environment%.log"

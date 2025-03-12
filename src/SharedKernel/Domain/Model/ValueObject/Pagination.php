@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\SharedKernel\Domain\Model\ValueObject;
 
+use App\SharedKernel\Domain\Assert;
+
 /**
  * Class Pagination.
  *
@@ -15,37 +17,28 @@ final readonly class Pagination
         public int $currentPage,
         public int $totalItems,
         public int $itemsPerPage,
-        public int $totalPages,
-        public array $data = [],
-        public array $options = [],
-        public array $parameters = [],
-        public array $params = [],
-        public ?string $route = null
+        public int $totalPages
     ) {
     }
 
-    public static function create(array $data, ?array $options = [], ?array $parameters = [], array $params = [], ?string $route = null): self
+    public static function create(array $data): self
     {
+        Assert::notEmpty($data);
+        Assert::keyExists($data, 'current');
+        Assert::keyExists($data, 'totalCount');
+        Assert::keyExists($data, 'numItemsPerPage');
+        Assert::keyExists($data, 'pageCount');
+
         return new self(
             $data['current'],
             $data['totalCount'],
             $data['numItemsPerPage'],
-            $data['pageCount'],
-            $data,
-            $options ?? [],
-            $parameters ?? [],
-            $params,
-            $route
+            $data['pageCount']
         );
     }
 
     public static function empty(): self
     {
         return new self(0, 0, 0, 0);
-    }
-
-    public function isLastPage(): bool
-    {
-        return $this->currentPage === $this->totalPages;
     }
 }
