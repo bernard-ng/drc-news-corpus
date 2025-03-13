@@ -6,6 +6,7 @@ namespace App\Aggregator\Presentation\Web\Controller;
 
 use App\Aggregator\Application\ReadModel\Article;
 use App\Aggregator\Application\UseCase\Query\GetArticleDetailsQuery;
+use App\Aggregator\Domain\Exception\ArticleNotFound;
 use App\SharedKernel\Presentation\Web\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
@@ -24,8 +25,12 @@ final class GetArticleDetailsController extends AbstractController
     ], methods: ['GET'])]
     public function __invoke(Uuid $id): JsonResponse
     {
-        /** @var Article $article */
-        $article = $this->handleQuery(new GetArticleDetailsQuery($id));
+        try {
+            /** @var Article $article */
+            $article = $this->handleQuery(new GetArticleDetailsQuery($id));
+        } catch (ArticleNotFound $e) {
+            throw $this->createNotFoundException(previous: $e);
+        }
 
         return JsonResponse::fromJsonString($this->serialize($article));
     }
