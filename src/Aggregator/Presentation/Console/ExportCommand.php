@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Aggregator\Presentation\Console;
 
 use App\Aggregator\Application\UseCase\Command\Export;
-use App\Aggregator\Domain\ValueObject\DateRange;
+use App\Aggregator\Domain\Model\ValueObject\DateRange;
 use App\SharedKernel\Application\Bus\CommandBus;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;

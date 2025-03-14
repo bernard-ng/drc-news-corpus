@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Presentation\Console;
 
-use App\Aggregator\Domain\ValueObject\DateRange;
-use App\Aggregator\Domain\ValueObject\FetchConfig;
-use App\Aggregator\Domain\ValueObject\PageRange;
+use App\Aggregator\Domain\Model\ValueObject\DateRange;
+use App\Aggregator\Domain\Model\ValueObject\FetchConfig;
+use App\Aggregator\Domain\Model\ValueObject\PageRange;
 use App\Aggregator\Infrastructure\Crawler\Source\SourceFetcher;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;

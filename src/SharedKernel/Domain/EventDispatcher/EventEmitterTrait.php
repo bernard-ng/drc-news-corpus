@@ -14,7 +14,7 @@ trait EventEmitterTrait
     /**
      * @var array<int, object>
      */
-    private array $emittedEvents;
+    private array $emittedEvents = [];
 
     public function emitEvent(object $event): void
     {

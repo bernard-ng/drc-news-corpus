@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\SharedKernel\Domain\Model\ValueObject;
 
+use App\SharedKernel\Domain\Assert;
 use App\SharedKernel\Domain\Exception\InvalidEmailAddress;
 
 /**
@@ -15,9 +16,15 @@ final readonly class Email implements \Stringable
 {
     public string $value;
 
+    /**
+     * @param non-empty-string $value
+     */
     public function __construct(string $value)
     {
-        if (! filter_var($value, FILTER_VALIDATE_EMAIL)) {
+        try {
+            Assert::notEmpty($value);
+            Assert::email($value);
+        } catch(\Throwable) {
             throw InvalidEmailAddress::withValue($value);
         }
 

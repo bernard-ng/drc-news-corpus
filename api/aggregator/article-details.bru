@@ -7,9 +7,13 @@ meta {
 get {
   url: {{baseUrl}}/aggregator/articles/:id
   body: none
-  auth: none
+  auth: bearer
 }
 
 params:path {
   id: 019549f9-13d8-725b-81f6-3c7e75aa5a26
+}
+
+auth:bearer {
+  token: {{token}}
 }

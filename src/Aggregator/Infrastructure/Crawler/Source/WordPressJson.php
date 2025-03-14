@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Infrastructure\Crawler\Source;
 
-use App\Aggregator\Domain\ValueObject\DateRange;
-use App\Aggregator\Domain\ValueObject\FetchConfig;
-use App\Aggregator\Domain\ValueObject\PageRange;
+use App\Aggregator\Domain\Model\ValueObject\DateRange;
+use App\Aggregator\Domain\Model\ValueObject\FetchConfig;
+use App\Aggregator\Domain\Model\ValueObject\PageRange;
 
 /**
  * Class WordPressJson.

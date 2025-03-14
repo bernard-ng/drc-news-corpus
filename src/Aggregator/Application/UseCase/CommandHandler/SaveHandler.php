@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Aggregator\Application\UseCase\CommandHandler;
 
 use App\Aggregator\Application\UseCase\Command\Save;
-use App\Aggregator\Domain\Entity\Article;
 use App\Aggregator\Domain\Exception\DuplicatedArticle;
-use App\Aggregator\Domain\Repository\ArticleRepository;
+use App\Aggregator\Domain\Model\Entity\Article;
+use App\Aggregator\Domain\Model\Repository\ArticleRepository;
 use App\SharedKernel\Application\Bus\CommandHandler;
 use Symfony\Component\Uid\Uuid;
 

@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Aggregator\Infrastructure\Crawler\Source;
 
 use App\Aggregator\Application\UseCase\Command\Save;
-use App\Aggregator\Domain\Event\SourceFetched;
+use App\Aggregator\Domain\Model\Event\SourceFetched;
+use App\Aggregator\Domain\Model\ValueObject\DateRange;
+use App\Aggregator\Domain\Model\ValueObject\PageRange;
 use App\Aggregator\Domain\Service\DateParser;
 use App\Aggregator\Domain\Service\SourceFetcher;
-use App\Aggregator\Domain\ValueObject\DateRange;
-use App\Aggregator\Domain\ValueObject\PageRange;
 use App\SharedKernel\Application\Bus\CommandBus;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;

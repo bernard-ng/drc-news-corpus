@@ -1,0 +1,18 @@
+meta {
+  name: login
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/login_check
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "username": "bernard@devscast.tech",
+    "password": "0000"
+  }
+}

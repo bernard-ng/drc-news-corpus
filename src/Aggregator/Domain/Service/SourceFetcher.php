@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Domain\Service;
 
-use App\Aggregator\Domain\ValueObject\DateRange;
-use App\Aggregator\Domain\ValueObject\FetchConfig;
+use App\Aggregator\Domain\Model\ValueObject\DateRange;
+use App\Aggregator\Domain\Model\ValueObject\FetchConfig;
 
 /**
  * Interface SourceFetcher.
