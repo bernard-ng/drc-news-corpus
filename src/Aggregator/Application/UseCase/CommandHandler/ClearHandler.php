@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Aggregator\Application\UseCase\CommandHandler;
 
 use App\Aggregator\Application\UseCase\Command\Clear;
-use App\Aggregator\Domain\Repository\ArticleRepository;
+use App\Aggregator\Domain\Model\Repository\ArticleRepository;
 use App\SharedKernel\Application\Bus\CommandHandler;
 
 /**

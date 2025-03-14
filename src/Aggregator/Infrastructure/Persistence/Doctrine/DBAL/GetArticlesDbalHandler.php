@@ -8,7 +8,7 @@ use App\Aggregator\Application\ReadModel\Article;
 use App\Aggregator\Application\ReadModel\Articles;
 use App\Aggregator\Application\UseCase\Query\GetArticlesQuery;
 use App\Aggregator\Application\UseCase\QueryHandler\GetArticlesHandler;
-use App\Aggregator\Domain\ValueObject\Filters\ArticleFilters;
+use App\Aggregator\Domain\Model\ValueObject\Filters\ArticleFilters;
 use App\SharedKernel\Domain\Model\ValueObject\Pagination;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Mapping;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\NoResult;

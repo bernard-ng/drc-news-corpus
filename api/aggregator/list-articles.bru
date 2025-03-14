@@ -7,7 +7,7 @@ meta {
 get {
   url: {{baseUrl}}/aggregator/articles
   body: none
-  auth: none
+  auth: bearer
 }
 
 params:query {
@@ -17,4 +17,8 @@ params:query {
   ~limit: 25
   ~source: radiookapi.net
   ~search: Tshisekedi
+}
+
+auth:bearer {
+  token: {{token}}
 }

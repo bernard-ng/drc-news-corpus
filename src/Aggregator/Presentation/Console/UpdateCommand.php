@@ -6,9 +6,9 @@ namespace App\Aggregator\Presentation\Console;
 
 use App\Aggregator\Application\UseCase\Query\GetEarliestPublicationDateQuery;
 use App\Aggregator\Application\UseCase\Query\GetLatestPublicationDateQuery;
-use App\Aggregator\Domain\ValueObject\DateRange;
-use App\Aggregator\Domain\ValueObject\FetchConfig;
-use App\Aggregator\Domain\ValueObject\UpdateDirection;
+use App\Aggregator\Domain\Model\ValueObject\DateRange;
+use App\Aggregator\Domain\Model\ValueObject\FetchConfig;
+use App\Aggregator\Domain\Model\ValueObject\UpdateDirection;
 use App\Aggregator\Infrastructure\Crawler\Source\SourceFetcher;
 use App\SharedKernel\Application\Bus\QueryBus;
 use Symfony\Component\Console\Attribute\AsCommand;

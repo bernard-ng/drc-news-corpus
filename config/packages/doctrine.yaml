@@ -8,6 +8,9 @@ doctrine:
 
         profiling_collect_backtrace: '%app_enable_backtrace%'
         use_savepoints: true
+        types:
+            email: App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Types\EmailType
+            user_id: App\IdentityAndAccess\Infrastructure\Persistence\Doctrine\DBAL\Types\UserIdType
     orm:
         auto_generate_proxy_classes: true
         enable_lazy_ghost_objects: true
@@ -20,7 +23,12 @@ doctrine:
                 is_bundle: false
                 type: xml
                 dir: '%kernel.project_dir%/config/doctrine/Aggregator'
-                prefix: 'App\Aggregator\Domain\Entity'
+                prefix: 'App\Aggregator\Domain\Model'
+            IdentityAndAccess:
+                is_bundle: false
+                type: xml
+                dir: '%kernel.project_dir%/config/doctrine/IdentityAndAccess'
+                prefix: 'App\IdentityAndAccess\Domain\Model'
         controller_resolver:
             auto_mapping: false
 

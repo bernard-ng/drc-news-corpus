@@ -6,7 +6,7 @@ namespace App\Aggregator\Presentation\Web\Controller;
 
 use App\Aggregator\Application\ReadModel\Articles;
 use App\Aggregator\Application\UseCase\Query\GetArticlesQuery;
-use App\Aggregator\Domain\ValueObject\Filters\ArticleFilters;
+use App\Aggregator\Domain\Model\ValueObject\Filters\ArticleFilters;
 use App\SharedKernel\Domain\Model\ValueObject\Page;
 use App\SharedKernel\Presentation\Web\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
