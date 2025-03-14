@@ -16,15 +16,12 @@ final readonly class Email implements \Stringable
 {
     public string $value;
 
-    /**
-     * @param non-empty-string $value
-     */
     public function __construct(string $value)
     {
         try {
             Assert::notEmpty($value);
             Assert::email($value);
-        } catch(\Throwable) {
+        } catch (\Throwable) {
             throw InvalidEmailAddress::withValue($value);
         }
 

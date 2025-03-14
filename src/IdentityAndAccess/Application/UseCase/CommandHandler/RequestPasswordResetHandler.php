@@ -18,7 +18,7 @@ use App\SharedKernel\Domain\EventDispatcher\EventDispatcher;
 final readonly class RequestPasswordResetHandler
 {
     public function __construct(
-        private UserRepository  $userRepository,
+        private UserRepository $userRepository,
         private SecretGenerator $tokenGenerator,
         private EventDispatcher $eventDispatcher
     ) {

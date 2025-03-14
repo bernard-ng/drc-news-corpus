@@ -7,8 +7,6 @@ namespace App\IdentityAndAccess\Domain\Model\ValueObject;
 use App\SharedKernel\Domain\Assert;
 
 /**
- * Class Roles
- *
  * @author bernard-ng <bernard@devscast.tech>
  */
 readonly class Roles implements \Stringable

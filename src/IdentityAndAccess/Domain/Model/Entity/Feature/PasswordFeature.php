@@ -34,7 +34,7 @@ trait PasswordFeature
 
     public function resetPassword(TimedToken $token, string $password, PasswordHasher $passwordHasher): void
     {
-        $this->passwordResetToken->assertValidAgainst($token);
+        $this->passwordResetToken?->assertValidAgainst($token);
 
         $this->password = $passwordHasher->hash($this, $password);
         $this->passwordResetToken = null;

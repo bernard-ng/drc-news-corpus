@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\IdentityAndAccess\Infrastructure\Framework\Symfony\Security;
 
-use App\IdentityAndAccess\Domain\Model\Entity\User;
 use App\IdentityAndAccess\Domain\Model\Repository\UserRepository;
 use App\SharedKernel\Domain\Model\ValueObject\Email;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;

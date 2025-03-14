@@ -27,23 +27,26 @@ final class UserOrmRepository extends ServiceEntityRepository implements UserRep
         parent::__construct($registry, User::class);
     }
 
+    #[\Override]
     public function add(User $user): void
     {
         $this->getEntityManager()->persist($user);
         $this->getEntityManager()->flush();
     }
 
+    #[\Override]
     public function remove(User $user): void
     {
         $this->getEntityManager()->remove($user);
         $this->getEntityManager()->flush();
     }
 
+    #[\Override]
     public function getById(UserId $id): void
     {
         /** @var User|null $user */
         $user = $this->findOneBy([
-            'id' => $id
+            'id' => $id,
         ]);
 
         if ($user === null) {
@@ -51,18 +54,20 @@ final class UserOrmRepository extends ServiceEntityRepository implements UserRep
         }
     }
 
+    #[\Override]
     public function getByEmail(Email $email): ?User
     {
         return $this->findOneBy([
-            'email' => $email
+            'email' => $email,
         ]);
     }
 
+    #[\Override]
     public function getByResetToken(TimedToken $token): User
     {
         /** @var User|null $user */
         $user = $this->findOneBy([
-            'passwordResetToken.value' => $token->token
+            'passwordResetToken.value' => $token->token,
         ]);
 
         if ($user === null) {

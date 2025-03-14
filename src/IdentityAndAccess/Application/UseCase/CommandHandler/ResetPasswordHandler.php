@@ -7,7 +7,6 @@ namespace App\IdentityAndAccess\Application\UseCase\CommandHandler;
 use App\IdentityAndAccess\Application\UseCase\Command\ResetPassword;
 use App\IdentityAndAccess\Domain\Model\Repository\UserRepository;
 use App\IdentityAndAccess\Domain\Service\PasswordHasher;
-use App\SharedKernel\Domain\Assert;
 use App\SharedKernel\Domain\EventDispatcher\EventDispatcher;
 
 /**
@@ -23,8 +22,8 @@ final readonly class ResetPasswordHandler
         private EventDispatcher $eventDispatcher
     ) {
     }
-    
-    public function __invoke(ResetPassword $command): void 
+
+    public function __invoke(ResetPassword $command): void
     {
         $user = $this->userRepository->getByResetToken($command->token);
         $user->resetPassword($command->token, $command->password, $this->passwordHasher);

@@ -10,7 +10,6 @@ use App\SharedKernel\Domain\Model\ValueObject\Email;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Uid\Uuid;
 
 /**
  * Class SecurityUser.
@@ -57,7 +56,10 @@ final readonly class SecurityUser implements UserInterface, PasswordAuthenticate
     #[\Override]
     public function getUserIdentifier(): string
     {
-        return $this->email->value;
+        /** @var non-empty-string $email */
+        $email = $this->email->value;
+
+        return $email;
     }
 
     #[\Override]

@@ -14,14 +14,15 @@ use Symfony\Bridge\Doctrine\Types\AbstractUidType;
  */
 final class UserIdType extends AbstractUidType
 {
-
-    protected function getUidClass(): string
-    {
-        return UserId::class;
-    }
-
+    #[\Override]
     public function getName()
     {
         return 'user_id';
+    }
+
+    #[\Override]
+    protected function getUidClass(): string
+    {
+        return UserId::class;
     }
 }
