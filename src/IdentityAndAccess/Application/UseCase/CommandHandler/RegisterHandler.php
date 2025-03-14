@@ -12,7 +12,6 @@ use App\IdentityAndAccess\Domain\Service\PasswordHasher;
 use App\IdentityAndAccess\Domain\Service\SecretGenerator;
 use App\SharedKernel\Application\Bus\CommandHandler;
 use App\SharedKernel\Domain\EventDispatcher\EventDispatcher;
-use App\SharedKernel\Domain\Model\ValueObject\Email;
 
 /**
  * Class RegisterHandler.
@@ -22,8 +21,8 @@ use App\SharedKernel\Domain\Model\ValueObject\Email;
 final readonly class RegisterHandler implements CommandHandler
 {
     public function __construct(
-        private UserRepository  $userRepository,
-        private PasswordHasher  $passwordHasher,
+        private UserRepository $userRepository,
+        private PasswordHasher $passwordHasher,
         private SecretGenerator $tokenGenerator,
         private EventDispatcher $eventDispatcher
     ) {

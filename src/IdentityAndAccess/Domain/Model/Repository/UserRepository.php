@@ -8,7 +8,6 @@ use App\IdentityAndAccess\Domain\Model\Entity\Identity\UserId;
 use App\IdentityAndAccess\Domain\Model\Entity\User;
 use App\IdentityAndAccess\Domain\Model\ValueObject\Secret\TimedToken;
 use App\SharedKernel\Domain\Model\ValueObject\Email;
-use Symfony\Component\Uid\Uuid;
 
 /**
  * Interface UserRepository.

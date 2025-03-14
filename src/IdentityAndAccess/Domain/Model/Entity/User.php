@@ -8,7 +8,6 @@ use App\IdentityAndAccess\Domain\Model\Entity\Feature\PasswordFeature;
 use App\IdentityAndAccess\Domain\Model\Entity\Identity\UserId;
 use App\IdentityAndAccess\Domain\Model\ValueObject\Roles;
 use App\IdentityAndAccess\Domain\Model\ValueObject\Secret\TimedToken;
-use App\SharedKernel\Domain\Assert;
 use App\SharedKernel\Domain\EventDispatcher\EventEmitterTrait;
 use App\SharedKernel\Domain\Model\ValueObject\Email;
 
@@ -25,8 +24,11 @@ class User
     public const string RESET_PASSWORD_VALIDITY = '+2 hours';
 
     public readonly UserId $id;
+
     private ?string $password = null;
+
     private ?TimedToken $passwordResetToken = null;
+
     private ?\DateTimeImmutable $updatedAt = null;
 
     private function __construct(

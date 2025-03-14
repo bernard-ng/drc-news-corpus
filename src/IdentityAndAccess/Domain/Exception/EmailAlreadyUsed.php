@@ -16,7 +16,7 @@ final class EmailAlreadyUsed extends \DomainException implements UserFacingError
 {
     public static function with(Email $email): self
     {
-        return new self(sprintf("the %s email is already used by another user", $email->value));
+        return new self(sprintf('the %s email is already used by another user', $email->value));
     }
 
     #[\Override]

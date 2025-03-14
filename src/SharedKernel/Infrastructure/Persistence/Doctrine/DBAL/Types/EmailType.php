@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Types;
 
+use App\SharedKernel\Domain\Model\ValueObject\Email;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\DBAL\Types\Type;
-use App\SharedKernel\Domain\Model\ValueObject\Email;
 
 /**
  * Class EmailType.

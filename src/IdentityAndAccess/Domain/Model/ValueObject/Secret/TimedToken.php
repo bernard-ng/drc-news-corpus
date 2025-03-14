@@ -12,7 +12,7 @@ use App\SharedKernel\Domain\Assert;
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final readonly class TimedToken
+final readonly class TimedToken implements \Stringable
 {
     public const string DEFAULT_VALIDITY = 'P2H';
 
@@ -43,7 +43,7 @@ final readonly class TimedToken
         return $now > $validUntil;
     }
 
-    public function assertValidAgainst(?TimedToken $token): void
+    public function assertValidAgainst(?self $token): void
     {
         if (
             $token === null
