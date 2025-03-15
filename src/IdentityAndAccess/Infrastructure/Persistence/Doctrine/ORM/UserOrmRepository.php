@@ -42,7 +42,7 @@ final class UserOrmRepository extends ServiceEntityRepository implements UserRep
     }
 
     #[\Override]
-    public function getById(UserId $id): void
+    public function getById(UserId $id): User
     {
         /** @var User|null $user */
         $user = $this->findOneBy([
@@ -52,6 +52,8 @@ final class UserOrmRepository extends ServiceEntityRepository implements UserRep
         if ($user === null) {
             throw UserNotFound::withId($id);
         }
+
+        return $user;
     }
 
     #[\Override]
@@ -67,7 +69,7 @@ final class UserOrmRepository extends ServiceEntityRepository implements UserRep
     {
         /** @var User|null $user */
         $user = $this->findOneBy([
-            'passwordResetToken.value' => $token->token,
+            'passwordResetToken.token' => $token->token,
         ]);
 
         if ($user === null) {

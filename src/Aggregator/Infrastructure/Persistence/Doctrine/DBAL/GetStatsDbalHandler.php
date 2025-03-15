@@ -8,8 +8,10 @@ use App\Aggregator\Application\ReadModel\SourceStatistics;
 use App\Aggregator\Application\ReadModel\Statistics;
 use App\Aggregator\Application\UseCase\Query\GetStatsQuery;
 use App\Aggregator\Application\UseCase\QueryHandler\GetStatsHandler;
+use App\Aggregator\Infrastructure\Persistence\CacheKey;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Mapping;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\NoResult;
+use Doctrine\DBAL\Cache\QueryCacheProfile;
 use Doctrine\DBAL\Connection;
 
 /**
@@ -31,7 +33,9 @@ final readonly class GetStatsDbalHandler implements GetStatsHandler
             ->select('COUNT(link) AS total, MAX(crawled_at) AS last_crawl_at, source')
             ->from('article')
             ->groupBy('source')
-            ->orderBy('source', 'DESC');
+            ->orderBy('source', 'DESC')
+            ->enableResultCache(new QueryCacheProfile(3600, CacheKey::STATISTICS->value))
+        ;
 
         try {
             /** @var array{total: int, source: string, last_crawl_at: string}[] $data */

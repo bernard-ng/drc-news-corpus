@@ -7,6 +7,7 @@ namespace App\IdentityAndAccess\Application\UseCase\CommandHandler;
 use App\IdentityAndAccess\Application\UseCase\Command\ResetPassword;
 use App\IdentityAndAccess\Domain\Model\Repository\UserRepository;
 use App\IdentityAndAccess\Domain\Service\PasswordHasher;
+use App\SharedKernel\Application\Bus\CommandHandler;
 use App\SharedKernel\Domain\EventDispatcher\EventDispatcher;
 
 /**
@@ -14,7 +15,7 @@ use App\SharedKernel\Domain\EventDispatcher\EventDispatcher;
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final readonly class ResetPasswordHandler
+final readonly class ResetPasswordHandler implements CommandHandler
 {
     public function __construct(
         private UserRepository $userRepository,

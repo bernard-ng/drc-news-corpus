@@ -20,7 +20,7 @@ interface UserRepository
 
     public function remove(User $user): void;
 
-    public function getById(UserId $id): void;
+    public function getById(UserId $id): User;
 
     public function getByEmail(Email $email): ?User;
 
