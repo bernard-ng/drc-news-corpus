@@ -11,7 +11,6 @@ use App\SharedKernel\Application\Bus\CommandHandler;
 use App\SharedKernel\Application\Bus\QueryBus;
 use App\SharedKernel\Domain\DataTransfert\DataExporter;
 use App\SharedKernel\Domain\DataTransfert\TransfertSetting;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
  * Class ExportHandler.
@@ -23,7 +22,6 @@ final readonly class ExportHandler implements CommandHandler
     public function __construct(
         private QueryBus $queryBus,
         private DataExporter $exporter,
-        #[Autowire(param: 'kernel.project_dir')]
         private string $projectDir
     ) {
     }

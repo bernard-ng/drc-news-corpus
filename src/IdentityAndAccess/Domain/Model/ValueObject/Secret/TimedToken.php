@@ -14,7 +14,7 @@ use App\SharedKernel\Domain\Assert;
  */
 final readonly class TimedToken implements \Stringable
 {
-    public const string DEFAULT_VALIDITY = 'P2H';
+    public const string DEFAULT_VALIDITY = 'PT2H';
 
     public function __construct(
         public string $token,
@@ -34,9 +34,9 @@ final readonly class TimedToken implements \Stringable
         return $this->token === $token->token;
     }
 
-    public function isExpired(): bool
+    public function isExpired(?self $token = null): bool
     {
-        $now = new \DateTimeImmutable();
+        $now = $token?->generatedAt ?? new \DateTimeImmutable();
         $validUntil = (\DateTime::createFromImmutable($this->generatedAt))
             ->add(new \DateInterval(self::DEFAULT_VALIDITY));
 
@@ -48,7 +48,7 @@ final readonly class TimedToken implements \Stringable
         if (
             $token === null
             || $this->isEqualTo($token) === false
-            || $this->isExpired()
+            || $this->isExpired($token) === true
         ) {
             throw new InvalidToken();
         }

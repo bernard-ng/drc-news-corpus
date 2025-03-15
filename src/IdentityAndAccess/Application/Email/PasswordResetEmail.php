@@ -2,25 +2,23 @@
 
 declare(strict_types=1);
 
-namespace App\Aggregator\Application\Email;
+namespace App\IdentityAndAccess\Application\Email;
 
 use App\SharedKernel\Application\Email\Definition;
 use App\SharedKernel\Domain\Application;
 use App\SharedKernel\Domain\Model\ValueObject\Email;
 
 /**
- * Class SourceFetched.
+ * Class PasswordResetEmail.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final readonly class SourceFetchedEmail implements Definition
+final readonly class PasswordResetEmail implements Definition
 {
     private Application $application;
 
     public function __construct(
         private Email $recipient,
-        private string $event,
-        private string $source,
     ) {
         $this->application = new Application();
     }
@@ -34,7 +32,7 @@ final readonly class SourceFetchedEmail implements Definition
     #[\Override]
     public function senderName(): string
     {
-        return $this->application->name;
+        return $this->application->emailName;
     }
 
     #[\Override]
@@ -46,7 +44,7 @@ final readonly class SourceFetchedEmail implements Definition
     #[\Override]
     public function subject(): string
     {
-        return 'aggregator.emails.source_fetched.subject';
+        return 'identity_and_access.emails.password_reset.subject';
     }
 
     #[\Override]
@@ -58,27 +56,24 @@ final readonly class SourceFetchedEmail implements Definition
     #[\Override]
     public function template(): string
     {
-        return 'aggregator/source_fetched';
+        return 'identity_and_access/password_reset';
     }
 
     #[\Override]
     public function templateVariables(): array
     {
-        return [
-            'source' => $this->source,
-            'event' => $this->event,
-        ];
+        return [];
     }
 
     #[\Override]
     public function locale(): ?string
     {
-        return null;
+        return 'fr';
     }
 
     #[\Override]
     public function getDomain(): string
     {
-        return 'aggregator';
+        return 'identity_and_access';
     }
 }

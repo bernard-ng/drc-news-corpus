@@ -1,0 +1,3 @@
+
+# Emails subjects messages
+aggregator.emails.source_fetched.subject: "Source fetched"

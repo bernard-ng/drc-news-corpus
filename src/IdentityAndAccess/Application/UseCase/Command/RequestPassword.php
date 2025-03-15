@@ -7,11 +7,11 @@ namespace App\IdentityAndAccess\Application\UseCase\Command;
 use App\SharedKernel\Domain\Model\ValueObject\Email;
 
 /**
- * Class RequestPasswordReset.
+ * Class RequestPassword.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final readonly class RequestPasswordReset
+final readonly class RequestPassword
 {
     public function __construct(
         public Email $email

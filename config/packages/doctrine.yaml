@@ -8,6 +8,7 @@ doctrine:
 
         profiling_collect_backtrace: '%app_enable_backtrace%'
         use_savepoints: true
+        result_cache: 'cache.dbal'
         types:
             email: App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Types\EmailType
             user_id: App\IdentityAndAccess\Infrastructure\Persistence\Doctrine\DBAL\Types\UserIdType

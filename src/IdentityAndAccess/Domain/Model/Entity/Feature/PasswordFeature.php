@@ -21,7 +21,7 @@ use App\IdentityAndAccess\Domain\Service\PasswordHasher;
  */
 trait PasswordFeature
 {
-    public function passwordForgotten(TimedToken $token): void
+    public function requestPasswordReset(TimedToken $token): void
     {
         $this->passwordResetToken = $token;
         $this->emitEvent(

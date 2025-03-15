@@ -1,5 +1,15 @@
 twig:
     file_name_pattern: '*.twig'
+    date:
+        format: 'd M Y'
+        interval_format: '%d days'
+        timezone: null
+    number_format:
+        decimals: 2
+        decimal_point: ','
+        thousands_separator: '.'
+    globals:
+        'application': '@App\SharedKernel\Domain\Application'
 
 when@test:
     twig:

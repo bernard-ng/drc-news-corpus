@@ -4,18 +4,19 @@ declare(strict_types=1);
 
 namespace App\IdentityAndAccess\Application\UseCase\CommandHandler;
 
-use App\IdentityAndAccess\Application\UseCase\Command\RequestPasswordReset;
+use App\IdentityAndAccess\Application\UseCase\Command\RequestPassword;
 use App\IdentityAndAccess\Domain\Exception\UserNotFound;
 use App\IdentityAndAccess\Domain\Model\Repository\UserRepository;
 use App\IdentityAndAccess\Domain\Service\SecretGenerator;
+use App\SharedKernel\Application\Bus\CommandHandler;
 use App\SharedKernel\Domain\EventDispatcher\EventDispatcher;
 
 /**
- * Class RequestPasswordResetHandler.
+ * Class RequestPasswordHandler.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final readonly class RequestPasswordResetHandler
+final readonly class RequestPasswordHandler implements CommandHandler
 {
     public function __construct(
         private UserRepository $userRepository,
@@ -24,7 +25,7 @@ final readonly class RequestPasswordResetHandler
     ) {
     }
 
-    public function __invoke(RequestPasswordReset $command): void
+    public function __invoke(RequestPassword $command): void
     {
         $user = $this->userRepository->getByEmail($command->email);
         if ($user === null) {
@@ -32,7 +33,7 @@ final readonly class RequestPasswordResetHandler
         }
 
         $token = $this->tokenGenerator->generateToken(60);
-        $user->passwordForgotten($token);
+        $user->requestPasswordReset($token);
 
         $this->userRepository->add($user);
         $this->eventDispatcher->dispatch($user->releaseEvents());

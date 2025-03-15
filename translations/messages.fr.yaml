@@ -1,0 +1,4 @@
+generic.form_error: Certains champs sont invalides
+generic.error: Désolé une erreur est survenue, veuillez réessayer
+generic.success: Action effectuée avec succès !
+generic.invalid_argument: Désolé certaines données fournis sont invalides.
