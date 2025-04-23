@@ -72,7 +72,7 @@ deploy: ## Deployment tasks
 	php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
 	php bin/console cache:clear --env=prod
 	php bin/console secrets:decrypt-to-local --env=prod
-	composer symfony:dump-env prod
+	php ~/composer.phar symfony:dump-env prod
 
 # -----------------------------------
 # Symfony
