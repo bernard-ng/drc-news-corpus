@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL;
 
-use App\Aggregator\Application\ReadModel\SourceStatistics;
+use App\Aggregator\Application\ReadModel\SourceMetrics;
 use App\Aggregator\Application\ReadModel\Statistics;
-use App\Aggregator\Application\UseCase\Query\GetStatsQuery;
+use App\Aggregator\Application\UseCase\Query\GetStatistics;
 use App\Aggregator\Application\UseCase\QueryHandler\GetStatsHandler;
-use App\Aggregator\Infrastructure\Persistence\CacheKey;
+use App\Aggregator\Infrastructure\Persistence\Doctrine\CacheKey;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Mapping;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\NoResult;
 use Doctrine\DBAL\Cache\QueryCacheProfile;
@@ -27,7 +27,7 @@ final readonly class GetStatsDbalHandler implements GetStatsHandler
     }
 
     #[\Override]
-    public function __invoke(GetStatsQuery $query): Statistics
+    public function __invoke(GetStatistics $query): Statistics
     {
         $qb = $this->connexion->createQueryBuilder()
             ->select('COUNT(link) AS total, MAX(crawled_at) AS last_crawl_at, source')
@@ -49,7 +49,7 @@ final readonly class GetStatsDbalHandler implements GetStatsHandler
 
     private function mapStatistics(array $data): Statistics
     {
-        return new Statistics(array_map(fn ($row) => new SourceStatistics(
+        return new Statistics(array_map(fn ($row) => new SourceMetrics(
             total: Mapping::integer($row, 'total'),
             source: Mapping::string($row, 'source'),
             lastCrawledAt: Mapping::string($row, 'last_crawl_at')

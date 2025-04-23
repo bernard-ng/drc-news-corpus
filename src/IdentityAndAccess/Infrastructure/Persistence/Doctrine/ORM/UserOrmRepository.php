@@ -8,7 +8,6 @@ use App\IdentityAndAccess\Domain\Exception\UserNotFound;
 use App\IdentityAndAccess\Domain\Model\Entity\Identity\UserId;
 use App\IdentityAndAccess\Domain\Model\Entity\User;
 use App\IdentityAndAccess\Domain\Model\Repository\UserRepository;
-use App\IdentityAndAccess\Domain\Model\ValueObject\Secret\TimedToken;
 use App\SharedKernel\Domain\Model\ValueObject\Email;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -42,15 +41,14 @@ final class UserOrmRepository extends ServiceEntityRepository implements UserRep
     }
 
     #[\Override]
-    public function getById(UserId $id): User
+    public function getById(UserId $userId): User
     {
-        /** @var User|null $user */
         $user = $this->findOneBy([
-            'id' => $id,
+            'id' => $userId,
         ]);
 
         if ($user === null) {
-            throw UserNotFound::withId($id);
+            throw UserNotFound::withId($userId);
         }
 
         return $user;
@@ -62,20 +60,5 @@ final class UserOrmRepository extends ServiceEntityRepository implements UserRep
         return $this->findOneBy([
             'email' => $email,
         ]);
-    }
-
-    #[\Override]
-    public function getByResetToken(TimedToken $token): User
-    {
-        /** @var User|null $user */
-        $user = $this->findOneBy([
-            'passwordResetToken.token' => $token->token,
-        ]);
-
-        if ($user === null) {
-            throw new UserNotFound();
-        }
-
-        return $user;
     }
 }

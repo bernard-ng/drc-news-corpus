@@ -20,9 +20,9 @@ final class UserNotFound extends \DomainException implements UserFacingError
         return new self(\sprintf('User with email %s was not found', $email->value));
     }
 
-    public static function withId(UserId $id): self
+    public static function withId(UserId $userId): self
     {
-        return new self(\sprintf('User with id %s was not found', $id->toString()));
+        return new self(\sprintf('User with id %s was not found', $userId->toString()));
     }
 
     #[\Override]

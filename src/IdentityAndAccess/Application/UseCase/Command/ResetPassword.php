@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\IdentityAndAccess\Application\UseCase\Command;
 
-use App\IdentityAndAccess\Domain\Model\ValueObject\Secret\TimedToken;
+use App\IdentityAndAccess\Domain\Model\ValueObject\Secret\GeneratedToken;
 
 /**
  * Class ResetPassword.
@@ -14,7 +14,7 @@ use App\IdentityAndAccess\Domain\Model\ValueObject\Secret\TimedToken;
 final readonly class ResetPassword
 {
     public function __construct(
-        public TimedToken $token,
+        public GeneratedToken $token,
         public string $password
     ) {
     }

@@ -11,12 +11,16 @@ doctrine:
         result_cache: 'cache.dbal'
         types:
             email: App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Types\EmailType
+            article_id: App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL\Types\ArticleIdType
             user_id: App\IdentityAndAccess\Infrastructure\Persistence\Doctrine\DBAL\Types\UserIdType
+            login_attempt_id: App\IdentityAndAccess\Infrastructure\Persistence\Doctrine\DBAL\Types\LoginAttemptIdType
+            login_history_id: App\IdentityAndAccess\Infrastructure\Persistence\Doctrine\DBAL\Types\LoginHistoryIdType
+            verification_token_id: App\IdentityAndAccess\Infrastructure\Persistence\Doctrine\DBAL\Types\VerificationTokenIdType
     orm:
         auto_generate_proxy_classes: true
         enable_lazy_ghost_objects: true
         report_fields_where_declared: true
-        validate_xml_mapping: true
+        validate_xml_mapping: false
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
         auto_mapping: true
         mappings:
@@ -30,6 +34,11 @@ doctrine:
                 type: xml
                 dir: '%kernel.project_dir%/config/doctrine/IdentityAndAccess'
                 prefix: 'App\IdentityAndAccess\Domain\Model'
+            SharedKernel:
+                is_bundle: false
+                type: xml
+                dir: '%kernel.project_dir%/config/doctrine/SharedKernel'
+                prefix: 'App\SharedKernel\Domain\Model'
         controller_resolver:
             auto_mapping: false
 

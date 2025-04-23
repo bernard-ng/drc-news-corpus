@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Aggregator\Application\EventListener;
 
 use App\Aggregator\Application\Email\SourceFetchedEmail;
-use App\Aggregator\Domain\Model\Event\SourceFetched;
+use App\Aggregator\Domain\Event\SourceFetched;
 use App\SharedKernel\Application\Email\Mailer;
 use App\SharedKernel\Domain\EventListener\EventListener;
 use App\SharedKernel\Domain\Model\ValueObject\Email;

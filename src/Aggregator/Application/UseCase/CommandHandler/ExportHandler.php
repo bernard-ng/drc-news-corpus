@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Application\UseCase\CommandHandler;
 
-use App\Aggregator\Application\ReadModel\ExportedArticle;
+use App\Aggregator\Application\ReadModel\ArticleForExport;
 use App\Aggregator\Application\UseCase\Command\Export;
-use App\Aggregator\Application\UseCase\Query\ExportQuery;
+use App\Aggregator\Application\UseCase\Query\GetArticlesForExport;
 use App\SharedKernel\Application\Bus\CommandHandler;
 use App\SharedKernel\Application\Bus\QueryBus;
 use App\SharedKernel\Domain\DataTransfert\DataExporter;
 use App\SharedKernel\Domain\DataTransfert\TransfertSetting;
 
 /**
- * Class ExportHandler.
+ * Class GetArticlesForExportHandler.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
@@ -31,11 +31,11 @@ final readonly class ExportHandler implements CommandHandler
         $filename = sprintf(
             '%s/data/export-%s.csv',
             $this->projectDir,
-            (new \DateTimeImmutable('now'))->format('U')
+            new \DateTimeImmutable('now')->format('U')
         );
 
-        /** @var iterable<ExportedArticle> $articles */
-        $articles = $this->queryBus->handle(new ExportQuery($command->source, $command->date));
+        /** @var iterable<ArticleForExport> $articles */
+        $articles = $this->queryBus->handle(new GetArticlesForExport($command->source, $command->date));
 
         $this->exporter->export($articles, new TransfertSetting($filename));
     }

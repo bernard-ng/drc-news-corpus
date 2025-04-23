@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\SharedKernel\Infrastructure\Framework\Symfony\Mailer;
 
-use App\SharedKernel\Application\Email\Definition;
+use App\SharedKernel\Application\Email\EmailDefinition;
 use App\SharedKernel\Application\Email\Mailer;
 use App\SharedKernel\Domain\Application;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -22,7 +22,8 @@ final readonly class SymfonyMailer implements Mailer
 {
     public function __construct(
         private MailerInterface $mailer,
-        private TranslatorInterface $translator
+        private TranslatorInterface $translator,
+        private Application $application = new Application()
     ) {
     }
 
@@ -30,14 +31,17 @@ final readonly class SymfonyMailer implements Mailer
      * @throws TransportExceptionInterface
      */
     #[\Override]
-    public function send(Definition $email): void
+    public function send(EmailDefinition $email): void
     {
-        $sender = new Address($email->senderAddress(), $email->senderName());
+        $sender = new Address(
+            $this->application->emailAddress,
+            $this->application->emailName
+        );
 
         $htmlTemplate = sprintf('emails/%s.html.twig', $email->template());
         $txtTemplate = sprintf('emails/%s.txt.twig', $email->template());
 
-        $message = (new TemplatedEmail())
+        $message = new TemplatedEmail()
             ->from($sender)
             ->to($email->recipient()->value)
             ->subject(

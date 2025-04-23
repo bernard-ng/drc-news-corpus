@@ -17,9 +17,9 @@ use Symfony\Component\Routing\Attribute\Route;
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
+#[Route('/api/password/request', name: 'identity_and_access_request_password', methods: ['POST'])]
 final class RequestPasswordController extends AbstractController
 {
-    #[Route('/api/password/request', name: 'identity_and_access_request_password', methods: ['POST'])]
     public function __invoke(#[MapRequestPayload] RequestPasswordModel $model): JsonResponse
     {
         $email = Email::from($model->email);

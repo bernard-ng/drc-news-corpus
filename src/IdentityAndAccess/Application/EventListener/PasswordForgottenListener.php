@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\IdentityAndAccess\Application\EventListener;
 
 use App\IdentityAndAccess\Application\Email\PasswordForgottenEmail;
-use App\IdentityAndAccess\Domain\Model\Event\PasswordForgotten;
+use App\IdentityAndAccess\Domain\Event\PasswordForgotten;
 use App\IdentityAndAccess\Domain\Model\Repository\UserRepository;
 use App\SharedKernel\Application\Email\Mailer;
 use App\SharedKernel\Domain\EventListener\EventListener;
@@ -25,8 +25,8 @@ final readonly class PasswordForgottenListener implements EventListener
 
     public function __invoke(PasswordForgotten $event): void
     {
-        $user = $this->userRepository->getById($event->id);
-        $email = new PasswordForgottenEmail($user->getEmail(), $event->token);
+        $user = $this->userRepository->getById($event->userId);
+        $email = new PasswordForgottenEmail($user->email, $event->token);
 
         $this->mailer->send($email);
     }

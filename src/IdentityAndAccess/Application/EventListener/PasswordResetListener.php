@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\IdentityAndAccess\Application\EventListener;
 
 use App\IdentityAndAccess\Application\Email\PasswordResetEmail;
-use App\IdentityAndAccess\Domain\Model\Event\PasswordReset;
+use App\IdentityAndAccess\Domain\Event\PasswordReset;
 use App\IdentityAndAccess\Domain\Model\Repository\UserRepository;
 use App\SharedKernel\Application\Email\Mailer;
 use App\SharedKernel\Domain\EventListener\EventListener;
@@ -25,8 +25,8 @@ final readonly class PasswordResetListener implements EventListener
 
     public function __invoke(PasswordReset $event): void
     {
-        $user = $this->userRepository->getById($event->id);
-        $email = new PasswordResetEmail($user->getEmail());
+        $user = $this->userRepository->getById($event->userId);
+        $email = new PasswordResetEmail($user->email);
 
         $this->mailer->send($email);
     }

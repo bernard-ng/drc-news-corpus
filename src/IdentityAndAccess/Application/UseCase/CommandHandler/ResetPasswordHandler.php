@@ -6,6 +6,8 @@ namespace App\IdentityAndAccess\Application\UseCase\CommandHandler;
 
 use App\IdentityAndAccess\Application\UseCase\Command\ResetPassword;
 use App\IdentityAndAccess\Domain\Model\Repository\UserRepository;
+use App\IdentityAndAccess\Domain\Model\Repository\VerificationTokenRepository;
+use App\IdentityAndAccess\Domain\Model\ValueObject\TokenPurpose;
 use App\IdentityAndAccess\Domain\Service\PasswordHasher;
 use App\SharedKernel\Application\Bus\CommandHandler;
 use App\SharedKernel\Domain\EventDispatcher\EventDispatcher;
@@ -19,6 +21,7 @@ final readonly class ResetPasswordHandler implements CommandHandler
 {
     public function __construct(
         private UserRepository $userRepository,
+        private VerificationTokenRepository $verificationTokenRepository,
         private PasswordHasher $passwordHasher,
         private EventDispatcher $eventDispatcher
     ) {
@@ -26,10 +29,16 @@ final readonly class ResetPasswordHandler implements CommandHandler
 
     public function __invoke(ResetPassword $command): void
     {
-        $user = $this->userRepository->getByResetToken($command->token);
-        $user->resetPassword($command->token, $command->password, $this->passwordHasher);
+        $token = $this->verificationTokenRepository->getByToken(
+            $command->token,
+            TokenPurpose::PASSWORD_RESET
+        );
+
+        $user = $this->userRepository->getById($token->user->id);
+        $user->resetPassword($command->password, $this->passwordHasher);
 
         $this->userRepository->add($user);
+        $this->verificationTokenRepository->remove($token);
         $this->eventDispatcher->dispatch($user->releaseEvents());
     }
 }

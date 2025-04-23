@@ -67,6 +67,6 @@ final readonly class DateParser
 
         return $datetime !== false ?
             $datetime->format('U') :
-            (new \DateTime('midnight'))->format('U');
+            new \DateTime('midnight')->format('U');
     }
 }

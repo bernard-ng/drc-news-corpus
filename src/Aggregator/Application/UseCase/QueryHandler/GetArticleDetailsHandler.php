@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Application\UseCase\QueryHandler;
 
-use App\Aggregator\Application\ReadModel\Article;
-use App\Aggregator\Application\UseCase\Query\GetArticleDetailsQuery;
+use App\Aggregator\Application\ReadModel\ArticleDetails;
+use App\Aggregator\Application\UseCase\Query\GetArticleDetails;
 use App\SharedKernel\Application\Bus\QueryHandler;
 
 /**
@@ -15,5 +15,5 @@ use App\SharedKernel\Application\Bus\QueryHandler;
  */
 interface GetArticleDetailsHandler extends QueryHandler
 {
-    public function __invoke(GetArticleDetailsQuery $query): Article;
+    public function __invoke(GetArticleDetails $query): ArticleDetails;
 }

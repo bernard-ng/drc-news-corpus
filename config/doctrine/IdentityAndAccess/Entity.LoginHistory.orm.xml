@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                          https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity
+            name="App\IdentityAndAccess\Domain\Model\Entity\LoginHistory"
+            repository-class="App\IdentityAndAccess\Infrastructure\Persistence\Doctrine\ORM\LoginAttemptOrmRepository"
+            table="login_history"
+    >
+        <id name="id" type="login_history_id">
+            <generator strategy="NONE"/>
+        </id>
+
+        <many-to-one field="user" target-entity="App\IdentityAndAccess\Domain\Model\Entity\User">
+            <join-column nullable="false" on-delete="CASCADE" />
+        </many-to-one>
+
+        <field name="ip" nullable="true" length="45" />
+        <embedded name="device" class="App\SharedKernel\Domain\Model\ValueObject\Tracking\Device" />
+        <embedded name="location" class="App\SharedKernel\Domain\Model\ValueObject\Tracking\GeoLocation" />
+
+
+        <field name="createdAt" type="date_immutable"/>
+    </entity>
+</doctrine-mapping>

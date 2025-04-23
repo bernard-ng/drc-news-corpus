@@ -38,14 +38,6 @@ readonly class Roles implements \Stringable
         return new self();
     }
 
-    public static function choices(): array
-    {
-        return [
-            'identity_and_access.value_object.roles.admin' => 'ROLE_ADMIN',
-            'identity_and_access.value_object.roles.user' => 'ROLE_USER',
-        ];
-    }
-
     public function toArray(): array
     {
         return $this->roles;

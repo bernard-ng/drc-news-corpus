@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Domain\Exception;
 
+use App\Aggregator\Domain\Model\Entity\Identity\ArticleId;
+
 /**
  * Class ArticleNotFound.
  *
@@ -11,8 +13,8 @@ namespace App\Aggregator\Domain\Exception;
  */
 final class ArticleNotFound extends \DomainException
 {
-    public static function withId(string $id): self
+    public static function withId(ArticleId $id): self
     {
-        return new self(sprintf('article with id %s was not found', $id));
+        return new self(sprintf('article with id %s was not found', $id->toString()));
     }
 }

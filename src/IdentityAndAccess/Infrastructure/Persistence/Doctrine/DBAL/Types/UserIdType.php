@@ -15,7 +15,7 @@ use Symfony\Bridge\Doctrine\Types\AbstractUidType;
 final class UserIdType extends AbstractUidType
 {
     #[\Override]
-    public function getName()
+    public function getName(): string
     {
         return 'user_id';
     }

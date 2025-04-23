@@ -42,7 +42,7 @@ final class DateParserTest extends TestCase
         ?string $pattern,
         ?string $replacement
     ): void {
-        $currentTimestamp = (new \DateTime('midnight'))->format('U');
+        $currentTimestamp = new \DateTime('midnight')->format('U');
         $result = $this->dateParser->createTimeStamp($date, $format, $pattern, $replacement);
         $this->assertEquals($currentTimestamp, $result);
     }
