@@ -16,8 +16,7 @@ final readonly class PasswordCreated
 {
     public function __construct(
         public UserId $userId,
-        #[\SensitiveParameter]
-        public GeneratedCode $password
+        #[\SensitiveParameter] public GeneratedCode $password
     ) {
     }
 }

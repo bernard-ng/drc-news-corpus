@@ -12,8 +12,7 @@ namespace App\SharedKernel\Domain\Model\ValueObject\Tracking;
 final readonly class ClientProfile
 {
     public function __construct(
-        #[\SensitiveParameter]
-        public ?string $userIp = null,
+        #[\SensitiveParameter] public ?string $userIp = null,
         public ?string $userAgent = null,
         public array $hints = []
     ) {

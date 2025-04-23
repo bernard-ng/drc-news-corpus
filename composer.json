@@ -20,6 +20,7 @@
         "matomo/device-detector": "^6.4",
         "phpdocumentor/reflection-docblock": "^5.6",
         "phpstan/phpdoc-parser": "^2.1",
+        "sentry/sentry-symfony": "^5.2",
         "symfony/console": "7.2.*",
         "symfony/css-selector": "7.2.*",
         "symfony/dom-crawler": "7.2.*",

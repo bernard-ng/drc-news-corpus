@@ -22,8 +22,7 @@ final readonly class SourceFetcher implements SourceFetcherInterface
     private iterable $sources;
 
     public function __construct(
-        #[AutowireIterator('app.data_source')]
-        \Traversable $sources
+        #[AutowireIterator('app.data_source')] \Traversable $sources
     ) {
         $this->sources = iterator_to_array($sources);
     }
