@@ -11,5 +11,5 @@ namespace App\SharedKernel\Application\Email;
  */
 interface Mailer
 {
-    public function send(Definition $email): void;
+    public function send(EmailDefinition $email): void;
 }

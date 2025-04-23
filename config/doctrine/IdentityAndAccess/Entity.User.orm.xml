@@ -15,9 +15,18 @@
         <field name="name"/>
         <field name="email" type="email" />
         <field name="password" length="4098" />
+        <field name="isLocked" type="boolean">
+            <options>
+                <option name="default">0</option>
+            </options>
+        </field>
+        <field name="isConfirmed" type="boolean">
+            <options>
+                <option name="default">0</option>
+            </options>
+        </field>
 
         <embedded name="roles" class="App\IdentityAndAccess\Domain\Model\ValueObject\Roles" use-column-prefix="false" />
-        <embedded name="passwordResetToken" class="App\IdentityAndAccess\Domain\Model\ValueObject\Secret\TimedToken" use-column-prefix="true" />
 
         <field name="createdAt" type="date_immutable" />
         <field name="updatedAt" type="date_immutable" nullable="true" />

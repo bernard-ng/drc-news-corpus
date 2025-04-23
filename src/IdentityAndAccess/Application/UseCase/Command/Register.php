@@ -18,7 +18,7 @@ final readonly class Register
         public string $name,
         public Email $email,
         public ?string $password,
-        public ?Roles $roles
+        public Roles $roles = new Roles()
     ) {
     }
 }

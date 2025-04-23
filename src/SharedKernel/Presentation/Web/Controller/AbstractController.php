@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\SharedKernel\Presentation\Web\Controller;
 
+use App\IdentityAndAccess\Infrastructure\Framework\Symfony\Security\SecurityUser;
 use App\SharedKernel\Application\Bus\CommandBus;
 use App\SharedKernel\Application\Bus\QueryBus;
 use Psr\Log\LoggerInterface;
@@ -33,6 +34,20 @@ abstract class AbstractController extends SymfonyController
         $subscribedServices[] = SerializerInterface::class;
 
         return $subscribedServices;
+    }
+
+    public function getSecurityUser(): SecurityUser
+    {
+        /** @var SecurityUser|null $user */
+        $user = $this->getUser();
+
+        if ($user === null) {
+            throw $this->createAccessDeniedException(
+                'You must be authenticated to access this resource.'
+            );
+        }
+
+        return $user;
     }
 
     #[\Override]

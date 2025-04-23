@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Aggregator\Infrastructure\Persistence\Doctrine\ORM;
 
 use App\Aggregator\Domain\Model\Entity\Article;
+use App\Aggregator\Domain\Model\Entity\Identity\ArticleId;
 use App\Aggregator\Domain\Model\Repository\ArticleRepository;
 use App\Aggregator\Domain\Model\ValueObject\DateRange;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\Uid\Uuid;
 
 /**
  * Class ArticleOrmRepository.
@@ -48,11 +48,11 @@ final class ArticleOrmRepository extends ServiceEntityRepository implements Arti
     }
 
     #[\Override]
-    public function getById(string $id): ?Article
+    public function getById(ArticleId $id): ?Article
     {
         /** @var Article|null $article */
         $article = $this->findOneBy([
-            'id' => Uuid::fromString($id),
+            'id' => $id,
         ]);
 
         return $article;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL;
 
-use App\Aggregator\Application\UseCase\Query\GetEarliestPublicationDateQuery;
+use App\Aggregator\Application\UseCase\Query\GetEarliestPublicationDate;
 use App\Aggregator\Application\UseCase\QueryHandler\GetEarliestPublicationDateHandler;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\NoResult;
 use Doctrine\DBAL\Connection;
@@ -24,7 +24,7 @@ final readonly class GetEarliestPublicationDateDBalHandler implements GetEarlies
     }
 
     #[\Override]
-    public function __invoke(GetEarliestPublicationDateQuery $query): \DateTimeImmutable
+    public function __invoke(GetEarliestPublicationDate $query): \DateTimeImmutable
     {
         $qb = $this->connection->createQueryBuilder()
             ->from('article', 'a')

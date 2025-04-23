@@ -8,7 +8,7 @@
             repository-class="App\Aggregator\Infrastructure\Persistence\Doctrine\ORM\ArticleOrmRepository"
             table="article"
     >
-        <id name="id" type="uuid">
+        <id name="id" type="article_id">
             <generator strategy="NONE" />
         </id>
         <indexes>

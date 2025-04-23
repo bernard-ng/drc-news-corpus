@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Presentation\Console;
 
-use App\Aggregator\Application\ReadModel\SourceStatistics;
+use App\Aggregator\Application\ReadModel\SourceMetrics;
 use App\Aggregator\Application\ReadModel\Statistics;
-use App\Aggregator\Application\UseCase\Query\GetStatsQuery;
+use App\Aggregator\Application\UseCase\Query\GetStatistics;
 use App\SharedKernel\Application\Bus\QueryBus;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -38,13 +38,13 @@ class StatsCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         /** @var Statistics $stats */
-        $stats = $this->queryBus->handle(new GetStatsQuery());
+        $stats = $this->queryBus->handle(new GetStatistics());
 
         $this->io->title(sprintf('Stats about the articles in the database'));
         $this->io->table(
             ['Source', 'Total', 'Last crawled at'],
             array_map(
-                fn (SourceStatistics $stat): array => [
+                fn (SourceMetrics $stat): array => [
                     $stat->source,
                     number_format($stat->total, decimal_separator: '.', thousands_separator: ','),
                     $stat->lastCrawledAt,

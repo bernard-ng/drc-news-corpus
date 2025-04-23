@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace App\IdentityAndAccess\Application\Email;
 
-use App\IdentityAndAccess\Domain\Model\ValueObject\Secret\TimedToken;
-use App\SharedKernel\Application\Email\Definition;
-use App\SharedKernel\Domain\Application;
+use App\IdentityAndAccess\Domain\Model\ValueObject\Secret\GeneratedToken;
+use App\SharedKernel\Application\Email\EmailDefinition;
 use App\SharedKernel\Domain\Model\ValueObject\Email;
 
 /**
@@ -14,15 +13,12 @@ use App\SharedKernel\Domain\Model\ValueObject\Email;
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final readonly class PasswordForgottenEmail implements Definition
+final readonly class PasswordForgottenEmail implements EmailDefinition
 {
-    private Application $application;
-
     public function __construct(
         private Email $recipient,
-        private TimedToken $token
+        private GeneratedToken $token
     ) {
-        $this->application = new Application();
     }
 
     #[\Override]
@@ -32,21 +28,9 @@ final readonly class PasswordForgottenEmail implements Definition
     }
 
     #[\Override]
-    public function senderName(): string
-    {
-        return $this->application->emailName;
-    }
-
-    #[\Override]
-    public function senderAddress(): string
-    {
-        return $this->application->emailAddress;
-    }
-
-    #[\Override]
     public function subject(): string
     {
-        return 'identity_and_access.emails.password_forgotten.subject';
+        return 'identity_and_access.emails.subjects.password_forgotten';
     }
 
     #[\Override]
@@ -70,7 +54,7 @@ final readonly class PasswordForgottenEmail implements Definition
     }
 
     #[\Override]
-    public function locale(): ?string
+    public function locale(): string
     {
         return 'fr';
     }

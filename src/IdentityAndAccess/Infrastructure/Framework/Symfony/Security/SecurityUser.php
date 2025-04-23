@@ -19,10 +19,12 @@ use Symfony\Component\Security\Core\User\UserInterface;
 final readonly class SecurityUser implements UserInterface, PasswordAuthenticatedUserInterface, EquatableInterface
 {
     public function __construct(
-        public UserId $id,
+        public UserId $userId,
         public Email $email,
-        public string $password,
-        public array $roles
+        public ?string $password,
+        public array $roles,
+        public bool $isLocked,
+        public bool $isConfirmed
     ) {
     }
 
@@ -30,9 +32,11 @@ final readonly class SecurityUser implements UserInterface, PasswordAuthenticate
     {
         return new self(
             $user->id,
-            $user->getEmail(),
-            (string) $user->getPassword(),
-            $user->getRoles()->toArray(),
+            $user->email,
+            (string) $user->password,
+            $user->roles->toArray(),
+            $user->isLocked,
+            $user->isConfirmed
         );
     }
 
@@ -69,6 +73,6 @@ final readonly class SecurityUser implements UserInterface, PasswordAuthenticate
             return false;
         }
 
-        return $this->id->equals($user->id);
+        return $this->userId->equals($user->userId);
     }
 }

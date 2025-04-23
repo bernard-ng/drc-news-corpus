@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Presentation\Console;
 
-use App\Aggregator\Application\UseCase\Query\GetEarliestPublicationDateQuery;
-use App\Aggregator\Application\UseCase\Query\GetLatestPublicationDateQuery;
+use App\Aggregator\Application\UseCase\Query\GetEarliestPublicationDate;
+use App\Aggregator\Application\UseCase\Query\GetLatestPublicationDate;
 use App\Aggregator\Domain\Model\ValueObject\DateRange;
 use App\Aggregator\Domain\Model\ValueObject\FetchConfig;
 use App\Aggregator\Domain\Model\ValueObject\UpdateDirection;
@@ -67,8 +67,8 @@ class UpdateCommand extends Command
 
         /** @var \DateTimeImmutable $date */
         $date = $this->queryBus->handle(match ($direction) {
-            UpdateDirection::FORWARD => new GetLatestPublicationDateQuery($source, $category),
-            UpdateDirection::BACKWARD => new GetEarliestPublicationDateQuery($source, $category),
+            UpdateDirection::FORWARD => new GetLatestPublicationDate($source, $category),
+            UpdateDirection::BACKWARD => new GetEarliestPublicationDate($source, $category),
         });
 
         $range = $direction === UpdateDirection::FORWARD ?

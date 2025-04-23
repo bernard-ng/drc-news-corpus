@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Application\UseCase\QueryHandler;
 
-use App\Aggregator\Application\UseCase\Query\GetLatestPublicationDateQuery;
+use App\Aggregator\Application\UseCase\Query\GetLatestPublicationDate;
 use App\SharedKernel\Application\Bus\QueryHandler;
 
 /**
@@ -14,5 +14,5 @@ use App\SharedKernel\Application\Bus\QueryHandler;
  */
 interface GetLatestPublicationDateHandler extends QueryHandler
 {
-    public function __invoke(GetLatestPublicationDateQuery $query): \DateTimeImmutable;
+    public function __invoke(GetLatestPublicationDate $query): \DateTimeImmutable;
 }

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Presentation\Web\Controller;
 
-use App\Aggregator\Application\ReadModel\Articles;
-use App\Aggregator\Application\UseCase\Query\GetArticlesQuery;
+use App\Aggregator\Application\ReadModel\ArticleList;
+use App\Aggregator\Application\UseCase\Query\GetArticleList;
 use App\Aggregator\Domain\Model\ValueObject\Filters\ArticleFilters;
 use App\SharedKernel\Domain\Model\ValueObject\Page;
 use App\SharedKernel\Presentation\Web\Controller\AbstractController;
@@ -27,8 +27,8 @@ final class GetArticlesController extends AbstractController
         #[MapQueryString]
         ArticleFilters $filters
     ): JsonResponse {
-        /** @var Articles $articles */
-        $articles = $this->handleQuery(new GetArticlesQuery($filters, $page));
+        /** @var ArticleList $articles */
+        $articles = $this->handleQuery(new GetArticleList($filters, $page));
 
         return JsonResponse::fromJsonString($this->serialize($articles));
     }

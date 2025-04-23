@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL;
 
-use App\Aggregator\Application\UseCase\Query\GetLatestPublicationDateQuery;
+use App\Aggregator\Application\UseCase\Query\GetLatestPublicationDate;
 use App\Aggregator\Application\UseCase\QueryHandler\GetLatestPublicationDateHandler;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\NoResult;
 use Doctrine\DBAL\Connection;
@@ -24,7 +24,7 @@ final readonly class GetLatestPublicationDateDBalHandler implements GetLatestPub
     }
 
     #[\Override]
-    public function __invoke(GetLatestPublicationDateQuery $query): \DateTimeImmutable
+    public function __invoke(GetLatestPublicationDate $query): \DateTimeImmutable
     {
         $qb = $this->connection->createQueryBuilder()
             ->from('article', 'a')

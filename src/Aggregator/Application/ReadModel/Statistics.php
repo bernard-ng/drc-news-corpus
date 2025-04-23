@@ -16,6 +16,6 @@ final readonly class Statistics
     public function __construct(
         public array $items
     ) {
-        Assert::allIsInstanceOf($items, SourceStatistics::class);
+        Assert::allIsInstanceOf($items, SourceMetrics::class);
     }
 }

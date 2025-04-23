@@ -4,10 +4,21 @@ declare(strict_types=1);
 
 namespace App\IdentityAndAccess\Domain\Model\Entity;
 
-use App\IdentityAndAccess\Domain\Model\Entity\Feature\PasswordFeature;
+use App\IdentityAndAccess\Domain\Event\AccountConfirmed;
+use App\IdentityAndAccess\Domain\Event\AccountLocked;
+use App\IdentityAndAccess\Domain\Event\AccountUnlocked;
+use App\IdentityAndAccess\Domain\Event\ConfirmationRequested;
+use App\IdentityAndAccess\Domain\Event\EmailUpdated;
+use App\IdentityAndAccess\Domain\Event\PasswordCreated;
+use App\IdentityAndAccess\Domain\Event\PasswordForgotten;
+use App\IdentityAndAccess\Domain\Event\PasswordReset;
+use App\IdentityAndAccess\Domain\Event\PasswordUpdated;
+use App\IdentityAndAccess\Domain\Exception\InvalidCurrentPassword;
+use App\IdentityAndAccess\Domain\Exception\PasswordAlreadyDefined;
 use App\IdentityAndAccess\Domain\Model\Entity\Identity\UserId;
 use App\IdentityAndAccess\Domain\Model\ValueObject\Roles;
-use App\IdentityAndAccess\Domain\Model\ValueObject\Secret\TimedToken;
+use App\IdentityAndAccess\Domain\Model\ValueObject\Secret\GeneratedCode;
+use App\IdentityAndAccess\Domain\Service\PasswordHasher;
 use App\SharedKernel\Domain\EventDispatcher\EventEmitterTrait;
 use App\SharedKernel\Domain\Model\ValueObject\Email;
 
@@ -19,25 +30,44 @@ use App\SharedKernel\Domain\Model\ValueObject\Email;
 class User
 {
     use EventEmitterTrait;
-    use PasswordFeature;
-
-    public const string RESET_PASSWORD_VALIDITY = '+2 hours';
 
     public readonly UserId $id;
 
-    private ?string $password = null;
-
-    private ?TimedToken $passwordResetToken = null;
-
-    private ?\DateTimeImmutable $updatedAt = null;
-
     private function __construct(
-        private string $name,
-        private Email $email,
-        private Roles $roles,
-        private ?\DateTimeImmutable $createdAt = new \DateTimeImmutable()
+        private(set) string $name,
+        private(set) Email $email,
+        private(set) Roles $roles,
+        private(set) ?string $password = null,
+        private(set) bool $isLocked = false,
+        private(set) bool $isConfirmed = false,
+        private(set) ?\DateTimeImmutable $updatedAt = null,
+        public readonly ?\DateTimeImmutable $createdAt = new \DateTimeImmutable(),
     ) {
         $this->id = new UserId();
+    }
+
+    public function lockAccount(VerificationToken $verificationToken): self
+    {
+        $this->isLocked = true;
+        $this->emitEvent(new AccountLocked($this->id, $verificationToken->token));
+
+        return $this;
+    }
+
+    public function unlockAccount(): self
+    {
+        $this->isLocked = false;
+        $this->emitEvent(new AccountUnlocked($this->id));
+
+        return $this;
+    }
+
+    public function confirmAccount(): self
+    {
+        $this->isConfirmed = true;
+        $this->emitEvent(new AccountConfirmed($this->id));
+
+        return $this;
     }
 
     public static function register(string $name, Email $email, ?Roles $roles): self
@@ -45,48 +75,69 @@ class User
         return new self($name, $email, $roles ?? Roles::user());
     }
 
-    public function updateProfile(string $name, Email $email, Roles $roles): static
+    public function updateProfile(string $name, Roles $roles): static
     {
         $this->name = $name;
-        $this->email = $email;
         $this->roles = $roles;
         $this->updatedAt = new \DateTimeImmutable();
 
         return $this;
     }
 
-    public function getName(): string
+    public function updateEmail(Email $email): self
     {
-        return $this->name;
+        $previous = $this->email;
+        $this->email = $email;
+        $this->emitEvent(new EmailUpdated($this->id, $previous, $email));
+
+        return $this;
     }
 
-    public function getEmail(): Email
+    public function resetPassword(string $password, PasswordHasher $passwordHasher): void
     {
-        return $this->email;
+        $this->password = $passwordHasher->hash($this, $password);
+        $this->emitEvent(new PasswordReset($this->id));
     }
 
-    public function getPassword(): string
+    public function updatePassword(string $current, string $new, PasswordHasher $passwordHasher): self
     {
-        return (string) $this->password;
+        if ($this->password === null || ! $passwordHasher->verify($this, $current)) {
+            throw new InvalidCurrentPassword();
+        }
+
+        $this->password = $passwordHasher->hash($this, $new);
+        $this->emitEvent(new PasswordUpdated($this->id));
+
+        return $this;
     }
 
-    public function getRoles(): Roles
+    public function definePassword(GeneratedCode|string $password, PasswordHasher $passwordHasher): self
     {
-        return $this->roles;
+        if ($this->password !== null) {
+            throw new PasswordAlreadyDefined();
+        }
+
+        $this->password = $passwordHasher->hash($this, (string) $password);
+        $this->updatedAt = new \DateTimeImmutable();
+
+        if ($password instanceof GeneratedCode) {
+            $this->emitEvent(new PasswordCreated($this->id, $password));
+        }
+
+        return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function requestPasswordReset(VerificationToken $verificationToken): self
     {
-        return $this->createdAt;
+        $this->emitEvent(new PasswordForgotten($this->id, $verificationToken->token));
+
+        return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    public function requestAccountConfirmation(VerificationToken $verificationToken): self
     {
-        return $this->updatedAt;
-    }
+        $this->emitEvent(new ConfirmationRequested($this->id, $verificationToken->token));
 
-    public function getPasswordResetToken(): ?TimedToken
-    {
-        return $this->passwordResetToken;
+        return $this;
     }
 }

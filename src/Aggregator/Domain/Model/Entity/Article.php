@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Domain\Model\Entity;
 
-use Symfony\Component\Uid\Uuid;
+use App\Aggregator\Domain\Model\Entity\Identity\ArticleId;
 
 /**
- * Class Article.
+ * Class ArticleDetails.
  * This a scrapped article from a website.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
 readonly class Article
 {
-    public Uuid $id;
+    public ArticleId $id;
 
     public function __construct(
         public string $title,
@@ -26,6 +26,6 @@ readonly class Article
         public \DateTimeImmutable $publishedAt,
         public \DateTimeImmutable $crawledAt
     ) {
-        $this->id = Uuid::v7();
+        $this->id = new ArticleId();
     }
 }

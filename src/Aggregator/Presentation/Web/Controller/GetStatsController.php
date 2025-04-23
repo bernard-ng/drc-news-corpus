@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Aggregator\Presentation\Web\Controller;
 
 use App\Aggregator\Application\ReadModel\Statistics;
-use App\Aggregator\Application\UseCase\Query\GetStatsQuery;
+use App\Aggregator\Application\UseCase\Query\GetStatistics;
 use App\SharedKernel\Presentation\Web\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Attribute\AsController;
@@ -23,7 +23,7 @@ final class GetStatsController extends AbstractController
     public function __invoke(): JsonResponse
     {
         /** @var Statistics $stats */
-        $stats = $this->handleQuery(new GetStatsQuery());
+        $stats = $this->handleQuery(new GetStatistics());
 
         return JsonResponse::fromJsonString($this->serialize($stats));
     }

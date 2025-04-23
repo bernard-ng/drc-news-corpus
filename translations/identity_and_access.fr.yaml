@@ -8,11 +8,12 @@ identity_and_access.validations.short_username: Ce nom d'utilisateur est trop co
 
 # safe massages exceptions
 identity_and_access.exceptions.user_not_found: Désolé nous n'avons pas trouvé d'utilisateur avec ces informations.
-identity_and_access.exceptions.invalid_password: Le mot de passe actuel est incorrecte.
-identity_and_access.exceptions.email_already_used: Impossible d'utiliser cette address email, essayez avec une autre.
-identity_and_access.exceptions.invalid_token: Désolé le jeton de sécurité n'est pas valide !
-identity_and_access.exceptions.password_defined: Désolé un mot de passe a déjà été défini !
 identity_and_access.exceptions.invalid_current_password: Le mot de passe actuel est incorrecte.
+identity_and_access.exceptions.email_already_used: Impossible d'utiliser cette address email, essayez avec une autre.
+identity_and_access.exceptions.invalid_verification_token: Désolé le jeton de sécurité n'est pas valide !
+identity_and_access.exceptions.password_already_defined: Désolé un mot de passe a déjà été défini !
+identity_and_access.exceptions.account_is_locked: Pour des raisons de sécurité, votre compte a été verrouillé. Suivez les instructions envoyées à votre adresse email pour le déverrouiller.
+identity_and_access.exceptions.account_not_confirmed: Votre compte n'est pas encore confirmé. Veuillez suivre les instructions envoyées à votre adresse email pour le confirmer.
 Invalid credentials.: Identifiants incorrects.
 
 # Emails subjects messages
@@ -20,3 +21,9 @@ identity_and_access.emails.subjects.password_created: "[DRC News] Connectez-vous
 identity_and_access.emails.subjects.password_forgotten: "[DRC News] Instruction de réinitialisation de mot de passe"
 identity_and_access.emails.subjects.password_reset: "[DRC News] Votre mot de passe a été mis à jour"
 identity_and_access.emails.subjects.password_updated: "[DRC News] Votre mot de passe a été mis à jour"
+identity_and_access.emails.subjects.account_confirmed: "[DRC News] Votre compte a été confirmé"
+identity_and_access.emails.subjects.account_locked: "[DRC News] Votre compte a été verrouillé"
+identity_and_access.emails.subjects.account_unlocked: "[DRC News] Votre compte a été déverrouillé"
+identity_and_access.emails.subjects.confirmation_requested: "[DRC News] Instruction de confirmation de compte"
+identity_and_access.emails.subjects.login_profile_changed: "[DRC News] Nouvelle connexion à votre compte"
+identity_and_access.emails.subjects.email_updated: "[DRC News] Votre adresse email a été mise à jour"

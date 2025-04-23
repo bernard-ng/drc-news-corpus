@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="https://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="https://doctrine-project.org/schemas/orm/doctrine-mapping
+                          https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <embeddable name="App\SharedKernel\Domain\Model\ValueObject\Tracking\GeoLocation">
+        <field name="timeZone" type="string" nullable="true"/>
+        <field name="longitude" type="float" nullable="true"/>
+        <field name="latitude" type="float" nullable="true" />
+        <field name="accuracyRadius" type="integer" nullable="true" />
+    </embeddable>
+</doctrine-mapping>

@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\IdentityAndAccess\Application\Email;
 
-use App\SharedKernel\Application\Email\Definition;
-use App\SharedKernel\Domain\Application;
+use App\SharedKernel\Application\Email\EmailDefinition;
 use App\SharedKernel\Domain\Model\ValueObject\Email;
 
 /**
@@ -13,14 +12,11 @@ use App\SharedKernel\Domain\Model\ValueObject\Email;
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final readonly class PasswordResetEmail implements Definition
+final readonly class PasswordResetEmail implements EmailDefinition
 {
-    private Application $application;
-
     public function __construct(
         private Email $recipient,
     ) {
-        $this->application = new Application();
     }
 
     #[\Override]
@@ -30,21 +26,9 @@ final readonly class PasswordResetEmail implements Definition
     }
 
     #[\Override]
-    public function senderName(): string
-    {
-        return $this->application->emailName;
-    }
-
-    #[\Override]
-    public function senderAddress(): string
-    {
-        return $this->application->emailAddress;
-    }
-
-    #[\Override]
     public function subject(): string
     {
-        return 'identity_and_access.emails.password_reset.subject';
+        return 'identity_and_access.emails.subjects.password_reset';
     }
 
     #[\Override]
@@ -66,7 +50,7 @@ final readonly class PasswordResetEmail implements Definition
     }
 
     #[\Override]
-    public function locale(): ?string
+    public function locale(): string
     {
         return 'fr';
     }

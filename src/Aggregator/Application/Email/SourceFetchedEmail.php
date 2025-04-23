@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Application\Email;
 
-use App\SharedKernel\Application\Email\Definition;
-use App\SharedKernel\Domain\Application;
+use App\SharedKernel\Application\Email\EmailDefinition;
 use App\SharedKernel\Domain\Model\ValueObject\Email;
 
 /**
@@ -13,34 +12,19 @@ use App\SharedKernel\Domain\Model\ValueObject\Email;
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final readonly class SourceFetchedEmail implements Definition
+final readonly class SourceFetchedEmail implements EmailDefinition
 {
-    private Application $application;
-
     public function __construct(
         private Email $recipient,
         private string $event,
         private string $source,
     ) {
-        $this->application = new Application();
     }
 
     #[\Override]
     public function recipient(): Email
     {
         return $this->recipient;
-    }
-
-    #[\Override]
-    public function senderName(): string
-    {
-        return $this->application->name;
-    }
-
-    #[\Override]
-    public function senderAddress(): string
-    {
-        return $this->application->emailAddress;
     }
 
     #[\Override]
@@ -71,9 +55,9 @@ final readonly class SourceFetchedEmail implements Definition
     }
 
     #[\Override]
-    public function locale(): ?string
+    public function locale(): string
     {
-        return null;
+        return 'fr';
     }
 
     #[\Override]
