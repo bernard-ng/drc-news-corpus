@@ -67,12 +67,11 @@ audit: ## security audit
 
 .PHONY: deploy
 deploy: ## Deployment tasks
-	composer install --optimize-autoloader
+	php ~/composer.phar install --optimize-autoloader
 	php bin/console doctrine:database:create --if-not-exists
 	php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
 	php bin/console cache:clear --env=prod
 	php bin/console secrets:decrypt-to-local --env=prod
-	php bin/console ux:icons:lock
 	composer symfony:dump-env prod
 
 # -----------------------------------
