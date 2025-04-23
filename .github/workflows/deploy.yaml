@@ -25,7 +25,7 @@ jobs:
             key: ${{ secrets.SSH_KEY }}
             port: ${{ secrets.SSH_PORT }}
             script: |
-              cd ~/repositories/drc-news-corpus
+              cd ~/news.devscast.org
               git pull origin main --rebase
               make deploy
               curl -X POST "https://api.telegram.org/bot${{ secrets.DEVY_TOKEN }}/sendMessage" \
