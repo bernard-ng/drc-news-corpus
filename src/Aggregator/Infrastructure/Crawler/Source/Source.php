@@ -101,8 +101,11 @@ abstract class Source implements SourceFetcher
     protected function skip(DateRange $interval, string $timestamp, string $title, string $date): void
     {
         if ($interval->end > (int) $timestamp) {
-            $this->completed();
-            exit; // force process to stop
+            try {
+                $this->completed();
+            } finally {
+                exit; // force process to stop
+            }
         }
 
         $this->logger->debug("> {$title} [Skipped {$date}]");
