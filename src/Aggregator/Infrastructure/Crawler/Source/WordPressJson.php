@@ -63,13 +63,13 @@ class WordPressJson extends Source
                 continue;
             }
 
-            foreach ($articles as $article) {
-                try {
+            try {
+                foreach ($articles as $article) {
                     $this->fetchOne((string) json_encode($article), $config->dateRange);
-                } catch (ArticleOutOfRange) {
-                    $this->logger->info('No more articles to fetch in this range.');
-                    break;
                 }
+            } catch (ArticleOutOfRange) {
+                $this->logger->info('No more articles to fetch in this range.');
+                break;
             }
         }
 

@@ -42,6 +42,7 @@ abstract class Source implements SourceFetcher
         protected DateParser $dateParser,
         protected CommandBus $commandBus
     ) {
+        $this->stopwatch = new Stopwatch();
     }
 
     #[\Override]
@@ -87,7 +88,6 @@ abstract class Source implements SourceFetcher
 
     protected function initialize(): void
     {
-        $this->stopwatch = new Stopwatch();
         $this->stopwatch->start(self::WATCH_EVENT_NAME);
         $this->logger->debug('Initialized');
     }
