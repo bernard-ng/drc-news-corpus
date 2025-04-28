@@ -31,7 +31,7 @@ final class SeptSurSeptCd extends Source
     {
         $this->initialize();
         $this->category = $config->category ?? 'politique';
-        $page = $config->page ?? $this->getPagination($this->category);
+        $page = $config->pageRange ?? $this->getPagination($this->category);
 
         for ($i = $page->start; $i < $page->end; $i++) {
             try {
@@ -41,7 +41,7 @@ final class SeptSurSeptCd extends Source
                 continue;
             }
 
-            $articles->each(fn (Crawler $node) => $this->fetchOne($node->html(), $config->date));
+            $articles->each(fn (Crawler $node) => $this->fetchOne($node->html(), $config->dateRange));
         }
 
         $this->completed();
@@ -51,7 +51,7 @@ final class SeptSurSeptCd extends Source
      * @throws \Throwable
      */
     #[\Override]
-    public function fetchOne(string $html, ?DateRange $interval = null): void
+    public function fetchOne(string $html, ?DateRange $dateRange = null): void
     {
         $node = new Crawler($html);
 
@@ -66,7 +66,7 @@ final class SeptSurSeptCd extends Source
             );
             $title = $node->filter('.views-field-title a')->text();
 
-            if ($interval === null || $interval->inRange((int) $timestamp)) {
+            if ($dateRange === null || $dateRange->inRange((int) $timestamp)) {
                 try {
                     $body = $this->crawle(self::URL . "/{$link}")->filter('.field.field--name-body')->text();
                 } catch (\Throwable) {
@@ -75,7 +75,7 @@ final class SeptSurSeptCd extends Source
 
                 $this->save($title, $link, $this->category, $body, $timestamp);
             } else {
-                $this->skip($interval, $timestamp, $title, $date);
+                $this->skip($dateRange, $timestamp, $title, $date);
             }
         } catch (\Throwable $e) {
             $this->logger->error("> {$e->getMessage()} [Failed] ❌");

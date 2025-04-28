@@ -16,7 +16,7 @@ interface SourceFetcher
 {
     public function fetch(FetchConfig $config): void;
 
-    public function fetchOne(string $html, ?DateRange $interval = null): void;
+    public function fetchOne(string $html, ?DateRange $dateRange = null): void;
 
     public function supports(string $source): bool;
 }

@@ -28,7 +28,7 @@ final class ActualiteCd extends Source
     public function fetch(FetchConfig $config): void
     {
         $this->initialize();
-        $page = $config->page ?? $this->getPagination();
+        $page = $config->pageRange ?? $this->getPagination();
 
         for ($i = $page->start; $i < $page->end; $i++) {
             try {
@@ -39,14 +39,14 @@ final class ActualiteCd extends Source
             }
 
             // loop through the articles and get the title, link, date, categories and body
-            $articles->each(fn (Crawler $node) => $this->fetchOne($node->html(), $config->date));
+            $articles->each(fn (Crawler $node) => $this->fetchOne($node->html(), $config->dateRange));
         }
 
         $this->completed();
     }
 
     #[\Override]
-    public function fetchOne(string $html, ?DateRange $interval = null): void
+    public function fetchOne(string $html, ?DateRange $dateRange = null): void
     {
         $node = new Crawler($html);
 
@@ -65,10 +65,10 @@ final class ActualiteCd extends Source
                 replacement: '$4-$3-$2 $5'
             );
 
-            if ($interval === null || $interval->inRange((int) $timestamp)) {
+            if ($dateRange === null || $dateRange->inRange((int) $timestamp)) {
                 $this->save($title, $link, $categories, $body, $timestamp);
             } else {
-                $this->skip($interval, $timestamp, $title, $date);
+                $this->skip($dateRange, $timestamp, $title, $date);
             }
         } catch (\Throwable $e) {
             $this->logger->error("> {$e->getMessage()} [Failed] ❌");

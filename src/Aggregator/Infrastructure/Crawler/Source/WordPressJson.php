@@ -46,7 +46,7 @@ class WordPressJson extends Source
     public function fetch(FetchConfig $config): void
     {
         $this->initialize();
-        $page = $config->page ?? $this->getPagination();
+        $page = $config->pageRange ?? $this->getPagination();
 
         for ($i = $page->start; $i <= $page->end; $i++) {
             try {
@@ -63,7 +63,7 @@ class WordPressJson extends Source
             }
 
             foreach ($articles as $article) {
-                $this->fetchOne((string) json_encode($article), $config->date);
+                $this->fetchOne((string) json_encode($article), $config->dateRange);
             }
         }
 
@@ -71,7 +71,7 @@ class WordPressJson extends Source
     }
 
     #[\Override]
-    public function fetchOne(string $html, ?DateRange $interval = null): void
+    public function fetchOne(string $html, ?DateRange $dateRange = null): void
     {
         try {
             /**
@@ -91,10 +91,10 @@ class WordPressJson extends Source
             $timestamp = $this->dateParser->createTimeStamp($data['date'], format: 'c');
             $categories = $this->mapCategories($data['categories']);
 
-            if ($interval === null || $interval->inRange((int) $timestamp)) {
+            if ($dateRange === null || $dateRange->inRange((int) $timestamp)) {
                 $this->save($title, $link, $categories, $body, $timestamp);
             } else {
-                $this->skip($interval, $timestamp, $title, $data['date']);
+                $this->skip($dateRange, $timestamp, $title, $data['date']);
             }
         } catch (\Throwable $e) {
             $this->logger->error("> {$e->getMessage()} [Failed] ❌");

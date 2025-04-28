@@ -73,8 +73,8 @@ class CrawlCommand extends Command
         $this->sourceFetcher->fetch(
             config: new FetchConfig(
                 id: $source,
-                page: $page !== null ? PageRange::from($page) : null,
-                date: $date !== null ? DateRange::from($date) : null,
+                pageRange: $page !== null ? PageRange::from($page) : null,
+                dateRange: $date !== null ? DateRange::from($date) : null,
                 category: $category
             )
         );

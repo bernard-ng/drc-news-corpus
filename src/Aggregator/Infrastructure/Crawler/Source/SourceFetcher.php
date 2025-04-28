@@ -44,7 +44,7 @@ final readonly class SourceFetcher implements SourceFetcherInterface
     }
 
     #[\Override]
-    public function fetchOne(string $html, ?DateRange $interval = null): void
+    public function fetchOne(string $html, ?DateRange $dateRange = null): void
     {
         throw new \RuntimeException('Not implemented');
     }

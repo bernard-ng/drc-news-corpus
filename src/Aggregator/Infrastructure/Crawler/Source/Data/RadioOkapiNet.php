@@ -28,7 +28,7 @@ final class RadioOkapiNet extends Source
     public function fetch(FetchConfig $config): void
     {
         $this->initialize();
-        $page = $config->page ?? $this->getPagination();
+        $page = $config->pageRange ?? $this->getPagination();
 
         for ($i = $page->start; $i <= $page->end; $i++) {
             try {
@@ -38,14 +38,14 @@ final class RadioOkapiNet extends Source
                 continue;
             }
 
-            $articles->each(fn (Crawler $node) => $this->fetchOne($node->html(), $config->date));
+            $articles->each(fn (Crawler $node) => $this->fetchOne($node->html(), $config->dateRange));
         }
 
         $this->completed();
     }
 
     #[\Override]
-    public function fetchOne(string $html, ?DateRange $interval = null): void
+    public function fetchOne(string $html, ?DateRange $dateRange = null): void
     {
         $node = new Crawler($html);
 
@@ -61,7 +61,7 @@ final class RadioOkapiNet extends Source
             $categories = $node->filter('.views-field-field-cat-gorie a')->each(fn (Crawler $node) => $node->text());
             $title = $node->filter('.views-field-title a')->text();
 
-            if ($interval === null || $interval->inRange((int) $timestamp)) {
+            if ($dateRange === null || $dateRange->inRange((int) $timestamp)) {
                 try {
                     $body = $this->crawle(self::URL . "/{$link}")->filter('.field-name-body')->text();
                 } catch (\Throwable) {
@@ -70,7 +70,7 @@ final class RadioOkapiNet extends Source
 
                 $this->save($title, $link, implode(',', $categories), $body, $timestamp);
             } else {
-                $this->skip($interval, $timestamp, $title, $date);
+                $this->skip($dateRange, $timestamp, $title, $date);
             }
         } catch (\Throwable $e) {
             $this->logger->error("> {$e->getMessage()} [Failed] ❌");

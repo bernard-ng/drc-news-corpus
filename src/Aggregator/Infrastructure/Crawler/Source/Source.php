@@ -98,9 +98,9 @@ abstract class Source implements SourceFetcher
         $this->logger->debug('Done');
     }
 
-    protected function skip(DateRange $interval, string $timestamp, string $title, string $date): void
+    protected function skip(DateRange $dateRange, string $timestamp, string $title, string $date): void
     {
-        if ($interval->end > (int) $timestamp) {
+        if ($dateRange->outRange((int) $timestamp)) {
             try {
                 $this->completed();
             } finally {

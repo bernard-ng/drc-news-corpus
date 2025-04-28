@@ -76,7 +76,7 @@ class UpdateCommand extends Command
             DateRange::backward($date, $days);
 
         $this->io->title(sprintf('[%s] Updating with range %s', $direction->value, $range->format()));
-        $this->sourceFetcher->fetch(new FetchConfig($source, date: $range, category: $category));
+        $this->sourceFetcher->fetch(new FetchConfig($source, dateRange: $range, category: $category));
         $this->io->success('website crawled successfully');
 
         return Command::SUCCESS;

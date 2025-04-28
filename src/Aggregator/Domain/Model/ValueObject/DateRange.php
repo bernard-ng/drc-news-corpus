@@ -68,8 +68,13 @@ final readonly class DateRange implements \Stringable
         return sprintf('%s:%s', date($format, $this->start), date($format, $this->end));
     }
 
-    public function inRange(int $date): bool
+    public function inRange(int $timestamp): bool
     {
-        return $date >= $this->start && $date <= $this->end;
+        return $timestamp >= $this->start && $timestamp <= $this->end;
+    }
+
+    public function outRange(int $timestamp): bool
+    {
+        return $timestamp < $this->start || $timestamp > $this->end;
     }
 }

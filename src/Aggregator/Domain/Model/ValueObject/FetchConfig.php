@@ -15,8 +15,8 @@ final readonly class FetchConfig
 {
     public function __construct(
         public string $id,
-        public ?PageRange $page = null,
-        public ?DateRange $date = null,
+        public ?PageRange $pageRange = null,
+        public ?DateRange $dateRange = null,
         public ?string $category = null
     ) {
         Assert::notEmpty($this->id);
