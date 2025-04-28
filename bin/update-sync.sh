@@ -14,14 +14,14 @@ for SOURCE in "${SOURCES[@]}"; do
         for CATEGORY in "${CATEGORIES[@]}"; do
             LOG_FILE="${LOG_DIR}/${SOURCE}.${CATEGORY}.log"
             echo "Starting crawling $SOURCE category $CATEGORY..."
-            echo "Command: $BASE_CMD \"$SOURCE\" --direction=backward -vvv --category=\"$CATEGORY\""
-            $BASE_CMD "$SOURCE" --direction=backward -vvv --category="$CATEGORY" 2>&1 | tee "$LOG_FILE"
+            echo "Command: $BASE_CMD \"$SOURCE\" --direction=forward -vvv --category=\"$CATEGORY\""
+            $BASE_CMD "$SOURCE" --direction=forward -vvv --category="$CATEGORY" 2>&1 | tee "$LOG_FILE"
         done
     else
         LOG_FILE="${LOG_DIR}/${SOURCE}.log"
         echo "Starting crawling $SOURCE..."
-        echo "Command: $BASE_CMD \"$SOURCE\" --direction=backward -vvv"
-        $BASE_CMD "$SOURCE" --direction=backward -vvv 2>&1 | tee "$LOG_FILE"
+        echo "Command: $BASE_CMD \"$SOURCE\" --direction=forward -vvv"
+        $BASE_CMD "$SOURCE" --direction=forward -vvv 2>&1 | tee "$LOG_FILE"
     fi
 done
 

@@ -23,13 +23,13 @@ for SOURCE in "${SOURCES[@]}"; do
         # Handle 7sur7.cd separately with categories
         for CATEGORY in "${CATEGORIES[@]}"; do
             LOG_FILE="${LOG_DIR}/${SOURCE}.${CATEGORY}.log"
-            nohup $BASE_CMD "$SOURCE" --direction=backward -vvv --category="$CATEGORY" > "$LOG_FILE" 2>&1 &
+            nohup $BASE_CMD "$SOURCE" --direction=forward -vvv --category="$CATEGORY" > "$LOG_FILE" 2>&1 &
             echo "Started crawling $SOURCE category $CATEGORY... Logs: $LOG_FILE"
         done
     else
         # Handle other sources normally
         LOG_FILE="${LOG_DIR}/${SOURCE}.log"
-        nohup $BASE_CMD "$SOURCE" --direction=backward -vvv > "$LOG_FILE" 2>&1 &
+        nohup $BASE_CMD "$SOURCE" --direction=forward -vvv > "$LOG_FILE" 2>&1 &
         echo "Started crawling $SOURCE... Logs: $LOG_FILE"
     fi
 done
