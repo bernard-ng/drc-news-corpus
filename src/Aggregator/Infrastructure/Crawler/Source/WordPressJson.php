@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Infrastructure\Crawler\Source;
 
+use App\Aggregator\Domain\Exception\ArticleOutOfRange;
 use App\Aggregator\Domain\Model\ValueObject\DateRange;
 use App\Aggregator\Domain\Model\ValueObject\FetchConfig;
 use App\Aggregator\Domain\Model\ValueObject\PageRange;
@@ -63,7 +64,12 @@ class WordPressJson extends Source
             }
 
             foreach ($articles as $article) {
-                $this->fetchOne((string) json_encode($article), $config->dateRange);
+                try {
+                    $this->fetchOne((string) json_encode($article), $config->dateRange);
+                } catch (ArticleOutOfRange) {
+                    $this->logger->info('No more articles to fetch in this range.');
+                    break;
+                }
             }
         }
 

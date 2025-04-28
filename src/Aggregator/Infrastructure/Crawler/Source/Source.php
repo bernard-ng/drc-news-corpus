@@ -6,6 +6,7 @@ namespace App\Aggregator\Infrastructure\Crawler\Source;
 
 use App\Aggregator\Application\UseCase\Command\Save;
 use App\Aggregator\Domain\Event\SourceFetched;
+use App\Aggregator\Domain\Exception\ArticleOutOfRange;
 use App\Aggregator\Domain\Model\ValueObject\DateRange;
 use App\Aggregator\Domain\Model\ValueObject\PageRange;
 use App\Aggregator\Domain\Service\DateParser;
@@ -101,11 +102,7 @@ abstract class Source implements SourceFetcher
     protected function skip(DateRange $dateRange, string $timestamp, string $title, string $date): void
     {
         if ($dateRange->outRange((int) $timestamp)) {
-            try {
-                $this->completed();
-            } finally {
-                exit; // force process to stop
-            }
+            throw ArticleOutOfRange::with($timestamp, $dateRange);
         }
 
         $this->logger->debug("> {$title} [Skipped {$date}]");

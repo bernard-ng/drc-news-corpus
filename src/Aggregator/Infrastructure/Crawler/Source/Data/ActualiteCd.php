@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Infrastructure\Crawler\Source\Data;
 
+use App\Aggregator\Domain\Exception\ArticleOutOfRange;
 use App\Aggregator\Domain\Model\ValueObject\DateRange;
 use App\Aggregator\Domain\Model\ValueObject\FetchConfig;
 use App\Aggregator\Domain\Model\ValueObject\PageRange;
@@ -38,8 +39,12 @@ final class ActualiteCd extends Source
                 continue;
             }
 
-            // loop through the articles and get the title, link, date, categories and body
-            $articles->each(fn (Crawler $node) => $this->fetchOne($node->html(), $config->dateRange));
+            try {
+                $articles->each(fn (Crawler $node) => $this->fetchOne($node->html(), $config->dateRange));
+            } catch (ArticleOutOfRange) {
+                $this->logger->info('No more articles to fetch in this range.');
+                break;
+            }
         }
 
         $this->completed();
