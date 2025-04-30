@@ -6,7 +6,7 @@ LOG_DIR="/home/eshimate/repositories/drc-news-corpus/var"
 mkdir -p "$LOG_DIR"
 rm -f "${LOG_DIR}"/*.log
 
-SOURCES=("7sur7.cd" "actualite.cd" "beto.cd" "radiookapi.net" "mediacongo.net")
+SOURCES=("7sur7.cd" "actualite.cd" "beto.cd" "radiookapi.net" "mediacongo.net", "newscd.net")
 for SOURCE in "${SOURCES[@]}"; do
     if [[ "$SOURCE" == "7sur7.cd" ]]; then
         CATEGORIES=("politique" "economie" "culture" "sport" "societe")

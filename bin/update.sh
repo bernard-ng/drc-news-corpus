@@ -1,6 +1,6 @@
 #!/usr/local/cpanel/bin/jailshell
 
-SOURCES=("7sur7.cd" "actualite.cd" "beto.cd" "radiookapi.net" "mediacongo.net")
+SOURCES=("7sur7.cd" "actualite.cd" "beto.cd" "radiookapi.net" "mediacongo.net", "newscd.net")
 
 # Define the base command
 BASE_CMD="/usr/local/bin/php /home/eshimate/repositories/drc-news-corpus/bin/console app:update"
