@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Presentation\Console;
 
-use App\Aggregator\Application\ReadModel\SourceMetrics;
-use App\Aggregator\Application\ReadModel\Statistics;
-use App\Aggregator\Application\UseCase\Query\GetStatistics;
+use App\Aggregator\Application\ReadModel\Statistics\SourceOverview;
+use App\Aggregator\Application\ReadModel\Statistics\SourcesStatisticsOverview;
+use App\Aggregator\Application\UseCase\Query\GetSourcesStatisticsOverview;
 use App\SharedKernel\Application\Bus\QueryBus;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -37,17 +37,17 @@ class StatsCommand extends Command
     #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        /** @var Statistics $stats */
-        $stats = $this->queryBus->handle(new GetStatistics());
+        /** @var SourcesStatisticsOverview $stats */
+        $stats = $this->queryBus->handle(new GetSourcesStatisticsOverview());
 
         $this->io->title(sprintf('Stats about the articles in the database'));
         $this->io->table(
-            ['Source', 'Total', 'Last crawled at'],
+            ['Source', 'Articles', 'CrawledAt'],
             array_map(
-                fn (SourceMetrics $stat): array => [
+                fn (SourceOverview $stat): array => [
                     $stat->source,
-                    number_format($stat->total, decimal_separator: '.', thousands_separator: ','),
-                    $stat->lastCrawledAt,
+                    number_format($stat->articles, decimal_separator: '.', thousands_separator: ','),
+                    $stat->crawledAt,
                 ],
                 $stats->items
             )

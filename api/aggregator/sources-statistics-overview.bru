@@ -1,0 +1,20 @@
+meta {
+  name: sources-statistics-overview
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/aggregator/statistics
+  body: none
+  auth: bearer
+}
+
+headers {
+  accept: application/json
+  : 
+}
+
+auth:bearer {
+  token: {{token}}
+}
