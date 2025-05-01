@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Application\UseCase\CommandHandler;
 
-use App\Aggregator\Application\UseCase\Command\Clear;
+use App\Aggregator\Application\UseCase\Command\ClearArticles;
 use App\Aggregator\Domain\Model\Repository\ArticleRepository;
 use App\SharedKernel\Application\Bus\CommandHandler;
 
@@ -13,14 +13,14 @@ use App\SharedKernel\Application\Bus\CommandHandler;
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final readonly class ClearHandler implements CommandHandler
+final readonly class ClearArticlesHandler implements CommandHandler
 {
     public function __construct(
         private ArticleRepository $articleRepository,
     ) {
     }
 
-    public function __invoke(Clear $command): int
+    public function __invoke(ClearArticles $command): int
     {
         return $this->articleRepository->clear($command->source, $command->category);
     }

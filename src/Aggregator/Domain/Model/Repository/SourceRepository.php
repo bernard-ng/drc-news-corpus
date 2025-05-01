@@ -16,4 +16,6 @@ interface SourceRepository
     public function add(Source $source): void;
 
     public function remove(Source $source): void;
+
+    public function getByName(string $name): Source;
 }

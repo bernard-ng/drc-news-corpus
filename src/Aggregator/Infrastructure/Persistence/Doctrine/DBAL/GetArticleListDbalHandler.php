@@ -4,14 +4,11 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL;
 
-use App\Aggregator\Application\ReadModel\ArticleDetails;
 use App\Aggregator\Application\ReadModel\ArticleList;
 use App\Aggregator\Application\UseCase\Query\GetArticleList;
 use App\Aggregator\Application\UseCase\QueryHandler\GetArticleListHandler;
-use App\Aggregator\Domain\Model\Entity\Identity\ArticleId;
 use App\Aggregator\Domain\Model\ValueObject\Filters\ArticleFilters;
-use App\SharedKernel\Domain\Model\ValueObject\Pagination;
-use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Mapping;
+use App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL\Feature\ArticleQuery;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\NoResult;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
@@ -26,6 +23,8 @@ use Knp\Component\Pager\PaginatorInterface;
  */
 final readonly class GetArticleListDbalHandler implements GetArticleListHandler
 {
+    use ArticleQuery;
+
     public function __construct(
         private Connection $connection,
         private PaginatorInterface $paginator
@@ -35,9 +34,7 @@ final readonly class GetArticleListDbalHandler implements GetArticleListHandler
     #[\Override]
     public function __invoke(GetArticleList $query): ArticleList
     {
-        $qb = $this->connection->createQueryBuilder()
-            ->select('id, title, link, categories, body, source, hash, published_at, crawled_at')
-            ->from('article')
+        $qb = $this->createArticleBaseQuery()
             ->orderBy('published_at', 'DESC');
 
         $qb = $this->applyFilters($qb, $query->filters);
@@ -49,34 +46,7 @@ final readonly class GetArticleListDbalHandler implements GetArticleListHandler
             throw NoResult::forQuery($qb->getSQL(), $qb->getParameters(), $e);
         }
 
-        return $this->mapArticles($data);
-    }
-
-    /**
-     * @param SlidingPaginationInterface<int, array<string, mixed>> $data
-     */
-    private function mapArticles(SlidingPaginationInterface $data): ArticleList
-    {
-        return new ArticleList(
-            items: array_map(
-                fn ($item) => new ArticleDetails(
-                    ArticleId::fromBinary($item['id']),
-                    Mapping::string($item, 'title'),
-                    $this->createAbsoluteUri(
-                        link: Mapping::string($item, 'link'),
-                        source: Mapping::string($item, 'source')
-                    ),
-                    Mapping::string($item, 'categories'),
-                    Mapping::string($item, 'body'),
-                    Mapping::string($item, 'source'),
-                    Mapping::string($item, 'hash'),
-                    Mapping::datetime($item, 'published_at'),
-                    Mapping::datetime($item, 'crawled_at')
-                ),
-                \iterator_to_array($data->getItems())
-            ),
-            pagination: Pagination::create($data->getPaginationData())
-        );
+        return $this->mapArticleList($data);
     }
 
     private function applyFilters(QueryBuilder $qb, ArticleFilters $filters): QueryBuilder
@@ -103,14 +73,5 @@ final readonly class GetArticleListDbalHandler implements GetArticleListHandler
         }
 
         return $qb;
-    }
-
-    private function createAbsoluteUri(string $link, string $source): string
-    {
-        if (str_starts_with($link, 'http')) {
-            return $link;
-        }
-
-        return sprintf('https://%s/%s', $source, trim($link, '/'));
     }
 }

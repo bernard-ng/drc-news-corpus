@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Aggregator\Application\UseCase\CommandHandler;
 
 use App\Aggregator\Application\ReadModel\ArticleForExport;
-use App\Aggregator\Application\UseCase\Command\Export;
+use App\Aggregator\Application\UseCase\Command\ExportArticles;
 use App\Aggregator\Application\UseCase\Query\GetArticlesForExport;
 use App\SharedKernel\Application\Bus\CommandHandler;
 use App\SharedKernel\Application\Bus\QueryBus;
@@ -17,7 +17,7 @@ use App\SharedKernel\Domain\DataTransfert\TransfertSetting;
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final readonly class ExportHandler implements CommandHandler
+final readonly class ExportArticlesHandler implements CommandHandler
 {
     public function __construct(
         private QueryBus $queryBus,
@@ -26,7 +26,7 @@ final readonly class ExportHandler implements CommandHandler
     ) {
     }
 
-    public function __invoke(Export $command): void
+    public function __invoke(ExportArticles $command): void
     {
         $filename = sprintf(
             '%s/data/export-%s.csv',

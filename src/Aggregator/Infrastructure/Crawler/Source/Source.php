@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Infrastructure\Crawler\Source;
 
-use App\Aggregator\Application\UseCase\Command\Save;
+use App\Aggregator\Application\UseCase\Command\SaveArticle;
 use App\Aggregator\Domain\Event\SourceFetched;
 use App\Aggregator\Domain\Exception\ArticleOutOfRange;
+use App\Aggregator\Domain\Model\Entity\Identity\ArticleId;
 use App\Aggregator\Domain\Model\ValueObject\DateRange;
 use App\Aggregator\Domain\Model\ValueObject\PageRange;
 use App\Aggregator\Domain\Service\DateParser;
@@ -69,9 +70,9 @@ abstract class Source implements SourceFetcher
     protected function save(string $title, string $link, string $categories, string $body, string $timestamp): void
     {
         try {
-            /** @var string $id */
+            /** @var ArticleId $id */
             $id = $this->commandBus->handle(
-                new Save(
+                new SaveArticle(
                     title: $title,
                     link: $link,
                     categories: $categories,
@@ -80,7 +81,7 @@ abstract class Source implements SourceFetcher
                     timestamp: (int) $timestamp
                 )
             );
-            $this->logger->debug("> {$id} : {$title} ✅");
+            $this->logger->debug("> {$id->toString()} : {$title} ✅");
         } catch (\Throwable $e) {
             $this->logger->error("> {$e->getMessage()} [Failed] ❌");
         }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Infrastructure\Persistence\Doctrine\ORM;
 
+use App\Aggregator\Domain\Exception\ArticleNotFound;
 use App\Aggregator\Domain\Model\Entity\Article;
 use App\Aggregator\Domain\Model\Entity\Identity\ArticleId;
 use App\Aggregator\Domain\Model\Repository\ArticleRepository;
@@ -40,31 +41,16 @@ final class ArticleOrmRepository extends ServiceEntityRepository implements Arti
     }
 
     #[\Override]
-    public function countBySource(string $source): int
-    {
-        return $this->count([
-            'source' => $source,
-        ]);
-    }
-
-    #[\Override]
-    public function getById(ArticleId $id): ?Article
+    public function getById(ArticleId $id): Article
     {
         /** @var Article|null $article */
         $article = $this->findOneBy([
             'id' => $id,
         ]);
 
-        return $article;
-    }
-
-    #[\Override]
-    public function getByLink(string $link): ?Article
-    {
-        /** @var Article|null $article */
-        $article = $this->findOneBy([
-            'link' => $link,
-        ]);
+        if ($article === null) {
+            throw ArticleNotFound::withId($id);
+        }
 
         return $article;
     }

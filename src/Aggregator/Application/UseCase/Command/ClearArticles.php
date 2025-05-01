@@ -4,18 +4,16 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Application\UseCase\Command;
 
-use App\Aggregator\Domain\Model\ValueObject\DateRange;
-
 /**
- * Class Export.
+ * Class Clear.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final readonly class Export
+final readonly class ClearArticles
 {
     public function __construct(
-        public ?string $source = null,
-        public ?DateRange $date = null
+        public string $source,
+        public ?string $category = null
     ) {
     }
 }

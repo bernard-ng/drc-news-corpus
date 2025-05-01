@@ -8,8 +8,7 @@ use App\Aggregator\Application\ReadModel\ArticleDetails;
 use App\Aggregator\Application\UseCase\Query\GetArticleDetails;
 use App\Aggregator\Application\UseCase\QueryHandler\GetArticleDetailsHandler;
 use App\Aggregator\Domain\Exception\ArticleNotFound;
-use App\Aggregator\Domain\Model\Entity\Identity\ArticleId;
-use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Mapping;
+use App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL\Feature\ArticleQuery;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\NoResult;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
@@ -21,6 +20,8 @@ use Doctrine\DBAL\ParameterType;
  */
 final readonly class GetArticleDetailsDbalHandler implements GetArticleDetailsHandler
 {
+    use ArticleQuery;
+
     public function __construct(
         private Connection $connection
     ) {
@@ -29,9 +30,7 @@ final readonly class GetArticleDetailsDbalHandler implements GetArticleDetailsHa
     #[\Override]
     public function __invoke(GetArticleDetails $query): ArticleDetails
     {
-        $qb = $this->connection->createQueryBuilder()
-            ->select('id, title, link, categories, body, source, hash, published_at, crawled_at')
-            ->from('article')
+        $qb = $this->createArticleBaseQuery()
             ->where('id = :id')
             ->setParameter('id', $query->id->toBinary(), ParameterType::BINARY);
 
@@ -46,21 +45,6 @@ final readonly class GetArticleDetailsDbalHandler implements GetArticleDetailsHa
             throw ArticleNotFound::withId($query->id);
         }
 
-        return $this->mapArticle($data);
-    }
-
-    private function mapArticle(array $data): ArticleDetails
-    {
-        return new ArticleDetails(
-            ArticleId::fromBinary($data['id']),
-            Mapping::string($data, 'title'),
-            Mapping::string($data, 'link'),
-            Mapping::string($data, 'categories'),
-            Mapping::string($data, 'body'),
-            Mapping::string($data, 'source'),
-            Mapping::string($data, 'hash'),
-            Mapping::datetime($data, 'published_at'),
-            Mapping::datetime($data, 'crawled_at')
-        );
+        return $this->mapArticleDetails($data);
     }
 }

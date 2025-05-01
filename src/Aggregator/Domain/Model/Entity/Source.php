@@ -4,31 +4,35 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Domain\Model\Entity;
 
-use App\Aggregator\Domain\Model\Entity\Identity\SourceId;
+use App\Aggregator\Domain\Model\ValueObject\Credibility\Credibility;
 
 /**
  * Class Source.
  *
+ * @see https://www.doctrine-project.org/projects/doctrine-orm/en/3.3/reference/limitations-and-known-issues.html#join-columns-with-non-primary-keys
+ *
  * @author bernard-ng <bernard@devscast.tech>
  */
-readonly class Source
+class Source
 {
-    public readonly SourceId $id;
-
     public function __construct(
-        private string $name,
-        private string $url
+        public readonly string $name,
+        public readonly string $url,
+        private(set) Credibility $credibility = new Credibility(),
+        private(set) ?\DateTimeImmutable $updatedAt = null
     ) {
-        $this->id = new SourceId();
     }
 
-    public function getName(): string
+    public static function create(string $name, string $url): self
     {
-        return $this->name;
+        return new self($name, $url);
     }
 
-    public function getUrl(): string
+    public function defineCredibility(Credibility $credibility): self
     {
-        return $this->url;
+        $this->credibility = $credibility;
+        $this->updatedAt = new \DateTimeImmutable();
+
+        return $this;
     }
 }

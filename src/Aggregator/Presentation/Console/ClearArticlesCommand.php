@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Presentation\Console;
 
-use App\Aggregator\Application\UseCase\Command\Clear;
+use App\Aggregator\Application\UseCase\Command\ClearArticles;
 use App\SharedKernel\Application\Bus\CommandBus;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -18,7 +18,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:clear',
     description: 'remove all articles from the database by source',
 )]
-class ClearCommand extends Command
+class ClearArticlesCommand extends Command
 {
     private SymfonyStyle $io;
 
@@ -51,7 +51,7 @@ class ClearCommand extends Command
         $category = $input->getOption('category');
 
         /** @var int $count */
-        $count = $this->commandBus->handle(new Clear($source, $category));
+        $count = $this->commandBus->handle(new ClearArticles($source, $category));
         $this->io->success(sprintf('%d articles from %s removed', $count, $source));
 
         return Command::SUCCESS;

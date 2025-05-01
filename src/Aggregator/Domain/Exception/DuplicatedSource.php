@@ -7,20 +7,20 @@ namespace App\Aggregator\Domain\Exception;
 use App\SharedKernel\Domain\Exception\UserFacingError;
 
 /**
- * Class SourceNotFound.
+ * Class DuplicatedArticle.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final class SourceNotFound extends \DomainException implements UserFacingError
+final class DuplicatedSource extends \DomainException implements UserFacingError
 {
     public static function withName(string $name): self
     {
-        return new self(sprintf('source with name %s was not found', $name));
+        return new self(sprintf('duplicate source with %s name', $name));
     }
 
     public function translationId(): string
     {
-        return 'aggregator.exceptions.source_not_found';
+        return 'aggregator.exceptions.duplicate_source';
     }
 
     public function translationParameters(): array

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Aggregator\Application\ReadModel;
 
 use App\Aggregator\Domain\Model\Entity\Identity\ArticleId;
+use App\Aggregator\Domain\Model\ValueObject\Credibility\Credibility;
 
 /**
  * Class ArticleDetails.
@@ -21,8 +22,10 @@ final readonly class ArticleDetails
         public string $body,
         public string $source,
         public string $hash,
+        public Credibility $credibility,
         public \DateTimeImmutable $publishedAt,
-        public \DateTimeImmutable $crawledAt
+        public \DateTimeImmutable $crawledAt,
+        public ?\DateTimeImmutable $updatedAt
     ) {
     }
 }

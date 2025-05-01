@@ -19,11 +19,7 @@ interface ArticleRepository
 
     public function remove(Article $article): void;
 
-    public function countBySource(string $source): int;
-
     public function getById(ArticleId $id): ?Article;
-
-    public function getByLink(string $link): ?Article;
 
     public function getByHash(string $hash): ?Article;
 

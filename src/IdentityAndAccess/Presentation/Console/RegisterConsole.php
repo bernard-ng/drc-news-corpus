@@ -22,7 +22,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-#[AsCommand('app:identity-and-access:register', 'register a new user')]
+#[AsCommand('app:user-register', 'register a new user')]
 final class RegisterConsole extends Command
 {
     use AskArgumentFeature;

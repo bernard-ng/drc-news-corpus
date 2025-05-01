@@ -78,6 +78,8 @@ final class RadioOkapiNet extends Source
             } else {
                 $this->skip($dateRange, $timestamp, $title, $date);
             }
+        } catch (ArticleOutOfRange $e) {
+            throw $e;
         } catch (\Throwable $e) {
             $this->logger->error("> {$e->getMessage()} [Failed] ❌");
             return;

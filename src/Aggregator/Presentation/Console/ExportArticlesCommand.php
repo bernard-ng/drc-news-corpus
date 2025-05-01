@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Presentation\Console;
 
-use App\Aggregator\Application\UseCase\Command\Export;
+use App\Aggregator\Application\UseCase\Command\ExportArticles;
 use App\Aggregator\Domain\Model\ValueObject\DateRange;
 use App\SharedKernel\Application\Bus\CommandBus;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -19,7 +19,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:export',
     description: 'export crawled news website',
 )]
-final class ExportCommand extends Command
+final class ExportArticlesCommand extends Command
 {
     private SymfonyStyle $io;
 
@@ -51,7 +51,7 @@ final class ExportCommand extends Command
         /** @var string|null $date */
         $date = $input->getOption('date');
 
-        $this->commandBus->handle(new Export(
+        $this->commandBus->handle(new ExportArticles(
             source: $source,
             date: $date !== null ? DateRange::from($date) : null
         ));
