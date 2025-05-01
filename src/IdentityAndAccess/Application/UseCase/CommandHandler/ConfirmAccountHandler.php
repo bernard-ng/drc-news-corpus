@@ -8,7 +8,7 @@ use App\IdentityAndAccess\Application\UseCase\Command\ConfirmAccount;
 use App\IdentityAndAccess\Domain\Model\Repository\UserRepository;
 use App\IdentityAndAccess\Domain\Model\Repository\VerificationTokenRepository;
 use App\IdentityAndAccess\Domain\Model\ValueObject\TokenPurpose;
-use App\SharedKernel\Application\Bus\CommandHandler;
+use App\SharedKernel\Application\Messaging\CommandHandler;
 use App\SharedKernel\Domain\EventDispatcher\EventDispatcher;
 
 /**

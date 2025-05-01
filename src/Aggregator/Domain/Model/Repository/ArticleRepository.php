@@ -6,7 +6,7 @@ namespace App\Aggregator\Domain\Model\Repository;
 
 use App\Aggregator\Domain\Model\Entity\Article;
 use App\Aggregator\Domain\Model\Entity\Identity\ArticleId;
-use App\Aggregator\Domain\Model\ValueObject\DateRange;
+use App\Aggregator\Domain\Model\ValueObject\Crawling\DateRange;
 
 /**
  * Interface ArticleRepository.

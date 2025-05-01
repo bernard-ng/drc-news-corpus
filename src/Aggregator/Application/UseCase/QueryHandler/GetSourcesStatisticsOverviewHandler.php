@@ -6,7 +6,7 @@ namespace App\Aggregator\Application\UseCase\QueryHandler;
 
 use App\Aggregator\Application\ReadModel\Statistics\SourcesStatisticsOverview;
 use App\Aggregator\Application\UseCase\Query\GetSourcesStatisticsOverview;
-use App\SharedKernel\Application\Bus\QueryHandler;
+use App\SharedKernel\Application\Messaging\QueryHandler;
 
 /**
  * Interface GetSourcesStatisticsOverviewHandler.

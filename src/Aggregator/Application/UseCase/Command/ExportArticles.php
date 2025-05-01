@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Application\UseCase\Command;
 
-use App\Aggregator\Domain\Model\ValueObject\DateRange;
+use App\Aggregator\Domain\Model\ValueObject\Crawling\DateRange;
 
 /**
  * Class Export.

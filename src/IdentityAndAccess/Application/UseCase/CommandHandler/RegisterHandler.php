@@ -13,7 +13,7 @@ use App\IdentityAndAccess\Domain\Model\Repository\VerificationTokenRepository;
 use App\IdentityAndAccess\Domain\Model\ValueObject\TokenPurpose;
 use App\IdentityAndAccess\Domain\Service\PasswordHasher;
 use App\IdentityAndAccess\Domain\Service\SecretGenerator;
-use App\SharedKernel\Application\Bus\CommandHandler;
+use App\SharedKernel\Application\Messaging\CommandHandler;
 use App\SharedKernel\Domain\EventDispatcher\EventDispatcher;
 
 /**

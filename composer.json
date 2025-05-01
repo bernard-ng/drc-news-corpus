@@ -96,13 +96,10 @@
         "post-update-cmd": [
             "@auto-scripts"
         ],
-        "app:migrate": [
-            "bin/console doctrine:database:create --if-not-exists",
-            "bin/console doctrine:migration:migrate --no-interaction --allow-no-migration"
-        ],
         "app:cs": [
             "./vendor/bin/ecs check",
             "bin/console lint:yaml config --parse-tags",
+            "bin/console lint:twig templates",
             "bin/console lint:container",
             "./vendor/bin/phpstan analyse --memory-limit=-1 --configuration=phpstan.dist.neon",
             "./vendor/bin/rector --dry-run"
@@ -112,7 +109,7 @@
         ],
         "app:behat": [
             "APP_ENV=test bin/console doctrine:database:create",
-            "APP_ENV=test bin/console doctrine:migration:migrate --no-interaction --allow-no-migration",
+            "APP_ENV=test bin/console doctrine:migration:migrate --no-interaction --allow-no-migration --all-or-nothing",
             "APP_ENV=test ./vendor/bin/behat --format=progress --no-interaction"
         ],
         "app:env": [

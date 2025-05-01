@@ -12,7 +12,11 @@ use App\Aggregator\Application\ReadModel\Statistics\SourceOverview;
 use App\Aggregator\Application\ReadModel\Statistics\SourceStatisticsDetails;
 use App\Aggregator\Application\UseCase\Query\GetSourceStatisticsDetails;
 use App\Aggregator\Application\UseCase\QueryHandler\GetSourceStatisticsDetailsHandler;
+use App\Aggregator\Domain\Exception\SourceNotFound;
+use App\Aggregator\Infrastructure\Persistence\Doctrine\CacheKey;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Mapping;
+use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\NoResult;
+use Doctrine\DBAL\Cache\QueryCacheProfile;
 use Doctrine\DBAL\Connection;
 
 /**
@@ -46,12 +50,21 @@ final readonly class GetSourceStatisticsDetailsDbalHandler implements GetSourceS
             ->setParameter('start', new \DateTimeImmutable('-12 months')->format('Y-m-d'))
             ->setParameter('source', $query->source)
             ->groupBy('day')
-            ->orderBy('day', 'ASC');
+            ->orderBy('day', 'ASC')
+            ->enableResultCache(new QueryCacheProfile(0, CacheKey::SOURCE_PUBLICATION_GRAPH->withId($query->source)));
 
-        /** @var array<array{day: string, count: int}> $data */
-        $data = $qb->executeQuery()->fetchAllAssociative();
+        try {
+            /** @var array<array{day: string, count: int}> $data */
+            $data = $qb->executeQuery()->fetchAllAssociative();
+        } catch (\Throwable $e) {
+            throw NoResult::forQuery($qb->getSQL(), $qb->getParameters(), $e);
+        }
 
-        $start = new \DateTimeImmutable('-12 months');
+        if (empty($data)) {
+            throw SourceNotFound::withName($query->source);
+        }
+
+        $start = new \DateTimeImmutable('-6 months');
         $end = new \DateTimeImmutable('today');
         $period = new \DatePeriod($start, new \DateInterval('P1D'), $end);
 
@@ -81,10 +94,19 @@ final readonly class GetSourceStatisticsDetailsDbalHandler implements GetSourceS
             ->select('categories')
             ->from('article')
             ->where('source = :source')
-            ->setParameter('source', $query->source);
+            ->setParameter('source', $query->source)
+            ->enableResultCache(new QueryCacheProfile(0, CacheKey::SOURCE_CATEGORIES_SHARES->withId($query->source)));
 
-        /** @var array<string> $categories */
-        $categories = $qb->executeQuery()->fetchFirstColumn();
+        try {
+            /** @var array<string> $categories */
+            $categories = $qb->executeQuery()->fetchFirstColumn();
+        } catch (\Throwable $e) {
+            throw NoResult::forQuery($qb->getSQL(), $qb->getParameters(), $e);
+        }
+
+        if (empty($categories)) {
+            throw SourceNotFound::withName($query->source);
+        }
 
         $counts = [];
         foreach ($categories as $category) {
@@ -96,14 +118,13 @@ final readonly class GetSourceStatisticsDetailsDbalHandler implements GetSourceS
                 $counts[$cat] = ($counts[$cat] ?? 0) + 1;
             }
         }
-
         $total = array_sum($counts);
 
         return new CategoryShares(array_map(
             fn (string $category, int $count) => new CategoryShare(
                 category: $category,
                 count: $count,
-                percentage: $total > 0 ? ($count / $total) * 100 : 0.0
+                percentage: $total > 0 ? round(($count / $total) * 100, 2) : 0.0
             ),
             array_keys($counts),
             array_values($counts)
@@ -114,18 +135,28 @@ final readonly class GetSourceStatisticsDetailsDbalHandler implements GetSourceS
     {
         $qb = $this->connection->createQueryBuilder()
             ->select('COUNT(link) AS total, MAX(crawled_at) AS crawled_at, source')
-            ->addSelect('s.updated_at AS updated_at')
+            ->addSelect('s.updated_at AS updated_at, s.url as url')
             ->leftJoin('article', 'source', 's', 'article.source = s.name')
             ->from('article')
             ->where('source = :source')
-            ->setParameter('source', $query->source);
+            ->setParameter('source', $query->source)
+            ->enableResultCache(new QueryCacheProfile(0, CacheKey::SOURCE_OVERVIEW->withId($query->source)));
 
-        /** @var array{total: int, source: string, crawled_at: string, updated_at: string|null} $data */
-        $data = $qb->executeQuery()->fetchAssociative();
+        try {
+            /** @var array<string, mixed> $data */
+            $data = $qb->executeQuery()->fetchAssociative();
+        } catch (\Throwable $e) {
+            throw NoResult::forQuery($qb->getSQL(), $qb->getParameters(), $e);
+        }
+
+        if (! $data['source']) {
+            throw SourceNotFound::withName($query->source);
+        }
 
         return new SourceOverview(
             articles: Mapping::integer($data, 'total'),
             source: Mapping::string($data, 'source'),
+            url: Mapping::string($data, 'url'),
             crawledAt: Mapping::string($data, 'crawled_at'),
             updatedAt: Mapping::nullableDatetime($data, 'updated_at')?->format('Y-m-d H:i:s')
         );

@@ -9,8 +9,8 @@ use App\IdentityAndAccess\Application\UseCase\Command\RegisterLoginAttempt;
 use App\IdentityAndAccess\Domain\Model\Entity\LoginAttempt;
 use App\IdentityAndAccess\Domain\Model\Repository\LoginAttemptRepository;
 use App\IdentityAndAccess\Domain\Model\Repository\UserRepository;
-use App\SharedKernel\Application\Bus\CommandBus;
-use App\SharedKernel\Application\Bus\CommandHandler;
+use App\SharedKernel\Application\Messaging\CommandBus;
+use App\SharedKernel\Application\Messaging\CommandHandler;
 
 /**
  * Class RegisterLoginAttemptHandler.

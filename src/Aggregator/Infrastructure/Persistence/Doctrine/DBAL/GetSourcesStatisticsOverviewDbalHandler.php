@@ -31,31 +31,26 @@ final readonly class GetSourcesStatisticsOverviewDbalHandler implements GetSourc
     {
         $qb = $this->connexion->createQueryBuilder()
             ->select('COUNT(link) AS total, MAX(crawled_at) AS crawled_at, source')
-            ->addSelect('s.updated_at AS updated_at')
+            ->addSelect('s.updated_at AS updated_at, s.url as url')
             ->leftJoin('article', 'source', 's', 'article.source = s.name')
             ->from('article')
             ->groupBy('source')
-            ->orderBy('source', 'DESC')
-            ->enableResultCache(new QueryCacheProfile(3600, CacheKey::STATISTICS->value))
-        ;
+            ->orderBy('total', 'DESC')
+            ->enableResultCache(new QueryCacheProfile(3600, CacheKey::SOURCES_STATISTICS_OVERVIEW->value));
 
         try {
-            /** @var array{total: int, source: string, crawled_at: string, updated_at: string|null}[] $data */
+            /** @var array<array<string, mixed>> $data */
             $data = $qb->executeQuery()->fetchAllAssociative();
 
-            return $this->mapStatistics($data);
+            return new SourcesStatisticsOverview(array_map(fn ($item) => new SourceOverview(
+                articles: Mapping::integer($item, 'total'),
+                source: Mapping::string($item, 'source'),
+                url: Mapping::string($item, 'url'),
+                crawledAt: Mapping::string($item, 'crawled_at'),
+                updatedAt: Mapping::nullableDatetime($data, 'updated_at')?->format('Y-m-d H:i:s')
+            ), $data));
         } catch (\Throwable $e) {
             throw NoResult::forQuery($qb->getSQL(), $qb->getParameters(), $e);
         }
-    }
-
-    private function mapStatistics(array $data): SourcesStatisticsOverview
-    {
-        return new SourcesStatisticsOverview(array_map(fn ($row) => new SourceOverview(
-            articles: Mapping::integer($row, 'total'),
-            source: Mapping::string($row, 'source'),
-            crawledAt: Mapping::string($row, 'crawled_at'),
-            updatedAt: Mapping::nullableDatetime($data, 'updated_at')?->format('Y-m-d H:i:s')
-        ), $data));
     }
 }

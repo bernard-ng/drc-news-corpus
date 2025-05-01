@@ -5,9 +5,13 @@ meta {
 }
 
 get {
-  url: {{baseUrl}}/aggregator/statistics
+  url: {{baseUrl}}/aggregator/statistics/:source
   body: none
   auth: bearer
+}
+
+params:path {
+  source: mediacongo.net
 }
 
 headers {

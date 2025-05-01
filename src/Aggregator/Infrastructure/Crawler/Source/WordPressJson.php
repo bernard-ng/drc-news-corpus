@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Aggregator\Infrastructure\Crawler\Source;
 
 use App\Aggregator\Domain\Exception\ArticleOutOfRange;
-use App\Aggregator\Domain\Model\ValueObject\DateRange;
-use App\Aggregator\Domain\Model\ValueObject\FetchConfig;
-use App\Aggregator\Domain\Model\ValueObject\PageRange;
+use App\Aggregator\Domain\Model\ValueObject\Crawling\CrawlingSettings;
+use App\Aggregator\Domain\Model\ValueObject\Crawling\DateRange;
+use App\Aggregator\Domain\Model\ValueObject\Crawling\PageRange;
 
 /**
  * Class WordPressJson.
@@ -39,15 +39,15 @@ class WordPressJson extends Source
         $pages = (int) $headers[self::TOTAL_PAGES_HEADER][0];
         $posts = (int) $headers[self::TOTAL_POSTS_HEADER][0];
 
-        $this->logger->debug(sprintf('WordPressJson %d posts, %d pages', $posts, $pages));
+        $this->logger->info(sprintf('WordPressJson %d posts, %d pages', $posts, $pages));
         return PageRange::from(sprintf('1:%d', $pages));
     }
 
     #[\Override]
-    public function fetch(FetchConfig $config): void
+    public function fetch(CrawlingSettings $settings): void
     {
         $this->initialize();
-        $page = $config->pageRange ?? $this->getPagination();
+        $page = $settings->pageRange ?? $this->getPagination();
 
         for ($i = $page->start; $i <= $page->end; $i++) {
             try {
@@ -65,7 +65,7 @@ class WordPressJson extends Source
 
             try {
                 foreach ($articles as $article) {
-                    $this->fetchOne((string) json_encode($article), $config->dateRange);
+                    $this->fetchOne((string) json_encode($article), $settings->dateRange);
                 }
             } catch (ArticleOutOfRange) {
                 $this->logger->info('No more articles to fetch in this range.');

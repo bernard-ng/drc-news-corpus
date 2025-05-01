@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Aggregator\Domain\Service;
 
-use App\Aggregator\Domain\Service\DateParser;
+use App\Aggregator\Domain\Service\Crawling\DateParser;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 

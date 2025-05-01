@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Infrastructure\Crawler\Source;
 
-use App\Aggregator\Application\UseCase\Command\SaveArticle;
-use App\Aggregator\Domain\Event\SourceFetched;
+use App\Aggregator\Application\UseCase\Command\CreateArticle;
+use App\Aggregator\Domain\Event\SourceCrawled;
 use App\Aggregator\Domain\Exception\ArticleOutOfRange;
-use App\Aggregator\Domain\Model\Entity\Identity\ArticleId;
-use App\Aggregator\Domain\Model\ValueObject\DateRange;
-use App\Aggregator\Domain\Model\ValueObject\PageRange;
-use App\Aggregator\Domain\Service\DateParser;
-use App\Aggregator\Domain\Service\SourceFetcher;
-use App\SharedKernel\Application\Bus\CommandBus;
+use App\Aggregator\Domain\Model\ValueObject\Crawling\DateRange;
+use App\Aggregator\Domain\Model\ValueObject\Crawling\PageRange;
+use App\Aggregator\Domain\Service\Crawling\DateParser;
+use App\Aggregator\Domain\Service\Crawling\SourceCrawler;
+use App\SharedKernel\Application\Messaging\CommandBus;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
@@ -26,7 +25,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
  * @author bernard-ng <bernard@devscast.tech>
  */
 #[AutoconfigureTag('app.data_source')]
-abstract class Source implements SourceFetcher
+abstract class Source implements SourceCrawler
 {
     protected const string URL = 'url';
 
@@ -60,7 +59,7 @@ abstract class Source implements SourceFetcher
     protected function crawle(string $url, ?int $page = null): Crawler
     {
         if ($page !== null) {
-            $this->logger->debug("> Page {$page}");
+            $this->logger->info("> Page {$page}");
         }
 
         $response = $this->client->request('GET', $url)->getContent();
@@ -70,9 +69,8 @@ abstract class Source implements SourceFetcher
     protected function save(string $title, string $link, string $categories, string $body, string $timestamp): void
     {
         try {
-            /** @var ArticleId $id */
-            $id = $this->commandBus->handle(
-                new SaveArticle(
+            $this->commandBus->handle(
+                new CreateArticle(
                     title: $title,
                     link: $link,
                     categories: $categories,
@@ -81,7 +79,7 @@ abstract class Source implements SourceFetcher
                     timestamp: (int) $timestamp
                 )
             );
-            $this->logger->debug("> {$id->toString()} : {$title} ✅");
+            $this->logger->info("> {$title} ✅");
         } catch (\Throwable $e) {
             $this->logger->error("> {$e->getMessage()} [Failed] ❌");
         }
@@ -90,14 +88,14 @@ abstract class Source implements SourceFetcher
     protected function initialize(): void
     {
         $this->stopwatch->start(self::WATCH_EVENT_NAME);
-        $this->logger->debug('Initialized');
+        $this->logger->info('Initialized');
     }
 
     protected function completed(): void
     {
         $event = $this->stopwatch->stop(self::WATCH_EVENT_NAME);
-        $this->dispatcher->dispatch(new SourceFetched((string) $event, static::ID));
-        $this->logger->debug('Done');
+        $this->dispatcher->dispatch(new SourceCrawled((string) $event, static::ID));
+        $this->logger->info('Done');
     }
 
     protected function skip(DateRange $dateRange, string $timestamp, string $title, string $date): void
@@ -106,7 +104,7 @@ abstract class Source implements SourceFetcher
             throw ArticleOutOfRange::with($timestamp, $dateRange);
         }
 
-        $this->logger->debug("> {$title} [Skipped {$date}]");
+        $this->logger->info("> {$title} [Skipped {$date}]");
     }
 
     /**

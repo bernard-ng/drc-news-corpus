@@ -12,7 +12,7 @@ when@dev:
                 channels: ["!app"]
             app:
                 type: stream
-                path: "%kernel.logs_dir%/corpus.%kernel.environment%.log"
+                path: "%kernel.logs_dir%/app.%kernel.environment%.log"
                 level: debug
                 channels: ["app"]
             console:
@@ -55,7 +55,7 @@ when@prod:
                 disable_webpage_preview: true
                 disable_notification: false
                 split_long_messages: false
-                formatter: App\SharedKernel\Infrastructure\Framework\Symfony\Logger\TelegramFormatter
+                formatter: App\SharedKernel\Infrastructure\Framework\Symfony\Logging\TelegramFormatter
             nested:
                 type: rotating_file
                 path: "%kernel.logs_dir%/%kernel.environment%.log"
@@ -63,6 +63,7 @@ when@prod:
                 max_files: 10
             console:
                 type: console
+                level: info
                 process_psr_3_messages: false
                 channels: ["!event", "!doctrine"]
             deprecation:

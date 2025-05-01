@@ -9,7 +9,7 @@ use App\IdentityAndAccess\Domain\Model\Entity\LoginHistory;
 use App\IdentityAndAccess\Domain\Model\Repository\LoginAttemptRepository;
 use App\IdentityAndAccess\Domain\Model\Repository\LoginHistoryRepository;
 use App\IdentityAndAccess\Domain\Model\Repository\UserRepository;
-use App\SharedKernel\Application\Bus\CommandHandler;
+use App\SharedKernel\Application\Messaging\CommandHandler;
 use App\SharedKernel\Domain\EventDispatcher\EventDispatcher;
 use App\SharedKernel\Domain\Tracking\ClientProfiler;
 

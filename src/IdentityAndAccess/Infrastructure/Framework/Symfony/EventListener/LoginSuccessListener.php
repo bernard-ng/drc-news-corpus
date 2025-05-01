@@ -6,7 +6,7 @@ namespace App\IdentityAndAccess\Infrastructure\Framework\Symfony\EventListener;
 
 use App\IdentityAndAccess\Application\UseCase\Command\RegisterLoginSuccess;
 use App\IdentityAndAccess\Infrastructure\Framework\Symfony\Security\SecurityUser;
-use App\SharedKernel\Application\Bus\CommandBus;
+use App\SharedKernel\Application\Messaging\CommandBus;
 use App\SharedKernel\Domain\Model\ValueObject\Tracking\ClientProfile;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\IpUtils;

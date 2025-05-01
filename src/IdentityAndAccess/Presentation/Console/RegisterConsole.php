@@ -6,7 +6,7 @@ namespace App\IdentityAndAccess\Presentation\Console;
 
 use App\IdentityAndAccess\Application\UseCase\Command\Register;
 use App\IdentityAndAccess\Domain\Model\ValueObject\Roles;
-use App\SharedKernel\Application\Bus\CommandBus;
+use App\SharedKernel\Application\Messaging\CommandBus;
 use App\SharedKernel\Domain\Model\ValueObject\Email;
 use App\SharedKernel\Presentation\Console\AskArgumentFeature;
 use Symfony\Component\Console\Attribute\AsCommand;

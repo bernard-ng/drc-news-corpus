@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Domain\Model\Entity;
 
-use App\Aggregator\Domain\Model\ValueObject\Credibility\Credibility;
+use App\Aggregator\Domain\Model\ValueObject\Scoring\Credibility;
 
 /**
  * Class Source.

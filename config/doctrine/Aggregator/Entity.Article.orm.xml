@@ -25,7 +25,12 @@
             <join-column nullable="false"  name="source" referenced-column-name="name" on-delete="RESTRICT" />
         </many-to-one>
 
-        <embedded name="credibility" class="App\Aggregator\Domain\Model\ValueObject\Credibility\Credibility" use-column-prefix="false" />
+        <embedded name="credibility" class="App\Aggregator\Domain\Model\ValueObject\Scoring\Credibility" use-column-prefix="false" />
+        <field name="sentiment" enum-type="App\Aggregator\Domain\Model\ValueObject\Scoring\Sentiment">
+            <options>
+                <option name="default">neutral</option>
+            </options>
+        </field>
 
         <field name="publishedAt" type="datetime_immutable" />
         <field name="crawledAt" type="datetime_immutable" />

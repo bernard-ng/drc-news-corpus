@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\SharedKernel\Presentation\Web\Controller;
 
 use App\IdentityAndAccess\Infrastructure\Framework\Symfony\Security\SecurityUser;
-use App\SharedKernel\Application\Bus\CommandBus;
-use App\SharedKernel\Application\Bus\QueryBus;
+use App\SharedKernel\Application\Messaging\CommandBus;
+use App\SharedKernel\Application\Messaging\QueryBus;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController as SymfonyController;
 use Symfony\Component\HttpFoundation\Response;

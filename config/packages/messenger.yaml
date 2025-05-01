@@ -21,7 +21,7 @@ framework:
             sync: 'sync://'
 
         routing:
-            App\SharedKernel\Application\Bus\AsyncMessage: async
+            App\SharedKernel\Application\Messaging\AsyncMessage: async
             Symfony\Component\Mailer\Messenger\SendEmailMessage: sync
 
         default_bus: command.bus

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Aggregator\Domain\Model\ValueObject;
 
-use App\Aggregator\Domain\Model\ValueObject\PageRange;
+use App\Aggregator\Domain\Model\ValueObject\Crawling\PageRange;
 use App\SharedKernel\Domain\Exception\InvalidArgument;
 use PHPUnit\Framework\TestCase;
 

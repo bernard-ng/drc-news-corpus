@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Aggregator\Infrastructure\Crawler\Source\Data;
 
 use App\Aggregator\Domain\Exception\ArticleOutOfRange;
-use App\Aggregator\Domain\Model\ValueObject\DateRange;
-use App\Aggregator\Domain\Model\ValueObject\FetchConfig;
-use App\Aggregator\Domain\Model\ValueObject\PageRange;
+use App\Aggregator\Domain\Model\ValueObject\Crawling\CrawlingSettings;
+use App\Aggregator\Domain\Model\ValueObject\Crawling\DateRange;
+use App\Aggregator\Domain\Model\ValueObject\Crawling\PageRange;
 use App\Aggregator\Infrastructure\Crawler\Source\Source;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -26,10 +26,10 @@ final class ActualiteCd extends Source
      * @throws \Throwable
      */
     #[\Override]
-    public function fetch(FetchConfig $config): void
+    public function fetch(CrawlingSettings $settings): void
     {
         $this->initialize();
-        $page = $config->pageRange ?? $this->getPagination();
+        $page = $settings->pageRange ?? $this->getPagination();
 
         for ($i = $page->start; $i < $page->end; $i++) {
             try {
@@ -40,7 +40,7 @@ final class ActualiteCd extends Source
             }
 
             try {
-                $articles->each(fn (Crawler $node) => $this->fetchOne($node->html(), $config->dateRange));
+                $articles->each(fn (Crawler $node) => $this->fetchOne($node->html(), $settings->dateRange));
             } catch (ArticleOutOfRange) {
                 $this->logger->info('No more articles to fetch in this range.');
                 break;

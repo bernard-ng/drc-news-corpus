@@ -8,7 +8,7 @@ use App\Aggregator\Application\ReadModel\ArticleList;
 use App\Aggregator\Application\UseCase\Query\GetArticleList;
 use App\Aggregator\Application\UseCase\QueryHandler\GetArticleListHandler;
 use App\Aggregator\Domain\Model\ValueObject\Filters\ArticleFilters;
-use App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL\Feature\ArticleQuery;
+use App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL\Features\ArticleQuery;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\NoResult;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;

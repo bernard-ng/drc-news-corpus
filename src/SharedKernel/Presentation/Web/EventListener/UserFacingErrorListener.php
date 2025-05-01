@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace App\SharedKernel\Presentation\Web\EventListener;
 
+use App\Aggregator\Domain\Exception\ArticleNotFound;
+use App\Aggregator\Domain\Exception\SourceNotFound;
+use App\IdentityAndAccess\Domain\Exception\UserNotFound;
+use App\SharedKernel\Domain\Exception\InvalidArgument;
 use App\SharedKernel\Domain\Exception\UserFacingError;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -20,6 +24,16 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[AsEventListener(KernelEvents::EXCEPTION, priority: -1)]
 final readonly class UserFacingErrorListener
 {
+    private const array NOT_FOUND_EXCEPTIONS = [
+        ArticleNotFound::class,
+        SourceNotFound::class,
+        UserNotFound::class,
+    ];
+
+    private const array BAD_REQUEST_EXCEPTIONS = [
+        InvalidArgument::class,
+    ];
+
     public function __construct(
         private TranslatorInterface $translator
     ) {
@@ -35,14 +49,24 @@ final readonly class UserFacingErrorListener
                 $exception->translationDomain(),
             );
 
+            $status = $this->getResponseStatus($exception);
             $response = new JsonResponse([
                 'type' => 'https://symfony.com/errors/domain',
                 'title' => $exception->translationId(),
                 'detail' => $message,
-                'status' => Response::HTTP_UNPROCESSABLE_ENTITY,
-            ], status: Response::HTTP_UNPROCESSABLE_ENTITY);
+                'status' => $status,
+            ], $status);
 
             $event->setResponse($response);
         }
+    }
+
+    public function getResponseStatus(UserFacingError $exception): int
+    {
+        return match (true) {
+            in_array($exception::class, self::NOT_FOUND_EXCEPTIONS) => Response::HTTP_NOT_FOUND,
+            in_array($exception::class, self::BAD_REQUEST_EXCEPTIONS) => Response::HTTP_BAD_REQUEST,
+            default => Response::HTTP_UNPROCESSABLE_ENTITY
+        };
     }
 }

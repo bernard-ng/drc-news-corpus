@@ -6,7 +6,7 @@ namespace App\Aggregator\Application\UseCase\QueryHandler;
 
 use App\Aggregator\Application\ReadModel\ArticleForExport;
 use App\Aggregator\Application\UseCase\Query\GetArticlesForExport;
-use App\SharedKernel\Application\Bus\QueryHandler;
+use App\SharedKernel\Application\Messaging\QueryHandler;
 
 /**
  * Class GetArticlesForExportHandler.

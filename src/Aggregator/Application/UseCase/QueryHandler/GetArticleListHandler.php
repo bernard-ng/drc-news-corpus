@@ -6,7 +6,7 @@ namespace App\Aggregator\Application\UseCase\QueryHandler;
 
 use App\Aggregator\Application\ReadModel\ArticleList;
 use App\Aggregator\Application\UseCase\Query\GetArticleList;
-use App\SharedKernel\Application\Bus\QueryHandler;
+use App\SharedKernel\Application\Messaging\QueryHandler;
 
 /**
  * Class GetArticleListHandler.

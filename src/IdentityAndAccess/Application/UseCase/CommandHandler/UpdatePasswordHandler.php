@@ -7,7 +7,7 @@ namespace App\IdentityAndAccess\Application\UseCase\CommandHandler;
 use App\IdentityAndAccess\Application\UseCase\Command\UpdatePassword;
 use App\IdentityAndAccess\Domain\Model\Repository\UserRepository;
 use App\IdentityAndAccess\Domain\Service\PasswordHasher;
-use App\SharedKernel\Application\Bus\CommandHandler;
+use App\SharedKernel\Application\Messaging\CommandHandler;
 use App\SharedKernel\Domain\EventDispatcher\EventDispatcher;
 
 /**

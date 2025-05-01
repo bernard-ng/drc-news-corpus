@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Aggregator\Application\UseCase\QueryHandler;
 
 use App\Aggregator\Application\UseCase\Query\GetLatestPublicationDate;
-use App\SharedKernel\Application\Bus\QueryHandler;
+use App\SharedKernel\Application\Messaging\QueryHandler;
 
 /**
  * Interface GetLatestPublicationDateHandler.

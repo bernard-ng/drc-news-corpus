@@ -7,8 +7,8 @@ namespace App\Aggregator\Application\UseCase\CommandHandler;
 use App\Aggregator\Application\ReadModel\ArticleForExport;
 use App\Aggregator\Application\UseCase\Command\ExportArticles;
 use App\Aggregator\Application\UseCase\Query\GetArticlesForExport;
-use App\SharedKernel\Application\Bus\CommandHandler;
-use App\SharedKernel\Application\Bus\QueryBus;
+use App\SharedKernel\Application\Messaging\CommandHandler;
+use App\SharedKernel\Application\Messaging\QueryBus;
 use App\SharedKernel\Domain\DataTransfert\DataExporter;
 use App\SharedKernel\Domain\DataTransfert\TransfertSetting;
 

@@ -5,7 +5,6 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     app_crawling_notification_email: '%env(CRAWLING_NOTIFICATION_EMAIL)%'
-    app_enable_backtrace: '%env(bool:APP_ENABLE_BACKTRACE)%'
 
 services:
     # default configuration for services in *this* file
@@ -17,13 +16,13 @@ services:
             $crawlingNotificationEmail: '%app_crawling_notification_email%'
 
     _instanceof:
-        App\SharedKernel\Application\Bus\CommandHandler:
+        App\SharedKernel\Application\Messaging\CommandHandler:
             tags:
                 - { name: messenger.message_handler, bus: 'command.bus' }
-        App\SharedKernel\Application\Bus\QueryHandler:
+        App\SharedKernel\Application\Messaging\QueryHandler:
             tags:
                 - { name: messenger.message_handler, bus: 'query.bus' }
-        App\SharedKernel\Application\Bus\MessageHandler:
+        App\SharedKernel\Application\Messaging\MessageHandler:
             tags:
                 - { name: messenger.message_handler, bus: 'message.bus' }
         App\SharedKernel\Domain\EventListener\EventListener:
@@ -39,7 +38,7 @@ services:
     Symfony\Bridge\Monolog\Processor\TokenProcessor:
         tags:
             - { name: monolog.processor, channel: 'app' }
-    App\SharedKernel\Infrastructure\Framework\Symfony\Logger\TelegramFormatter:
+    App\SharedKernel\Infrastructure\Framework\Symfony\Logging\TelegramFormatter:
         tags:
             - { name: monolog.formatter }
 

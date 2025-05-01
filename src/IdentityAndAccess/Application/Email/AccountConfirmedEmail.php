@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\IdentityAndAccess\Application\Email;
 
-use App\SharedKernel\Application\Email\EmailDefinition;
+use App\SharedKernel\Application\Mailing\EmailDefinition;
 use App\SharedKernel\Domain\Model\ValueObject\Email;
 
 /**

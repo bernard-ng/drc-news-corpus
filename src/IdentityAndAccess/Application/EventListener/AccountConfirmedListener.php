@@ -7,7 +7,7 @@ namespace App\IdentityAndAccess\Application\EventListener;
 use App\IdentityAndAccess\Application\Email\AccountConfirmedEmail;
 use App\IdentityAndAccess\Domain\Event\AccountConfirmed;
 use App\IdentityAndAccess\Domain\Model\Repository\UserRepository;
-use App\SharedKernel\Application\Email\Mailer;
+use App\SharedKernel\Application\Mailing\Mailer;
 use App\SharedKernel\Domain\EventListener\EventListener;
 
 /**

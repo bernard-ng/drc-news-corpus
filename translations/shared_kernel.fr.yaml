@@ -1,0 +1,3 @@
+# Exceptions
+shared_kernel.exceptions.invalid_email_address: Cet adresse email n'est pas valide !
+shared_kernel.exceptions.invalid_argument: Les informations fournis sont invalides !

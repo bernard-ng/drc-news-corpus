@@ -1,3 +1,8 @@
+# Emails
+aggregator.emails.source_crawled.subject: "[DRC News] source crawled successfully"
 
-# Emails subjects messages
-aggregator.emails.source_fetched.subject: "Source fetched"
+# Exceptions
+aggregator.exceptions.article_not_found: Désolé nous n'avons pas trouvé cet article dans nos enregistrements
+aggregator.exceptions.duplicated_article: Cet article a déjà été enregistré
+aggregator.exceptions.article_out_of_range: Article en déhors de l'intervalle de dates d'enregistrement
+aggregator.exceptions.source_not_found: Désolé impossible d'obtenir des informations sur cette source
