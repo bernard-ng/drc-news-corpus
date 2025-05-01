@@ -28,7 +28,7 @@ final readonly class SourceStatisticsDetails implements \JsonSerializable
             'categories' => $this->categories->total,
             'articles' => $this->overview->articles,
             'crawledAt' => $this->overview->crawledAt,
-            'updatedAt' => $this->overview->updatedAt
+            'updatedAt' => $this->overview->updatedAt,
         ];
     }
 }

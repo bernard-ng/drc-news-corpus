@@ -26,7 +26,7 @@ final readonly class SourceOverview implements \JsonSerializable
             'articles' => $this->articles,
             'source' => $this->source,
             'crawledAt' => $this->crawledAt,
-            'updatedAt' => $this->updatedAt
+            'updatedAt' => $this->updatedAt,
         ];
     }
 }
