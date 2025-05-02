@@ -13,6 +13,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Stopwatch\Stopwatch;
@@ -44,6 +45,12 @@ class OpenGraphConsole extends Command
     }
 
     #[\Override]
+    public function configure(): void
+    {
+        $this->addOption('batch', null, InputOption::VALUE_OPTIONAL, 'Batch size', 50);
+    }
+
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->setProcessTitle('[DRC News] OpenGraph Consumer');
@@ -55,7 +62,7 @@ class OpenGraphConsole extends Command
         }
 
         $index = 0;
-        $batchSize = 100;
+        $batchSize = $input->getOption('batch') ?? 50;
         $query = $this->entityManager->createQuery(
             sprintf('SELECT a FROM %s a WHERE a.metadata IS NULL ORDER BY a.publishedAt DESC', Article::class)
         );
