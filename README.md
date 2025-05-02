@@ -1,4 +1,4 @@
-# DRC News Corpus : Towards a scalable and efficient system for Congolese news dataset curation
+# DRC News Corpus : Towards a scalable and intelligent system for Congolese News curation
 
 ![Deployed](https://github.com/bernard-ng/drc-news-corpus/actions/workflows/deploy.yaml/badge.svg)
 ![Coding Standard](https://github.com/bernard-ng/drc-news-corpus/actions/workflows/quality.yaml/badge.svg)
@@ -33,11 +33,12 @@ To ensure quality and reliability, the dataset prioritizes reputable news source
 
 | Source         | Supported | Articles | Link                                 | Last Crawled |
 |----------------|-----------|----------|--------------------------------------|--------------|
-| radiookapi.net | Yes       | +100k    | https://www.radiookapi.net/actualite | 2025-02-28   |
-| mediacongo.cd  | Yes       | +100k    | https://www.mediacongo.net/          | 2025-02-28   |
-| beto.cd        | Yes       | +30k     | https://www.beto.cd/                 | 2025-02-28   |
-| actualite.cd   | Yes       | +57k     | https://actualite.cd/                | 2025-02-28   |
-| 7sur7.cd       | Yes       | NA       | https://7sur7.cd                     | NA           |
+| radiookapi.net | Yes       | +100k    | https://www.radiookapi.net/actualite | every sunday |
+| mediacongo.cd  | Yes       | +100k    | https://www.mediacongo.net/          | every sunday |
+| beto.cd        | Yes       | +30k     | https://www.beto.cd/                 | every sunday |
+| actualite.cd   | Yes       | +57k     | https://actualite.cd/                | every sunday |
+| 7sur7.cd       | Yes       | +50k     | https://7sur7.cd                     | every sunday |
+| newscd.net     | Yes       | +5k      | https://newscd.net                   | every sunday |
 
 
 ## Build the dataset

@@ -25,13 +25,13 @@ jobs:
             key: ${{ secrets.SSH_KEY }}
             port: ${{ secrets.SSH_PORT }}
             script: |
-              cd ~/news.devscast.org
+              cd ~/devscast.org
               git pull origin main --rebase
               make deploy
               curl -X POST "https://api.telegram.org/bot${{ secrets.DEVY_TOKEN }}/sendMessage" \
                   -H "Content-Type: application/json" \
                   -d '{
                     "chat_id": "${{ secrets.DEVY_CHAT_ID }}",
-                    "text": "drc-news-corpus : `'"$(git rev-parse --short HEAD)"'` has been deployed! 🎉",
+                    "text": "devscast.org : `'"$(git rev-parse --short HEAD)"'` has been deployed! 🎉",
                     "parse_mode": "Markdown"
                   }'
