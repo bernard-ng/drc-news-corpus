@@ -42,7 +42,7 @@ final class RadioOkapiNet extends Source
             try {
                 $articles->each(fn (Crawler $node) => $this->fetchOne($node->html(), $settings->dateRange));
             } catch (ArticleOutOfRange) {
-                $this->logger->info('No more articles to fetch in this range.');
+                $this->logger->notice('No more articles to fetch in this range.');
                 break;
             }
         }
@@ -68,13 +68,11 @@ final class RadioOkapiNet extends Source
             $title = $node->filter('.views-field-title a')->text();
 
             if ($dateRange === null || $dateRange->inRange((int) $timestamp)) {
-                try {
-                    $body = $this->crawle(self::URL . "/{$link}")->filter('.field-name-body')->text();
-                } catch (\Throwable) {
-                    $body = '';
-                }
+                $crawler = $this->crawle(self::URL . "/{$link}");
+                $metadata = $this->openGraphConsumer->consumeHtml($crawler->html(), self::URL . "/{$link}");
+                $body = $crawler->filter('.field-name-body')->text();
 
-                $this->save($title, $link, implode(',', $categories), $body, $timestamp);
+                $this->save($title, $link, strtolower(implode(',', $categories)), $body, $timestamp, $metadata);
             } else {
                 $this->skip($dateRange, $timestamp, $title, $date);
             }

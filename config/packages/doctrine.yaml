@@ -12,6 +12,7 @@ doctrine:
         types:
             email: App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Types\EmailType
             article_id: App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL\Types\ArticleIdType
+            open_graph: App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL\Types\OpenGraphType
             user_id: App\IdentityAndAccess\Infrastructure\Persistence\Doctrine\DBAL\Types\UserIdType
             login_attempt_id: App\IdentityAndAccess\Infrastructure\Persistence\Doctrine\DBAL\Types\LoginAttemptIdType
             login_history_id: App\IdentityAndAccess\Infrastructure\Persistence\Doctrine\DBAL\Types\LoginHistoryIdType

@@ -28,7 +28,7 @@ final readonly class CreateArticleHandler implements CommandHandler
 
     public function __invoke(CreateArticle $command): void
     {
-        $hash = $this->hashCalculator->calculate($command->link);
+        $hash = $this->hashCalculator->calculate((string) $command->link);
         $article = $this->articleRepository->getByHash($hash);
         if ($article !== null) {
             throw DuplicatedArticle::withLink($command->link);
@@ -40,7 +40,7 @@ final readonly class CreateArticleHandler implements CommandHandler
 
         $article = new Article(
             title: $command->title,
-            link: $this->createAbsoluteUri($command->link, $command->source),
+            link: $command->link,
             body: $command->body,
             hash: $hash,
             categories: mb_strtolower($command->categories),
@@ -48,14 +48,5 @@ final readonly class CreateArticleHandler implements CommandHandler
             publishedAt: $publishedAt,
         );
         $this->articleRepository->add($article);
-    }
-
-    private function createAbsoluteUri(string $link, string $source): string
-    {
-        if (str_starts_with($link, 'http')) {
-            return $link;
-        }
-
-        return sprintf('https://%s/%s', $source, trim($link, '/'));
     }
 }

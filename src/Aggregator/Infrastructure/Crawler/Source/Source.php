@@ -9,7 +9,10 @@ use App\Aggregator\Domain\Event\SourceCrawled;
 use App\Aggregator\Domain\Exception\ArticleOutOfRange;
 use App\Aggregator\Domain\Model\ValueObject\Crawling\DateRange;
 use App\Aggregator\Domain\Model\ValueObject\Crawling\PageRange;
+use App\Aggregator\Domain\Model\ValueObject\Link;
 use App\Aggregator\Domain\Service\Crawling\DateParser;
+use App\Aggregator\Domain\Service\Crawling\OpenGraph\OpenGraphConsumer;
+use App\Aggregator\Domain\Service\Crawling\OpenGraph\OpenGraphObject;
 use App\Aggregator\Domain\Service\Crawling\SourceCrawler;
 use App\SharedKernel\Application\Messaging\CommandBus;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -40,7 +43,8 @@ abstract class Source implements SourceCrawler
         protected EventDispatcherInterface $dispatcher,
         protected LoggerInterface $logger,
         protected DateParser $dateParser,
-        protected CommandBus $commandBus
+        protected CommandBus $commandBus,
+        protected OpenGraphConsumer $openGraphConsumer
     ) {
         $this->stopwatch = new Stopwatch();
     }
@@ -59,27 +63,34 @@ abstract class Source implements SourceCrawler
     protected function crawle(string $url, ?int $page = null): Crawler
     {
         if ($page !== null) {
-            $this->logger->info("> Page {$page}");
+            $this->logger->notice("> Page {$page}");
         }
 
         $response = $this->client->request('GET', $url)->getContent();
         return new Crawler($response);
     }
 
-    protected function save(string $title, string $link, string $categories, string $body, string $timestamp): void
-    {
+    protected function save(
+        string $title,
+        string $link,
+        string $categories,
+        string $body,
+        string $timestamp,
+        ?OpenGraphObject $metadata = null
+    ): void {
         try {
             $this->commandBus->handle(
                 new CreateArticle(
                     title: $title,
-                    link: $link,
+                    link: Link::from($link, static::ID),
                     categories: $categories,
                     body: $body,
                     source: static::ID,
-                    timestamp: (int) $timestamp
+                    timestamp: (int) $timestamp,
+                    metadata: $metadata
                 )
             );
-            $this->logger->info("> {$title} ✅");
+            $this->logger->notice("> {$title} ✅");
         } catch (\Throwable $e) {
             $this->logger->error("> {$e->getMessage()} [Failed] ❌");
         }
@@ -88,14 +99,14 @@ abstract class Source implements SourceCrawler
     protected function initialize(): void
     {
         $this->stopwatch->start(self::WATCH_EVENT_NAME);
-        $this->logger->info('Initialized');
+        $this->logger->notice('Initialized');
     }
 
     protected function completed(): void
     {
         $event = $this->stopwatch->stop(self::WATCH_EVENT_NAME);
         $this->dispatcher->dispatch(new SourceCrawled((string) $event, static::ID));
-        $this->logger->info('Done');
+        $this->logger->notice('Done');
     }
 
     protected function skip(DateRange $dateRange, string $timestamp, string $title, string $date): void
@@ -104,7 +115,7 @@ abstract class Source implements SourceCrawler
             throw ArticleOutOfRange::with($timestamp, $dateRange);
         }
 
-        $this->logger->info("> {$title} [Skipped {$date}]");
+        $this->logger->notice("> {$title} [Skipped {$date}]");
     }
 
     /**

@@ -17,7 +17,7 @@
 
         <field name="title" length="2048" />
         <field name="body" type="text" />
-        <field name="link" length="2048" />
+        <embedded name="link" class="App\Aggregator\Domain\Model\ValueObject\Link" use-column-prefix="false" />
         <field name="hash" length="32" />
         <field name="categories" nullable="true" />
 
@@ -31,6 +31,7 @@
                 <option name="default">neutral</option>
             </options>
         </field>
+        <field name="metadata" type="open_graph" nullable="true" />
 
         <field name="publishedAt" type="datetime_immutable" />
         <field name="crawledAt" type="datetime_immutable" />

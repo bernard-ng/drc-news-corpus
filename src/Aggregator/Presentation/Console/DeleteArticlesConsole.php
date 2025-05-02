@@ -51,20 +51,18 @@ class DeleteArticlesConsole extends Command
         /** @var string|null $category */
         $category = $input->getOption('category');
 
-        $confirmation = $this->io->confirm('Delete all articles ?', false);
-        if ($confirmation) {
+        if (
+            $this->io->confirm('Delete all articles ?', false) &&
+            $this->io->confirm('Are you sure ?', false)
+        ) {
 
-            $confirmation = $this->io->confirm('Are you sure ?', false);
-            if ($confirmation) {
-
-                $confirmation = $this->io->askQuestion(new Question('Specify the source to confirm : '));
-                if ($confirmation === $source) {
-                    /** @var int $count */
-                    $count = $this->commandBus->handle(new DeleteArticles($source, $category));
-                    $this->io->success(sprintf('%d articles from %s removed', $count, $source));
-                } else {
-                    $this->io->warning('Source does not match, aborting !');
-                }
+            $confirmation = $this->io->askQuestion(new Question('Specify the source to confirm : '));
+            if ($confirmation === $source) {
+                /** @var int $count */
+                $count = $this->commandBus->handle(new DeleteArticles($source, $category));
+                $this->io->success(sprintf('%d articles from %s removed', $count, $source));
+            } else {
+                $this->io->warning('Source does not match, aborting !');
             }
         }
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Domain\Exception;
 
+use App\Aggregator\Domain\Model\ValueObject\Link;
 use App\SharedKernel\Domain\Exception\UserFacingError;
 
 /**
@@ -13,9 +14,9 @@ use App\SharedKernel\Domain\Exception\UserFacingError;
  */
 final class DuplicatedArticle extends \DomainException implements UserFacingError
 {
-    public static function withLink(string $link): self
+    public static function withLink(Link $link): self
     {
-        return new self(sprintf('duplicate article with %s link', $link));
+        return new self(sprintf('duplicate article with %s link', (string) $link));
     }
 
     public function translationId(): string

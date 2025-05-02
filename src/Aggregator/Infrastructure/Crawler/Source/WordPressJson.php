@@ -39,7 +39,7 @@ class WordPressJson extends Source
         $pages = (int) $headers[self::TOTAL_PAGES_HEADER][0];
         $posts = (int) $headers[self::TOTAL_POSTS_HEADER][0];
 
-        $this->logger->info(sprintf('WordPressJson %d posts, %d pages', $posts, $pages));
+        $this->logger->notice(sprintf('WordPressJson %d posts, %d pages', $posts, $pages));
         return PageRange::from(sprintf('1:%d', $pages));
     }
 
@@ -68,7 +68,7 @@ class WordPressJson extends Source
                     $this->fetchOne((string) json_encode($article), $settings->dateRange);
                 }
             } catch (ArticleOutOfRange) {
-                $this->logger->info('No more articles to fetch in this range.');
+                $this->logger->notice('No more articles to fetch in this range.');
                 break;
             }
         }
@@ -98,7 +98,9 @@ class WordPressJson extends Source
             $categories = $this->mapCategories($data['categories']);
 
             if ($dateRange === null || $dateRange->inRange((int) $timestamp)) {
-                $this->save($title, $link, $categories, $body, $timestamp);
+                $metadata = $this->openGraphConsumer->consumeUrl($data['link']);
+
+                $this->save($title, $link, $categories, $body, $timestamp, $metadata);
             } else {
                 $this->skip($dateRange, $timestamp, $title, $data['date']);
             }

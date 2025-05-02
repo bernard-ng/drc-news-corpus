@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace App\Aggregator\Domain\Model\Entity;
 
 use App\Aggregator\Domain\Model\Entity\Identity\ArticleId;
+use App\Aggregator\Domain\Model\ValueObject\Crawling\OpenGraph;
+use App\Aggregator\Domain\Model\ValueObject\Link;
 use App\Aggregator\Domain\Model\ValueObject\Scoring\Credibility;
 use App\Aggregator\Domain\Model\ValueObject\Scoring\Sentiment;
+use App\Aggregator\Domain\Service\Crawling\OpenGraph\OpenGraphObject;
 
 /**
  * Class Article.
@@ -19,7 +22,7 @@ class Article
 
     public function __construct(
         public readonly string $title,
-        public readonly string $link,
+        public readonly Link $link,
         public readonly string $body,
         public readonly string $hash,
         private(set) string $categories,
@@ -28,6 +31,7 @@ class Article
         public readonly \DateTimeImmutable $crawledAt = new \DateTimeImmutable(),
         private(set) Credibility $credibility = new Credibility(),
         private(set) Sentiment $sentiment = Sentiment::NEUTRAL,
+        private(set) OpenGraph $metadata = new OpenGraph(),
         private(set) ?\DateTimeImmutable $updatedAt = null
     ) {
         $this->id = new ArticleId();
@@ -53,6 +57,24 @@ class Article
     {
         $this->categories = $categories;
         $this->updatedAt = new \DateTimeImmutable();
+
+        return $this;
+    }
+
+    public function defineOpenGraph(OpenGraphObject $object): self
+    {
+        $image = $object->images[0] ?? null;
+        $video = $object->videos[0] ?? null;
+        $audio = $object->audios[0] ?? null;
+
+        $this->metadata = new OpenGraph(
+            title: $object->title,
+            description: $object->description,
+            image: $image->url ?? $image?->secureUrl,
+            video: $video->url ?? $video?->secureUrl,
+            audio: $audio->url ?? $audio?->secureUrl,
+            locale: $object->locale
+        );
 
         return $this;
     }

@@ -42,7 +42,7 @@ final class ActualiteCd extends Source
             try {
                 $articles->each(fn (Crawler $node) => $this->fetchOne($node->html(), $settings->dateRange));
             } catch (ArticleOutOfRange) {
-                $this->logger->info('No more articles to fetch in this range.');
+                $this->logger->notice('No more articles to fetch in this range.');
                 break;
             }
         }
@@ -62,6 +62,8 @@ final class ActualiteCd extends Source
             $categories = $node->filter('#actu-cat a')->text();
 
             $crawler = $this->crawle(self::URL . "/{$link}");
+            $metadata = $this->openGraphConsumer->consumeHtml($crawler->html(), self::URL . "/{$link}");
+
             $body = $crawler->filter('.views-field.views-field-body')->text();
             $date = $crawler->filter('#p-date')->text();
             $timestamp = $this->dateParser->createTimeStamp(
@@ -71,7 +73,7 @@ final class ActualiteCd extends Source
             );
 
             if ($dateRange === null || $dateRange->inRange((int) $timestamp)) {
-                $this->save($title, $link, $categories, $body, $timestamp);
+                $this->save($title, $link, $categories, $body, $timestamp, $metadata);
             } else {
                 $this->skip($dateRange, $timestamp, $title, $date);
             }

@@ -7,6 +7,8 @@ namespace App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL\Features;
 use App\Aggregator\Application\ReadModel\ArticleDetails;
 use App\Aggregator\Application\ReadModel\ArticleList;
 use App\Aggregator\Domain\Model\Entity\Identity\ArticleId;
+use App\Aggregator\Domain\Model\ValueObject\Crawling\OpenGraph;
+use App\Aggregator\Domain\Model\ValueObject\Link;
 use App\Aggregator\Domain\Model\ValueObject\Scoring\Bias;
 use App\Aggregator\Domain\Model\ValueObject\Scoring\Credibility;
 use App\Aggregator\Domain\Model\ValueObject\Scoring\Reliability;
@@ -28,7 +30,7 @@ trait ArticleQuery
     {
         return $this->connection->createQueryBuilder()
             ->select('id, title, link, categories, body, source, hash, published_at, crawled_at, updated_at')
-            ->addSelect('bias, transparency, reliability, sentiment')
+            ->addSelect('bias, transparency, reliability, sentiment, metadata')
             ->from('article');
     }
 
@@ -51,10 +53,7 @@ trait ArticleQuery
         return new ArticleDetails(
             ArticleId::fromBinary($data['id']),
             Mapping::string($data, 'title'),
-            $this->createAbsoluteUri(
-                Mapping::string($data, 'link'),
-                Mapping::string($data, 'source')
-            ),
+            Link::from(Mapping::string($data, 'link'), Mapping::string($data, 'source')),
             explode(',', Mapping::string($data, 'categories')),
             Mapping::string($data, 'body'),
             Mapping::string($data, 'source'),
@@ -65,18 +64,10 @@ trait ArticleQuery
                 Mapping::enum($data, 'transparency', Transparency::class)
             ),
             Mapping::enum($data, 'sentiment', Sentiment::class),
+            OpenGraph::tryFrom(Mapping::nullableString($data, 'metadata')),
             Mapping::datetime($data, 'published_at'),
             Mapping::datetime($data, 'crawled_at'),
             Mapping::nullableDatetime($data, 'updated_at')
         );
-    }
-
-    private function createAbsoluteUri(string $link, string $source): string
-    {
-        if (str_starts_with($link, 'http')) {
-            return $link;
-        }
-
-        return sprintf('https://%s/%s', $source, trim($link, '/'));
     }
 }

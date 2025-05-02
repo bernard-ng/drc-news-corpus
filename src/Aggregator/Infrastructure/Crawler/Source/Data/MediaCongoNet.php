@@ -44,7 +44,7 @@ final class MediaCongoNet extends Source
             try {
                 $articles->each(fn (Crawler $node) => $this->fetchOne($node->html(), $settings->dateRange));
             } catch (ArticleOutOfRange) {
-                $this->logger->info('No more articles to fetch in this range.');
+                $this->logger->notice('No more articles to fetch in this range.');
                 break;
             }
         }
@@ -65,16 +65,17 @@ final class MediaCongoNet extends Source
             $link = $node->filter('a')->first()->attr('href');
             $categories = $node->filter('a.color_link')->text();
             $date = $node->filter('.article_other_about')->text();
-
-            $crawler = $this->crawle(self::URL . "/{$link}");
-            $body = $crawler->filter('.article_ttext')->text();
             $timestamp = $this->dateParser->createTimeStamp(
                 date: sprintf('%s %s', substr($date, 0, 10), '00:00'),
                 format: self::DATE_FORMAT,
             );
 
             if ($dateRange === null || $dateRange->inRange((int) $timestamp)) {
-                $this->save($title, $link, $categories, $body, $timestamp);
+                $crawler = $this->crawle(self::URL . "/{$link}");
+                $metadata = $this->openGraphConsumer->consumeHtml($crawler->html(), self::URL . "/{$link}");
+                $body = $crawler->filter('.article_ttext')->text();
+
+                $this->save($title, $link, $categories, $body, $timestamp, $metadata);
             } else {
                 $this->skip($dateRange, $timestamp, $title, $date);
             }

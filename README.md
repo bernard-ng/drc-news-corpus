@@ -1,10 +1,9 @@
 # DRC News Corpus : Towards a scalable and efficient system for Congolese news dataset curation
 
+![Deployed](https://github.com/bernard-ng/drc-news-corpus/actions/workflows/deploy.yaml/badge.svg)
 ![Coding Standard](https://github.com/bernard-ng/drc-news-corpus/actions/workflows/quality.yaml/badge.svg)
 ![Tests](https://github.com/bernard-ng/drc-news-corpus/actions/workflows/tests.yaml/badge.svg)
 ![Security](https://github.com/bernard-ng/drc-news-corpus/actions/workflows/audit.yaml/badge.svg)
-[![Latest Stable Version](https://poser.pugx.org/bernard-ng/drc-news-corpus/version)](https://packagist.org/packages/bernard-ng/drc-news-corpus)
-[![License](https://poser.pugx.org/bernard-ng/drc-news-corpus/license)](https://packagist.org/packages/bernard-ng/drc-news-corpus)
 
 ```tex
 @misc {bernard_ngandu_2025,
