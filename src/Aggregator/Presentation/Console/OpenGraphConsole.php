@@ -63,6 +63,17 @@ class OpenGraphConsole extends Command
 
         $index = 0;
         $batchSize = $input->getOption('batch') ?? 50;
+
+        try {
+            $this->entityManager->getConnection()->executeQuery('SET SESSION interactive_timeout = 86400;');
+            $this->entityManager->getConnection()->executeQuery('SET SESSION wait_timeout = 86400;');
+        } catch (\Doctrine\DBAL\Exception $e) {
+            $this->logger->critical('Unable to set session timeout', [
+                'exception' => $e,
+            ]);
+            return Command::FAILURE;
+        }
+
         $query = $this->entityManager->createQuery(
             sprintf('SELECT a FROM %s a WHERE a.metadata IS NULL ORDER BY a.publishedAt DESC', Article::class)
         );
