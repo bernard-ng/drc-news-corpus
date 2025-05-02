@@ -31,7 +31,7 @@ class Article
         public readonly \DateTimeImmutable $crawledAt = new \DateTimeImmutable(),
         private(set) Credibility $credibility = new Credibility(),
         private(set) Sentiment $sentiment = Sentiment::NEUTRAL,
-        private(set) OpenGraph $metadata = new OpenGraph(),
+        private(set) ?OpenGraph $metadata = null,
         private(set) ?\DateTimeImmutable $updatedAt = null
     ) {
         $this->id = new ArticleId();
@@ -61,20 +61,22 @@ class Article
         return $this;
     }
 
-    public function defineOpenGraph(OpenGraphObject $object): self
+    public function defineOpenGraph(?OpenGraphObject $object): self
     {
-        $image = $object->images[0] ?? null;
-        $video = $object->videos[0] ?? null;
-        $audio = $object->audios[0] ?? null;
+        if ($object !== null) {
+            $image = $object->images[0] ?? null;
+            $video = $object->videos[0] ?? null;
+            $audio = $object->audios[0] ?? null;
 
-        $this->metadata = new OpenGraph(
-            title: $object->title,
-            description: $object->description,
-            image: $image->url ?? $image?->secureUrl,
-            video: $video->url ?? $video?->secureUrl,
-            audio: $audio->url ?? $audio?->secureUrl,
-            locale: $object->locale
-        );
+            $this->metadata = new OpenGraph(
+                title: $object->title,
+                description: $object->description,
+                image: $image->url ?? $image?->secureUrl,
+                video: $video->url ?? $video?->secureUrl,
+                audio: $audio->url ?? $audio?->secureUrl,
+                locale: $object->locale
+            );
+        }
 
         return $this;
     }

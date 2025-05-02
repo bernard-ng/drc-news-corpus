@@ -45,8 +45,10 @@ final readonly class CreateArticleHandler implements CommandHandler
             hash: $hash,
             categories: mb_strtolower($command->categories),
             source: $source,
-            publishedAt: $publishedAt,
+            publishedAt: $publishedAt
         );
+        $article->defineOpenGraph($command->metadata);
+
         $this->articleRepository->add($article);
     }
 }
