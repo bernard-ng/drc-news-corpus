@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\IdentityAndAccess\Domain\Exception;
 
-use App\IdentityAndAccess\Domain\Model\Entity\Identity\UserId;
+use App\IdentityAndAccess\Domain\Model\Identity\UserId;
 use App\SharedKernel\Domain\Exception\UserFacingError;
 use App\SharedKernel\Domain\Model\ValueObject\Email;
 

@@ -42,7 +42,7 @@ final readonly class GetSourcesStatisticsOverviewDbalHandler implements GetSourc
             /** @var array<array<string, mixed>> $data */
             $data = $qb->executeQuery()->fetchAllAssociative();
 
-            return new SourcesStatisticsOverview(array_map(fn ($item) => new SourceOverview(
+            return new SourcesStatisticsOverview(array_map(fn ($item): SourceOverview => new SourceOverview(
                 articles: Mapping::integer($item, 'total'),
                 source: Mapping::string($item, 'source'),
                 url: Mapping::string($item, 'url'),

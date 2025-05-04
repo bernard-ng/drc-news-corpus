@@ -33,7 +33,7 @@ final class ActualiteCd extends Source
 
         for ($i = $page->start; $i < $page->end; $i++) {
             try {
-                $crawler = $this->crawle(self::URL . "/actualite?page={$i}", $i);
+                $crawler = $this->crawle(self::URL . ('/actualite?page=' . $i), $i);
                 $articles = $crawler->filter('#views-bootstrap-taxonomy-term-page-2 > div > div');
             } catch (\Throwable) {
                 continue;
@@ -61,8 +61,8 @@ final class ActualiteCd extends Source
             $title = $node->filter('#actu-titre a')->text();
             $categories = $node->filter('#actu-cat a')->text();
 
-            $crawler = $this->crawle(self::URL . "/{$link}");
-            $metadata = $this->openGraphConsumer->consumeHtml($crawler->html(), self::URL . "/{$link}");
+            $crawler = $this->crawle(self::URL . ('/' . $link));
+            $metadata = $this->openGraphConsumer->consumeHtml($crawler->html(), self::URL . ('/' . $link));
 
             $body = $crawler->filter('.views-field.views-field-body')->text();
             $date = $crawler->filter('#p-date')->text();
@@ -72,7 +72,7 @@ final class ActualiteCd extends Source
                 replacement: '$4-$3-$2 $5'
             );
 
-            if ($dateRange === null || $dateRange->inRange((int) $timestamp)) {
+            if (! $dateRange instanceof DateRange || $dateRange->inRange((int) $timestamp)) {
                 $this->save($title, $link, $categories, $body, $timestamp, $metadata);
             } else {
                 $this->skip($dateRange, $timestamp, $title, $date);
@@ -80,7 +80,7 @@ final class ActualiteCd extends Source
         } catch (ArticleOutOfRange $e) {
             throw $e;
         } catch (\Throwable $e) {
-            $this->logger->error("> {$e->getMessage()} [Failed] ❌");
+            $this->logger->error(sprintf('> %s [Failed] ❌', $e->getMessage()));
             return;
         }
     }

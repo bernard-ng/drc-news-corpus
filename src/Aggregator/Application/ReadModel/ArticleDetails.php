@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Application\ReadModel;
 
-use App\Aggregator\Domain\Model\Entity\Identity\ArticleId;
+use App\Aggregator\Domain\Model\Identity\ArticleId;
 use App\Aggregator\Domain\Model\ValueObject\Crawling\OpenGraph;
 use App\Aggregator\Domain\Model\ValueObject\Link;
 use App\Aggregator\Domain\Model\ValueObject\Scoring\Credibility;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\IdentityAndAccess\Infrastructure\Persistence\Doctrine\DBAL\Types;
 
-use App\IdentityAndAccess\Domain\Model\Entity\Identity\VerificationTokenId;
+use App\IdentityAndAccess\Domain\Model\Identity\VerificationTokenId;
 use Symfony\Bridge\Doctrine\Types\AbstractUidType;
 
 /**

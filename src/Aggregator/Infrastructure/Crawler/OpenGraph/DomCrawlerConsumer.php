@@ -79,7 +79,7 @@ final readonly class DomCrawlerConsumer implements OpenGraphConsumer
             $props = [];
 
             /** @var \DOMElement $tag */
-            foreach ($crawler->filter("meta[{$t}^='og:']") as $tag) {
+            foreach ($crawler->filter(sprintf("meta[%s^='og:']", $t)) as $tag) {
                 $name = strtolower(trim($tag->getAttribute($t)));
                 $value = trim($tag->getAttribute('content'));
                 $props[] = new OpenGraphProperty($name, $value);

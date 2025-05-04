@@ -34,7 +34,7 @@ final readonly class GetLatestPublicationDateDBalHandler implements GetLatestPub
 
         if ($query->category !== null) {
             $qb->andWhere('a.categories LIKE :category')
-                ->setParameter('category', "%{$query->category}%");
+                ->setParameter('category', sprintf('%%%s%%', $query->category));
         }
 
         try {

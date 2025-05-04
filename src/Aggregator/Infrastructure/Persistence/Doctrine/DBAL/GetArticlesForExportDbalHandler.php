@@ -7,7 +7,8 @@ namespace App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL;
 use App\Aggregator\Application\ReadModel\ArticleForExport;
 use App\Aggregator\Application\UseCase\Query\GetArticlesForExport;
 use App\Aggregator\Application\UseCase\QueryHandler\GetArticlesForExportHandler;
-use App\Aggregator\Domain\Model\Entity\Identity\ArticleId;
+use App\Aggregator\Domain\Model\Identity\ArticleId;
+use App\Aggregator\Domain\Model\ValueObject\Crawling\DateRange;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Mapping;
 use Doctrine\DBAL\Connection;
 
@@ -36,7 +37,7 @@ final readonly class GetArticlesForExportDbalHandler implements GetArticlesForEx
                 ->setParameter('source', $query->source);
         }
 
-        if ($query->date !== null) {
+        if ($query->date instanceof DateRange) {
             $qb->andWhere('a.published_at BETWEEN :start AND :end')
                 ->setParameter('start', $query->date->start)
                 ->setParameter('end', $query->date->end);

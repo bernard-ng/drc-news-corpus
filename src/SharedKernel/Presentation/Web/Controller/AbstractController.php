@@ -50,17 +50,17 @@ abstract class AbstractController extends SymfonyController
         return $user;
     }
 
-    #[\Override]
-    public function render(string $view, array $parameters = [], ?Response $response = null): Response
-    {
-        return parent::render($view, $parameters, $response ?? $this->response);
-    }
-
     public function serialize(mixed $data, string $format = 'json', array $context = []): string
     {
         /** @var SerializerInterface $serializer */
         $serializer = $this->container->get(SerializerInterface::class);
         return $serializer->serialize($data, $format, $context);
+    }
+
+    #[\Override]
+    protected function render(string $view, array $parameters = [], ?Response $response = null): Response
+    {
+        return parent::render($view, $parameters, $response ?? $this->response);
     }
 
     protected function handleCommand(object $command): mixed

@@ -59,7 +59,7 @@ class WordPressJson extends Source
                 /** @var array $articles */
                 $articles = json_decode($this->removeMisconfigurationError($response->getContent()), true);
             } catch (\Throwable $e) {
-                $this->logger->error("> page {$i} => {$e->getMessage()} [Failed] ❌");
+                $this->logger->error(sprintf('> page %d => %s [Failed] ❌', $i, $e->getMessage()));
                 continue;
             }
 
@@ -97,7 +97,7 @@ class WordPressJson extends Source
             $timestamp = $this->dateParser->createTimeStamp($data['date'], format: 'c');
             $categories = $this->mapCategories($data['categories']);
 
-            if ($dateRange === null || $dateRange->inRange((int) $timestamp)) {
+            if (! $dateRange instanceof DateRange || $dateRange->inRange((int) $timestamp)) {
                 $metadata = $this->openGraphConsumer->consumeUrl($data['link']);
 
                 $this->save($title, $link, $categories, $body, $timestamp, $metadata);
@@ -107,7 +107,7 @@ class WordPressJson extends Source
         } catch (ArticleOutOfRange $e) {
             throw $e;
         } catch (\Throwable $e) {
-            $this->logger->error("> {$e->getMessage()} [Failed] ❌");
+            $this->logger->error(sprintf('> %s [Failed] ❌', $e->getMessage()));
             return;
         }
     }
@@ -137,7 +137,7 @@ class WordPressJson extends Source
 
     private function mapCategories(array $categories): string
     {
-        if (empty($this->categoryMap)) {
+        if ($this->categoryMap === []) {
             $this->fetchCategories();
         }
 

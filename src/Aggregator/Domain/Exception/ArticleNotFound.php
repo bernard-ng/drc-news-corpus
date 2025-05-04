@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Domain\Exception;
 
-use App\Aggregator\Domain\Model\Entity\Identity\ArticleId;
+use App\Aggregator\Domain\Model\Identity\ArticleId;
 use App\SharedKernel\Domain\Exception\UserFacingError;
 
 /**

@@ -33,7 +33,7 @@ final class RadioOkapiNet extends Source
 
         for ($i = $page->start; $i <= $page->end; $i++) {
             try {
-                $crawler = $this->crawle(self::URL . "/actualite?page={$i}", $i);
+                $crawler = $this->crawle(self::URL . ('/actualite?page=' . $i), $i);
                 $articles = $crawler->filter('.view-content')->children('.views-row.content-row');
             } catch (\Throwable) {
                 continue;
@@ -64,12 +64,12 @@ final class RadioOkapiNet extends Source
                 pattern: '/(\d{2})\/(\d{2})\/(\d{4}) - (\d{2}:\d{2})/',
                 replacement: '$3-$2-$1 $4'
             );
-            $categories = $node->filter('.views-field-field-cat-gorie a')->each(fn (Crawler $node) => $node->text());
+            $categories = $node->filter('.views-field-field-cat-gorie a')->each(fn (Crawler $node): string => $node->text());
             $title = $node->filter('.views-field-title a')->text();
 
-            if ($dateRange === null || $dateRange->inRange((int) $timestamp)) {
-                $crawler = $this->crawle(self::URL . "/{$link}");
-                $metadata = $this->openGraphConsumer->consumeHtml($crawler->html(), self::URL . "/{$link}");
+            if (! $dateRange instanceof DateRange || $dateRange->inRange((int) $timestamp)) {
+                $crawler = $this->crawle(self::URL . ('/' . $link));
+                $metadata = $this->openGraphConsumer->consumeHtml($crawler->html(), self::URL . ('/' . $link));
                 $body = $crawler->filter('.field-name-body')->text();
 
                 $this->save($title, $link, strtolower(implode(',', $categories)), $body, $timestamp, $metadata);
@@ -79,7 +79,7 @@ final class RadioOkapiNet extends Source
         } catch (ArticleOutOfRange $e) {
             throw $e;
         } catch (\Throwable $e) {
-            $this->logger->error("> {$e->getMessage()} [Failed] ❌");
+            $this->logger->error(sprintf('> %s [Failed] ❌', $e->getMessage()));
             return;
         }
     }

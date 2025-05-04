@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Aggregator\Domain\Model\Entity\Identity;
+namespace App\IdentityAndAccess\Domain\Model\Identity;
 
 use Symfony\Component\Uid\UuidV7;
 
 /**
- * Class ArticleId.
+ * Class UserId.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final class ArticleId extends UuidV7
+final class UserId extends UuidV7
 {
 }

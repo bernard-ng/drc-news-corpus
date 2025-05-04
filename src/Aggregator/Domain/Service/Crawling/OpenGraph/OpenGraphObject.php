@@ -46,7 +46,7 @@ abstract class OpenGraphObject
                     break;
                 case OpenGraphProperty::AUDIO_SECURE_URL:
                 case OpenGraphProperty::AUDIO_TYPE:
-                    if (\count($this->audios) > 0) {
+                    if ($this->audios !== []) {
                         $this->handleAudioAttribute($this->audios[\count($this->audios) - 1], $name, $value);
                     } elseif ($debug) {
                         throw new \UnexpectedValueException(
@@ -56,16 +56,19 @@ abstract class OpenGraphObject
                             )
                         );
                     }
+
                     break;
                 case OpenGraphProperty::DESCRIPTION:
                     if ($this->description === null) {
                         $this->description = $value;
                     }
+
                     break;
                 case OpenGraphProperty::DETERMINER:
                     if ($this->determiner === null) {
                         $this->determiner = $value;
                     }
+
                     break;
                 case OpenGraphProperty::IMAGE:
                 case OpenGraphProperty::IMAGE_URL:
@@ -76,7 +79,7 @@ abstract class OpenGraphObject
                 case OpenGraphProperty::IMAGE_TYPE:
                 case OpenGraphProperty::IMAGE_WIDTH:
                 case OpenGraphProperty::IMAGE_USER_GENERATED:
-                    if (\count($this->images) > 0) {
+                    if ($this->images !== []) {
                         $this->handleImageAttribute($this->images[\count($this->images) - 1], $name, $value);
                     } elseif ($debug) {
                         throw new \UnexpectedValueException(
@@ -86,11 +89,13 @@ abstract class OpenGraphObject
                             )
                         );
                     }
+
                     break;
                 case OpenGraphProperty::LOCALE:
                     if ($this->locale === null) {
                         $this->locale = $value;
                     }
+
                     break;
                 case OpenGraphProperty::LOCALE_ALTERNATE:
                     $this->localeAlternate[] = $value;
@@ -105,21 +110,25 @@ abstract class OpenGraphObject
                     if ($this->siteName === null) {
                         $this->siteName = $value;
                     }
+
                     break;
                 case OpenGraphProperty::TITLE:
                     if ($this->title === null) {
                         $this->title = $value;
                     }
+
                     break;
                 case OpenGraphProperty::UPDATED_TIME:
-                    if ($this->updatedTime === null) {
+                    if (! $this->updatedTime instanceof \DateTimeImmutable) {
                         $this->updatedTime = $this->convertToDateTime($value);
                     }
+
                     break;
                 case OpenGraphProperty::URL:
                     if ($this->url === null) {
                         $this->url = $value;
                     }
+
                     break;
                 case OpenGraphProperty::VIDEO:
                 case OpenGraphProperty::VIDEO_URL:
@@ -129,7 +138,7 @@ abstract class OpenGraphObject
                 case OpenGraphProperty::VIDEO_SECURE_URL:
                 case OpenGraphProperty::VIDEO_TYPE:
                 case OpenGraphProperty::VIDEO_WIDTH:
-                    if (\count($this->videos) > 0) {
+                    if ($this->videos !== []) {
                         $this->handleVideoAttribute($this->videos[\count($this->videos) - 1], $name, $value);
                     } elseif ($debug) {
                         throw new \UnexpectedValueException(\sprintf(
@@ -189,7 +198,7 @@ abstract class OpenGraphObject
             $properties[] = new OpenGraphProperty(OpenGraphProperty::TYPE, $this->type);
         }
 
-        if ($this->updatedTime !== null) {
+        if ($this->updatedTime instanceof \DateTimeImmutable) {
             $properties[] = new OpenGraphProperty(OpenGraphProperty::UPDATED_TIME, $this->updatedTime->format('c'));
         }
 

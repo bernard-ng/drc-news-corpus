@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\IdentityAndAccess\Domain\Model\Entity\Identity;
+namespace App\IdentityAndAccess\Domain\Model\Identity;
 
 use Symfony\Component\Uid\UuidV7;
 
 /**
- * Class UserId.
+ * Class LoginAttemptId.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final class UserId extends UuidV7
+final class LoginAttemptId extends UuidV7
 {
 }

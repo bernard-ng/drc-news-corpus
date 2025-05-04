@@ -63,7 +63,7 @@ abstract class Source implements SourceCrawler
     protected function crawle(string $url, ?int $page = null): Crawler
     {
         if ($page !== null) {
-            $this->logger->notice("> Page {$page}");
+            $this->logger->notice('> Page ' . $page);
         }
 
         $response = $this->client->request('GET', $url)->getContent();
@@ -90,9 +90,9 @@ abstract class Source implements SourceCrawler
                     metadata: $metadata
                 )
             );
-            $this->logger->notice("> {$title} ✅");
+            $this->logger->notice(sprintf('> %s ✅', $title));
         } catch (\Throwable $e) {
-            $this->logger->error("> {$e->getMessage()} [Failed] ❌");
+            $this->logger->error(sprintf('> %s [Failed] ❌', $e->getMessage()));
         }
     }
 
@@ -115,7 +115,7 @@ abstract class Source implements SourceCrawler
             throw ArticleOutOfRange::with($timestamp, $dateRange);
         }
 
-        $this->logger->notice("> {$title} [Skipped {$date}]");
+        $this->logger->notice(sprintf('> %s [Skipped %s]', $title, $date));
     }
 
     /**

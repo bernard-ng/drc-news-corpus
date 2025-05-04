@@ -35,10 +35,8 @@ final readonly class RegisterLoginAttemptHandler implements CommandHandler
 
         if ($attempts < self::ATTEMPTS_LIMIT) {
             $this->loginAttemptRepository->add(LoginAttempt::create($user));
-        } else {
-            if ($user->isLocked === false) {
-                $this->commandBus->handle(new LockAccount($user->id));
-            }
+        } elseif ($user->isLocked === false) {
+            $this->commandBus->handle(new LockAccount($user->id));
         }
     }
 }

@@ -30,14 +30,14 @@ final class ExportArticlesConsole extends Command
     }
 
     #[\Override]
-    public function configure(): void
+    protected function configure(): void
     {
         $this->addArgument('source', InputArgument::OPTIONAL, 'the website source to crawle');
         $this->addOption('date', null, InputOption::VALUE_OPTIONAL, 'Date interval to crawle', null);
     }
 
     #[\Override]
-    public function initialize(InputInterface $input, OutputInterface $output): void
+    protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->io = new SymfonyStyle($input, $output);
     }

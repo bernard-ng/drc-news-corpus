@@ -83,7 +83,7 @@ final readonly class GetSourceStatisticsDetailsDbalHandler implements GetSourceS
         }
 
         return new PublicationGraph(array_map(
-            fn ($entry) => new DailyEntry($entry['day'], $entry['count']),
+            fn ($entry): DailyEntry => new DailyEntry($entry['day'], $entry['count']),
             $heatmap
         ));
     }
@@ -115,13 +115,15 @@ final readonly class GetSourceStatisticsDetailsDbalHandler implements GetSourceS
                 if ($cat === '') {
                     continue;
                 }
+
                 $counts[$cat] = ($counts[$cat] ?? 0) + 1;
             }
         }
+
         $total = array_sum($counts);
 
         return new CategoryShares(array_map(
-            fn (string $category, int $count) => new CategoryShare(
+            fn (string $category, int $count): CategoryShare => new CategoryShare(
                 category: $category,
                 count: $count,
                 percentage: $total > 0 ? round(($count / $total) * 100, 2) : 0.0

@@ -7,7 +7,9 @@ namespace App\Aggregator\Presentation\Console;
 use App\Aggregator\Domain\Event\SourceCrawled;
 use App\Aggregator\Domain\Model\Entity\Article;
 use App\Aggregator\Domain\Service\Crawling\OpenGraph\OpenGraphConsumer;
+use App\Aggregator\Domain\Service\Crawling\OpenGraph\OpenGraphObject;
 use App\SharedKernel\Domain\EventDispatcher\EventDispatcher;
+use Doctrine\DBAL\Exception;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -39,13 +41,13 @@ class OpenGraphConsole extends Command
     }
 
     #[\Override]
-    public function initialize(InputInterface $input, OutputInterface $output): void
+    protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->io = new SymfonyStyle($input, $output);
     }
 
     #[\Override]
-    public function configure(): void
+    protected function configure(): void
     {
         $this->addOption('batch', null, InputOption::VALUE_OPTIONAL, 'Batch size', 50);
     }
@@ -54,11 +56,9 @@ class OpenGraphConsole extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->setProcessTitle('[DRC News] OpenGraph Consumer');
-        if ($input->getOption('no-interaction') === false) {
-            if (! $this->io->confirm('This is a long process, do you want to continue ?', false)) {
-                $this->io->warning('Process aborted');
-                return Command::SUCCESS;
-            }
+        if ($input->getOption('no-interaction') === false && ! $this->io->confirm('This is a long process, do you want to continue ?', false)) {
+            $this->io->warning('Process aborted');
+            return Command::SUCCESS;
         }
 
         $index = 0;
@@ -67,7 +67,7 @@ class OpenGraphConsole extends Command
         try {
             $this->entityManager->getConnection()->executeQuery('SET SESSION interactive_timeout = 86400;');
             $this->entityManager->getConnection()->executeQuery('SET SESSION wait_timeout = 86400;');
-        } catch (\Doctrine\DBAL\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->critical('Unable to set session timeout', [
                 'exception' => $e,
             ]);
@@ -84,11 +84,11 @@ class OpenGraphConsole extends Command
         foreach ($query->toIterable() as $article) {
             $object = $this->openGraphConsumer->consumeUrl((string) $article->link);
 
-            if ($object !== null) {
+            if ($object instanceof OpenGraphObject) {
                 $article->defineOpenGraph($object);
-                $this->logger->notice("> {$article->title} ✅");
+                $this->logger->notice(sprintf('> %s ✅', $article->title));
             } else {
-                $this->logger->notice("> {$article->title} ❌");
+                $this->logger->notice(sprintf('> %s ❌', $article->title));
             }
 
             ++$index;
@@ -97,6 +97,7 @@ class OpenGraphConsole extends Command
                 $this->entityManager->clear();
             }
         }
+
         $this->entityManager->flush();
 
         $event = $this->stopwatch->stop(self::WATCH_EVENT_NAME);

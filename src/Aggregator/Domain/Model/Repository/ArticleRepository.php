@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Aggregator\Domain\Model\Repository;
 
 use App\Aggregator\Domain\Model\Entity\Article;
-use App\Aggregator\Domain\Model\Entity\Identity\ArticleId;
+use App\Aggregator\Domain\Model\Identity\ArticleId;
 use App\Aggregator\Domain\Model\ValueObject\Crawling\DateRange;
 
 /**

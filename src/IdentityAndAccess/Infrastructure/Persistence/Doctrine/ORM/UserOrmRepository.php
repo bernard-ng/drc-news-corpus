@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\IdentityAndAccess\Infrastructure\Persistence\Doctrine\ORM;
 
 use App\IdentityAndAccess\Domain\Exception\UserNotFound;
-use App\IdentityAndAccess\Domain\Model\Entity\Identity\UserId;
 use App\IdentityAndAccess\Domain\Model\Entity\User;
+use App\IdentityAndAccess\Domain\Model\Identity\UserId;
 use App\IdentityAndAccess\Domain\Model\Repository\UserRepository;
 use App\SharedKernel\Domain\Model\ValueObject\Email;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;

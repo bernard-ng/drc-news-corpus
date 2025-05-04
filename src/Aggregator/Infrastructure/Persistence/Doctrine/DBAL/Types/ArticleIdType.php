@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL\Types;
 
-use App\Aggregator\Domain\Model\Entity\Identity\ArticleId;
+use App\Aggregator\Domain\Model\Identity\ArticleId;
 use Symfony\Bridge\Doctrine\Types\AbstractUidType;
 
 /**

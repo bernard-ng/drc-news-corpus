@@ -6,7 +6,7 @@ namespace App\Aggregator\Infrastructure\Persistence\Doctrine\ORM;
 
 use App\Aggregator\Domain\Exception\ArticleNotFound;
 use App\Aggregator\Domain\Model\Entity\Article;
-use App\Aggregator\Domain\Model\Entity\Identity\ArticleId;
+use App\Aggregator\Domain\Model\Identity\ArticleId;
 use App\Aggregator\Domain\Model\Repository\ArticleRepository;
 use App\Aggregator\Domain\Model\ValueObject\Crawling\DateRange;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -66,7 +66,7 @@ final class ArticleOrmRepository extends ServiceEntityRepository implements Arti
                 ->setParameter('source', $source);
         }
 
-        if ($date !== null) {
+        if ($date instanceof DateRange) {
             $qb->andWhere('a.publishedAt BETWEEN :start AND :end')
                 ->setParameter('start', $date->start)
                 ->setParameter('end', $date->end);
@@ -114,7 +114,7 @@ final class ArticleOrmRepository extends ServiceEntityRepository implements Arti
 
         if ($category !== null) {
             $qb->andWhere('a.categories LIKE :category')
-                ->setParameter('category', "%{$category}%");
+                ->setParameter('category', sprintf('%%%s%%', $category));
         }
 
         /** @var int $result */

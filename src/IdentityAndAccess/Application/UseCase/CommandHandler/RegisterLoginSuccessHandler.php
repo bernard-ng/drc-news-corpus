@@ -37,7 +37,7 @@ final readonly class RegisterLoginSuccessHandler implements CommandHandler
 
         $current = LoginHistory::create($user, $command->profile->userIp, $device, $location);
         $previous = $this->loginHistoryRepository->getLastBy($user);
-        if ($previous !== null) {
+        if ($previous instanceof LoginHistory) {
             $current->matchPreviousProfile($previous);
         }
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\IdentityAndAccess\Infrastructure\Persistence\Doctrine\DBAL\Types;
 
-use App\IdentityAndAccess\Domain\Model\Entity\Identity\LoginHistoryId;
+use App\IdentityAndAccess\Domain\Model\Identity\LoginHistoryId;
 use Symfony\Bridge\Doctrine\Types\AbstractUidType;
 
 /**

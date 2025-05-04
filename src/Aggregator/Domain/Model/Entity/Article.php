@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Domain\Model\Entity;
 
-use App\Aggregator\Domain\Model\Entity\Identity\ArticleId;
+use App\Aggregator\Domain\Model\Identity\ArticleId;
 use App\Aggregator\Domain\Model\ValueObject\Crawling\OpenGraph;
 use App\Aggregator\Domain\Model\ValueObject\Link;
 use App\Aggregator\Domain\Model\ValueObject\Scoring\Credibility;
@@ -63,7 +63,7 @@ class Article
 
     public function defineOpenGraph(?OpenGraphObject $object): self
     {
-        if ($object !== null) {
+        if ($object instanceof OpenGraphObject) {
             $image = $object->images[0] ?? null;
             $video = $object->videos[0] ?? null;
             $audio = $object->audios[0] ?? null;

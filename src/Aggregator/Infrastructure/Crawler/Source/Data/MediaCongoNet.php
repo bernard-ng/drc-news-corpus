@@ -35,7 +35,7 @@ final class MediaCongoNet extends Source
 
         for ($i = $page->start; $i < $page->end; $i++) {
             try {
-                $crawler = $this->crawle(self::URL . "/articles-page-{$i}.html", $i);
+                $crawler = $this->crawle(self::URL . sprintf('/articles-page-%d.html', $i), $i);
                 $articles = $crawler->filter('.for_aitems > .article_other_item');
             } catch (\Throwable) {
                 continue;
@@ -70,9 +70,9 @@ final class MediaCongoNet extends Source
                 format: self::DATE_FORMAT,
             );
 
-            if ($dateRange === null || $dateRange->inRange((int) $timestamp)) {
-                $crawler = $this->crawle(self::URL . "/{$link}");
-                $metadata = $this->openGraphConsumer->consumeHtml($crawler->html(), self::URL . "/{$link}");
+            if (! $dateRange instanceof DateRange || $dateRange->inRange((int) $timestamp)) {
+                $crawler = $this->crawle(self::URL . ('/' . $link));
+                $metadata = $this->openGraphConsumer->consumeHtml($crawler->html(), self::URL . ('/' . $link));
                 $body = $crawler->filter('.article_ttext')->text();
 
                 $this->save($title, $link, $categories, $body, $timestamp, $metadata);
@@ -82,7 +82,7 @@ final class MediaCongoNet extends Source
         } catch (ArticleOutOfRange $e) {
             throw $e;
         } catch (\Throwable $e) {
-            $this->logger->error("> {$e->getMessage()} [Failed] ❌");
+            $this->logger->error(sprintf('> %s [Failed] ❌', $e->getMessage()));
             return;
         }
     }

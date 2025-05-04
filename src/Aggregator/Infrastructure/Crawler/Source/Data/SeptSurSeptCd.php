@@ -36,7 +36,7 @@ final class SeptSurSeptCd extends Source
 
         for ($i = $page->start; $i < $page->end; $i++) {
             try {
-                $crawler = $this->crawle(self::URL . "/index.php/category/{$this->category}?page={$i}", $i);
+                $crawler = $this->crawle(self::URL . sprintf('/index.php/category/%s?page=%d', $this->category, $i), $i);
                 $articles = $crawler->filter('.view-content')->children('.row.views-row');
             } catch (\Throwable) {
                 continue;
@@ -72,9 +72,9 @@ final class SeptSurSeptCd extends Source
             );
             $title = $node->filter('.views-field-title a')->text();
 
-            if ($dateRange === null || $dateRange->inRange((int) $timestamp)) {
-                $crawler = $this->crawle(self::URL . "/{$link}");
-                $metadata = $this->openGraphConsumer->consumeHtml($crawler->html(), self::URL . "/{$link}");
+            if (! $dateRange instanceof DateRange || $dateRange->inRange((int) $timestamp)) {
+                $crawler = $this->crawle(self::URL . ('/' . $link));
+                $metadata = $this->openGraphConsumer->consumeHtml($crawler->html(), self::URL . ('/' . $link));
                 $body = $crawler->filter('.field.field--name-body')->text();
 
                 $this->save($title, $link, $this->category, $body, $timestamp, $metadata);
@@ -84,7 +84,7 @@ final class SeptSurSeptCd extends Source
         } catch (ArticleOutOfRange $e) {
             throw $e;
         } catch (\Throwable $e) {
-            $this->logger->error("> {$e->getMessage()} [Failed] ❌");
+            $this->logger->error(sprintf('> %s [Failed] ❌', $e->getMessage()));
             return;
         }
     }
@@ -93,7 +93,7 @@ final class SeptSurSeptCd extends Source
     public function getPagination(?string $category = null): PageRange
     {
         return PageRange::from(
-            sprintf('0:%d', $this->getLastPage(self::URL . "/index.php/category/{$category}"))
+            sprintf('0:%d', $this->getLastPage(self::URL . ('/index.php/category/' . $category)))
         );
     }
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\IdentityAndAccess\Domain\Model\Entity\Identity;
+namespace App\IdentityAndAccess\Domain\Model\Identity;
 
 use Symfony\Component\Uid\UuidV7;
 

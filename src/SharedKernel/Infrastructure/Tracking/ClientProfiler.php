@@ -95,7 +95,7 @@ final readonly class ClientProfiler implements ClientProfilerInterface
     #[\Override]
     public function detect(ClientProfile $profile): Device
     {
-        if ($profile->userAgent === null || empty($profile->hints)) {
+        if ($profile->userAgent === null || $profile->hints === []) {
             return Device::empty();
         }
 

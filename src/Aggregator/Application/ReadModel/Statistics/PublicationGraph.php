@@ -22,7 +22,7 @@ final readonly class PublicationGraph implements \JsonSerializable
     #[\Override]
     public function jsonSerialize(): array
     {
-        return array_map(fn (DailyEntry $entry) => [
+        return array_map(fn (DailyEntry $entry): array => [
             'date' => $entry->date,
             'count' => $entry->count,
         ], $this->items);

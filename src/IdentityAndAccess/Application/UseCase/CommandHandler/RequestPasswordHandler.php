@@ -33,7 +33,7 @@ final readonly class RequestPasswordHandler implements CommandHandler
     public function __invoke(RequestPassword $command): void
     {
         $user = $this->userRepository->getByEmail($command->email);
-        if ($user === null) {
+        if (! $user instanceof User) {
             throw UserNotFound::withEmail($command->email);
         }
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\IdentityAndAccess\Domain\Model\Entity;
 
-use App\IdentityAndAccess\Domain\Model\Entity\Identity\LoginAttemptId;
+use App\IdentityAndAccess\Domain\Model\Identity\LoginAttemptId;
 
 /**
  * Class LoginAttempt.

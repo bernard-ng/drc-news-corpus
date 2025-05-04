@@ -30,7 +30,7 @@ final readonly class CreateArticleHandler implements CommandHandler
     {
         $hash = $this->hashCalculator->calculate((string) $command->link);
         $article = $this->articleRepository->getByHash($hash);
-        if ($article !== null) {
+        if ($article instanceof Article) {
             throw DuplicatedArticle::withLink($command->link);
         }
 

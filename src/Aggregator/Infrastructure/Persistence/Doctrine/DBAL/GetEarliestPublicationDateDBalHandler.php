@@ -34,7 +34,7 @@ final readonly class GetEarliestPublicationDateDBalHandler implements GetEarlies
 
         if ($query->category !== null) {
             $qb->andWhere('a.categories LIKE :category')
-                ->setParameter('category', "%{$query->category}%");
+                ->setParameter('category', sprintf('%%%s%%', $query->category));
         }
 
         try {

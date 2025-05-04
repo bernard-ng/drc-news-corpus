@@ -7,6 +7,7 @@ namespace App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL;
 use App\Aggregator\Application\ReadModel\ArticleList;
 use App\Aggregator\Application\UseCase\Query\GetArticleList;
 use App\Aggregator\Application\UseCase\QueryHandler\GetArticleListHandler;
+use App\Aggregator\Domain\Model\ValueObject\Crawling\DateRange;
 use App\Aggregator\Domain\Model\ValueObject\Filters\ArticleFilters;
 use App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL\Features\ArticleQuery;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\NoResult;
@@ -58,15 +59,15 @@ final readonly class GetArticleListDbalHandler implements GetArticleListHandler
 
         if ($filters->category !== null) {
             $qb->andWhere('categories LIKE :category')
-                ->setParameter('category', "%{$filters->category}%");
+                ->setParameter('category', sprintf('%%%s%%', $filters->category));
         }
 
         if ($filters->search !== null) {
             $qb->andWhere('title LIKE :search OR body LIKE :search')
-                ->setParameter('search', "%{$filters->search}%");
+                ->setParameter('search', sprintf('%%%s%%', $filters->search));
         }
 
-        if ($filters->dateRange !== null) {
+        if ($filters->dateRange instanceof DateRange) {
             $qb->andWhere('published_at BETWEEN FROM_UNIXTIME(:start) AND FROM_UNIXTIME(:end)')
                 ->setParameter('start', $filters->dateRange->start, ParameterType::INTEGER)
                 ->setParameter('end', $filters->dateRange->end, ParameterType::INTEGER);

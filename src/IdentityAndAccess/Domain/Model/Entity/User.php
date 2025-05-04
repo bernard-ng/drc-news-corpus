@@ -15,7 +15,7 @@ use App\IdentityAndAccess\Domain\Event\PasswordReset;
 use App\IdentityAndAccess\Domain\Event\PasswordUpdated;
 use App\IdentityAndAccess\Domain\Exception\InvalidCurrentPassword;
 use App\IdentityAndAccess\Domain\Exception\PasswordAlreadyDefined;
-use App\IdentityAndAccess\Domain\Model\Entity\Identity\UserId;
+use App\IdentityAndAccess\Domain\Model\Identity\UserId;
 use App\IdentityAndAccess\Domain\Model\ValueObject\Roles;
 use App\IdentityAndAccess\Domain\Model\ValueObject\Secret\GeneratedCode;
 use App\IdentityAndAccess\Domain\Service\PasswordHasher;

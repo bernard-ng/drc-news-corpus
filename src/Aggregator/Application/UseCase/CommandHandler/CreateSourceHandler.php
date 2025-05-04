@@ -24,7 +24,7 @@ final readonly class CreateSourceHandler implements CommandHandler
     public function __invoke(CreateSource $command): void
     {
         $name = $command->name;
-        $source = Source::create($name, "https://{$name}");
+        $source = Source::create($name, 'https://' . $name);
         $this->sourceRepository->add($source);
     }
 }

@@ -6,7 +6,7 @@ namespace App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL\Features;
 
 use App\Aggregator\Application\ReadModel\ArticleDetails;
 use App\Aggregator\Application\ReadModel\ArticleList;
-use App\Aggregator\Domain\Model\Entity\Identity\ArticleId;
+use App\Aggregator\Domain\Model\Identity\ArticleId;
 use App\Aggregator\Domain\Model\ValueObject\Crawling\OpenGraph;
 use App\Aggregator\Domain\Model\ValueObject\Link;
 use App\Aggregator\Domain\Model\ValueObject\Scoring\Bias;

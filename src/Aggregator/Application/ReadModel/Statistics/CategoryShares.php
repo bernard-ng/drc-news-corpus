@@ -23,7 +23,7 @@ final readonly class CategoryShares implements \JsonSerializable
     #[\Override]
     public function jsonSerialize(): array
     {
-        return array_map(fn (CategoryShare $share) => [
+        return array_map(fn (CategoryShare $share): array => [
             'name' => $share->category,
             'count' => $share->count,
             'percentage' => $share->percentage,

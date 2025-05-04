@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\IdentityAndAccess\Domain\Model\Entity;
 
 use App\IdentityAndAccess\Domain\Event\LoginProfileChanged;
-use App\IdentityAndAccess\Domain\Model\Entity\Identity\LoginHistoryId;
+use App\IdentityAndAccess\Domain\Model\Identity\LoginHistoryId;
 use App\SharedKernel\Domain\EventDispatcher\EventEmitterTrait;
 use App\SharedKernel\Domain\Model\ValueObject\Tracking\Device;
 use App\SharedKernel\Domain\Model\ValueObject\Tracking\GeoLocation;

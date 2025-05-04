@@ -63,6 +63,7 @@ class TelegramFormatter extends NormalizerFormatter
         if (isset($normalized['context']) && $normalized['context'] === []) {
             unset($normalized['context']);
         }
+
         if (isset($normalized['extra']) && $normalized['extra'] === []) {
             unset($normalized['extra']);
         }
@@ -109,7 +110,7 @@ class TelegramFormatter extends NormalizerFormatter
     {
         $oldNewline = $this->appendNewline;
         $this->appendNewline = false;
-        $formatted = array_map(fn (LogRecord $record) => $this->format($record), $records);
+        $formatted = array_map(fn (LogRecord $record): string => $this->format($record), $records);
         $this->appendNewline = $oldNewline;
 
         return implode("\n\n", $formatted);

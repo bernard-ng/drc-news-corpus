@@ -17,7 +17,7 @@ abstract class OpenGraphElement
     {
         return array_filter(
             array_map(
-                fn (string $key, mixed $value) => $value !== null ? new OpenGraphProperty($key, $value) : null,
+                fn (string $key, mixed $value): ?OpenGraphProperty => $value !== null ? new OpenGraphProperty($key, $value) : null,
                 array_keys($this->supportedProperties()),
                 array_values($this->supportedProperties())
             ),

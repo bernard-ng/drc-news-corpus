@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\IdentityAndAccess\Domain\Model\Entity;
 
 use App\IdentityAndAccess\Domain\Exception\InvalidVerificationToken;
-use App\IdentityAndAccess\Domain\Model\Entity\Identity\VerificationTokenId;
+use App\IdentityAndAccess\Domain\Model\Identity\VerificationTokenId;
 use App\IdentityAndAccess\Domain\Model\ValueObject\Secret\GeneratedToken;
 use App\IdentityAndAccess\Domain\Model\ValueObject\TokenPurpose;
 

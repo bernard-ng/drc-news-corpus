@@ -30,14 +30,14 @@ class DeleteArticlesConsole extends Command
     }
 
     #[\Override]
-    public function configure(): void
+    protected function configure(): void
     {
         $this->addArgument('source', InputArgument::REQUIRED, 'the website source to crawle');
         $this->addOption('category', null, InputOption::VALUE_OPTIONAL, 'the category to crawle');
     }
 
     #[\Override]
-    public function initialize(InputInterface $input, OutputInterface $output): void
+    protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->io = new SymfonyStyle($input, $output);
     }

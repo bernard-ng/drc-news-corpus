@@ -29,7 +29,7 @@ class GetSourcesStatisticsOverviewConsole extends Command
     }
 
     #[\Override]
-    public function initialize(InputInterface $input, OutputInterface $output): void
+    protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->io = new SymfonyStyle($input, $output);
     }
@@ -40,7 +40,7 @@ class GetSourcesStatisticsOverviewConsole extends Command
         /** @var SourcesStatisticsOverview $stats */
         $stats = $this->queryBus->handle(new GetSourcesStatisticsOverview());
 
-        $this->io->title(sprintf('Stats about the articles in the database'));
+        $this->io->title('Stats about the articles in the database');
         $this->io->table(
             ['Source', 'Articles', 'CrawledAt'],
             array_map(

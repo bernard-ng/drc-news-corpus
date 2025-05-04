@@ -28,13 +28,13 @@ class CreateSourceConsole extends Command
     }
 
     #[\Override]
-    public function configure(): void
+    protected function configure(): void
     {
         $this->addArgument('source', InputArgument::REQUIRED, 'the website source to crawle');
     }
 
     #[\Override]
-    public function initialize(InputInterface $input, OutputInterface $output): void
+    protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->io = new SymfonyStyle($input, $output);
     }

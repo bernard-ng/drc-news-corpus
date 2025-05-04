@@ -35,7 +35,7 @@ final readonly class RegisterHandler implements CommandHandler
     public function __invoke(Register $command): void
     {
         $user = $this->userRepository->getByEmail($command->email);
-        if ($user !== null) {
+        if ($user instanceof User) {
             throw EmailAlreadyUsed::with($command->email);
         }
 
