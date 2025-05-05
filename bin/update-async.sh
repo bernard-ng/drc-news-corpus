@@ -1,8 +1,8 @@
 #!/usr/local/cpanel/bin/jailshell
 
 SOURCES=("7sur7.cd" "actualite.cd" "beto.cd" "radiookapi.net" "mediacongo.net", "newscd.net")
-BASE_CMD="/usr/local/bin/php /home/eshimate/news.devscast.org/bin/console app:update"
-LOG_DIR="/home/eshimate/news.devscast.org/var"
+BASE_CMD="/usr/local/bin/php /home/eshimate/devscast.org/bin/console app:update"
+LOG_DIR="/home/eshimate/devscast.org/var"
 
 mkdir -p "$LOG_DIR"
 rm -f "${LOG_DIR}"/*.log

@@ -34,7 +34,7 @@ class WordPressJson extends Source
     #[\Override]
     public function getPagination(?string $category = null): PageRange
     {
-        $response = $this->client->request('GET', sprintf('%s/wp-json/wp/v2/posts?_fields=id&per_page=100', static::URL));
+        $response = $this->client->request('GET', sprintf('%s/wp-json/wp/v2/posts?_fields=id&per_page=100', $this->getUrl()));
         $headers = $response->getHeaders();
         $pages = (int) $headers[self::TOTAL_PAGES_HEADER][0];
         $posts = (int) $headers[self::TOTAL_POSTS_HEADER][0];
@@ -53,7 +53,7 @@ class WordPressJson extends Source
             try {
                 $response = $this->client->request(
                     method: 'GET',
-                    url: sprintf('%s/wp-json/wp/v2/posts?%s&page=%d&per_page=100', static::URL, self::POST_QUERY, $i)
+                    url: sprintf('%s/wp-json/wp/v2/posts?%s&page=%d&per_page=100', $this->getUrl(), self::POST_QUERY, $i)
                 );
 
                 /** @var array $articles */
@@ -91,7 +91,7 @@ class WordPressJson extends Source
              */
             $data = json_decode($html, true);
 
-            $link = str_replace(static::URL, '', $data['link']);
+            $link = str_replace($this->getUrl(), '', $data['link']);
             $title = strip_tags($data['title']['rendered']);
             $body = strip_tags($data['content']['rendered']);
             $timestamp = $this->dateParser->createTimeStamp($data['date'], format: 'c');
@@ -125,7 +125,7 @@ class WordPressJson extends Source
 
     private function fetchCategories(): void
     {
-        $response = $this->client->request('GET', sprintf('%s/wp-json/wp/v2/categories?%s', static::URL, self::CATEGORY_QUERY));
+        $response = $this->client->request('GET', sprintf('%s/wp-json/wp/v2/categories?%s', $this->getUrl(), self::CATEGORY_QUERY));
 
         /** @var array{id: int, slug: string}[] $categories */
         $categories = json_decode($response->getContent(), true);

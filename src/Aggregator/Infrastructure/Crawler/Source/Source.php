@@ -52,10 +52,20 @@ abstract class Source implements SourceCrawler
     #[\Override]
     public function supports(string $source): bool
     {
-        return $source === static::ID;
+        return $source === $this->getId();
     }
 
     abstract public function getPagination(?string $category = null): PageRange;
+
+    protected function getId(): string
+    {
+        return static::ID;
+    }
+
+    protected function getUrl(): string
+    {
+        return static::URL;
+    }
 
     /**
      * @throws \Throwable
@@ -82,10 +92,10 @@ abstract class Source implements SourceCrawler
             $this->commandBus->handle(
                 new CreateArticle(
                     title: $title,
-                    link: Link::from($link, static::ID),
+                    link: Link::from($link, $this->getId()),
                     categories: $categories,
                     body: $body,
-                    source: static::ID,
+                    source: $this->getId(),
                     timestamp: (int) $timestamp,
                     metadata: $metadata
                 )
@@ -105,7 +115,7 @@ abstract class Source implements SourceCrawler
     protected function completed(): void
     {
         $event = $this->stopwatch->stop(self::WATCH_EVENT_NAME);
-        $this->dispatcher->dispatch(new SourceCrawled((string) $event, static::ID));
+        $this->dispatcher->dispatch(new SourceCrawled((string) $event, $this->getId()));
         $this->logger->notice('Done');
     }
 
@@ -126,7 +136,7 @@ abstract class Source implements SourceCrawler
         $result = [];
 
         /** @var string $node */
-        $node = $this->crawle($url ?? self::URL)
+        $node = $this->crawle($url ?? $this->getUrl())
             ->filter('ul.pagination > li a')
             ->last()
             ->attr('href');
