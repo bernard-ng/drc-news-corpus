@@ -1,28 +1,21 @@
 # Core and Backend
 
----
-
-## DRC News Corpus : Towards a scalable and intelligent system for Congolese News curation
-
 ![Deployed](https://github.com/bernard-ng/drc-news-corpus/actions/workflows/deploy.yaml/badge.svg)
 ![Coding Standard](https://github.com/bernard-ng/drc-news-corpus/actions/workflows/quality.yaml/badge.svg)
 ![Tests](https://github.com/bernard-ng/drc-news-corpus/actions/workflows/tests.yaml/badge.svg)
 ![Security](https://github.com/bernard-ng/drc-news-corpus/actions/workflows/audit.yaml/badge.svg)
 
-```tex
-@misc {bernard_ngandu_2025,
-	author       = { {Bernard Ngandu} },
-	title        = { drc-news-corpus (Revision 2b3b24c) },
-	year         = 2025,
-	url          = { https://huggingface.co/datasets/bernard-ng/drc-news-corpus },
-	doi          = { 10.57967/hf/4662 },
-	publisher    = { Hugging Face }
-}
-```
-
-**Dataset is available on Hugging Face Datasets: [drc-news-corpus](https://huggingface.co/datasets/bernard-ng/drc-news-corpus)**
+| Scope             | Link                                                       |
+|-------------------|------------------------------------------------------------|
+| core and backend  | https://github.com/bernard-ng/drc-news-corpus              |
+| ML models         | https://github.com/bernard-ng/drc-news-ml                  |
+| Mobile App        | https://github.com/bernard-ng/drc-news-app                 |
+| Dataset (partial) | https://huggingface.co/datasets/bernard-ng/drc-news-corpus |
 
 ---
+
+## DRC News Corpus : Towards a scalable and intelligent system for Congolese News curation
+
 ### Introduction
 
 The **"DRC News Corpus"** is a structured and scalable dataset of news articles sourced from major media outlets covering diverse aspects of the Democratic Republic of Congo (DRC). Designed for efficiency, this system enables the automated collection, processing, and organization of news stories spanning politics, economy, society, culture, environment, and international affairs.
@@ -35,14 +28,16 @@ To ensure quality and reliability, the dataset prioritizes reputable news source
 
 ### Sources
 
-| Source         | Supported | Articles | Link                                 | Last Crawled |
-|----------------|-----------|----------|--------------------------------------|--------------|
-| radiookapi.net | Yes       | +100k    | https://www.radiookapi.net/actualite | every sunday |
-| mediacongo.cd  | Yes       | +100k    | https://www.mediacongo.net/          | every sunday |
-| beto.cd        | Yes       | +30k     | https://www.beto.cd/                 | every sunday |
-| actualite.cd   | Yes       | +57k     | https://actualite.cd/                | every sunday |
-| 7sur7.cd       | Yes       | +50k     | https://7sur7.cd                     | every sunday |
-| newscd.net     | Yes       | +5k      | https://newscd.net                   | every sunday |
+| Source               | Articles | Link                                 |
+|----------------------|----------|--------------------------------------|
+| radiookapi.net       | +100k    | https://www.radiookapi.net/actualite |
+| mediacongo.cd        | +100k    | https://www.mediacongo.net/          |
+| beto.cd              | +30k     | https://www.beto.cd/                 |
+| actualite.cd         | +57k     | https://actualite.cd/                |
+| 7sur7.cd             | +50k     | https://7sur7.cd                     |
+| newscd.net           | +5k      | https://newscd.net                   |
+| congoindependant.com | +10k     | https://www.congoindependant.com/    |
+| congoactu.net        | +10k     | https://www.congoactu.net/           |
 
 
 ### Build the dataset
