@@ -1,4 +1,8 @@
-# DRC News Corpus : Towards a scalable and intelligent system for Congolese News curation
+# Core and Backend
+
+---
+
+## DRC News Corpus : Towards a scalable and intelligent system for Congolese News curation
 
 ![Deployed](https://github.com/bernard-ng/drc-news-corpus/actions/workflows/deploy.yaml/badge.svg)
 ![Coding Standard](https://github.com/bernard-ng/drc-news-corpus/actions/workflows/quality.yaml/badge.svg)
@@ -19,17 +23,17 @@
 **Dataset is available on Hugging Face Datasets: [drc-news-corpus](https://huggingface.co/datasets/bernard-ng/drc-news-corpus)**
 
 ---
-## Introduction
+### Introduction
 
 The **"DRC News Corpus"** is a structured and scalable dataset of news articles sourced from major media outlets covering diverse aspects of the Democratic Republic of Congo (DRC). Designed for efficiency, this system enables the automated collection, processing, and organization of news stories spanning politics, economy, society, culture, environment, and international affairs.
 
-## Scalability and Use Cases:
+### Scalability and Use Cases:
 
 This dataset is built to support large-scale text analysis, making it a valuable resource for researchers, journalists, policymakers, and data scientists. It facilitates tasks such as sentiment analysis, trend detection, entity recognition, and language modeling, providing deep insights into the evolving socio-political and economic landscape of the DRC.
 
 To ensure quality and reliability, the dataset prioritizes reputable news sources while maintaining an adaptable framework for continuous expansion. However, users are encouraged to critically assess the content, as journalistic standards and perspectives may vary.
 
-## Sources
+### Sources
 
 | Source         | Supported | Articles | Link                                 | Last Crawled |
 |----------------|-----------|----------|--------------------------------------|--------------|
@@ -41,21 +45,21 @@ To ensure quality and reliability, the dataset prioritizes reputable news source
 | newscd.net     | Yes       | +5k      | https://newscd.net                   | every sunday |
 
 
-## Build the dataset
+### Build the dataset
 If you want to rebuild the dataset follow the steps bellow : 
 
-### Installation
+#### Installation
 ```bash
 git clone https://github.com/bernard-ng/drc-news-corpus.git && cd drc-news-corpus
 make build
 make start
 ```
 
-### Usage
+#### Usage
 See supported sources above. you can also add your own source by extending the `App/Aggregator/Infrastructure/Crawler/Source/Source` abstract class.
 if you want to crawl `radiookapi.net` you can run the following command:
 
-#### 1. **Crawling**
+##### 1. **Crawling**
 ```bash
 php bin/console app:crawl radiookapi.net
 
@@ -75,7 +79,7 @@ php bin/console app:crawl 7sur7.cd --category=politique
 php bin/console app:crawl radiookapi.net --parallel=20
 ```
 
-#### 2. **Updating**
+##### 2. **Updating**
 ```bash
 # Update the database with the latest articles.
 php bin/console app:update radiookapi.net
@@ -88,13 +92,13 @@ running this command in the background is recommended. by default no output is g
 nohup php bin/console app:crawl radiookapi.net -v > crawling.log
 ```
 
-#### 3. **Statistics**
+##### 3. **Statistics**
 ```bash
 # Get the number of articles in the database.
 php bin/console app:stats
 ```
 
-## Export the dataset
+### Export the dataset
 You can export the dataset to a CSV file by running the following command:
 
 ```bash
@@ -104,6 +108,6 @@ php bin/console app:export radiookapi.net
 a CSV file will be generated in the `data` directory.
 
 
-## Acknowledgment:
+### Acknowledgment:
 The compilation and curation of the "DRC News Corpus" were conducted by Tshabu Ngandu Bernard with the primary objective of facilitating research and analysis related to the Democratic Republic of Congo. 
 I do not own the content of the articles, and all rights belong to the respective publishers. The dataset is intended for non-commercial research purposes only.
