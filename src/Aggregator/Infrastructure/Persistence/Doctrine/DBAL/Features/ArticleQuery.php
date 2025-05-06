@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL\Features;
 
 use App\Aggregator\Application\ReadModel\ArticleDetails;
-use App\Aggregator\Application\ReadModel\ArticleList;
+use App\Aggregator\Application\ReadModel\ArticleOverview;
+use App\Aggregator\Application\ReadModel\ArticleOverviewList;
 use App\Aggregator\Domain\Model\Identity\ArticleId;
 use App\Aggregator\Domain\Model\ValueObject\Crawling\OpenGraph;
 use App\Aggregator\Domain\Model\ValueObject\Link;
@@ -34,17 +35,41 @@ trait ArticleQuery
             ->from('article');
     }
 
+    private function createArticleOverviewBaseQuery(): QueryBuilder
+    {
+        return $this->connection->createQueryBuilder()
+            ->select('id, title, link, categories, LEFT(body, 200) as excerpt')
+            ->addSelect('metadata, source, published_at')
+            ->from('article');
+    }
+
     /**
      * @param SlidingPaginationInterface<int, array<string, mixed>> $data
      */
-    private function mapArticleList(SlidingPaginationInterface $data): ArticleList
+    private function mapArticleOverviewList(SlidingPaginationInterface $data): ArticleOverviewList
     {
-        return new ArticleList(
+        return new ArticleOverviewList(
             items: array_map(
-                fn ($item) => $this->mapArticleDetails($item),
+                fn ($item) => $this->mapArticleOverview($item),
                 \iterator_to_array($data->getItems())
             ),
             pagination: Pagination::create($data->getPaginationData())
+        );
+    }
+
+    private function mapArticleOverview(array $data): ArticleOverview
+    {
+        $openGraph = OpenGraph::tryFrom(Mapping::nullableString($data, 'metadata'));
+
+        return new ArticleOverview(
+            ArticleId::fromBinary($data['id']),
+            Mapping::string($data, 'title'),
+            Link::from(Mapping::string($data, 'link')),
+            explode(',', Mapping::string($data, 'categories')),
+            trim(Mapping::string($data, 'excerpt')),
+            Mapping::string($data, 'source'),
+            $openGraph?->image,
+            Mapping::datetime($data, 'published_at')
         );
     }
 

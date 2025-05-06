@@ -8,16 +8,16 @@ use App\SharedKernel\Domain\Assert;
 use App\SharedKernel\Domain\Model\ValueObject\Pagination;
 
 /**
- * Class ArticleList.
+ * Class ArticleOverviewList.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final readonly class ArticleList
+final readonly class ArticleOverviewList
 {
     public function __construct(
         public array $items,
         public Pagination $pagination
     ) {
-        Assert::allIsInstanceOf($this->items, ArticleDetails::class);
+        Assert::allIsInstanceOf($this->items, ArticleOverview::class);
     }
 }

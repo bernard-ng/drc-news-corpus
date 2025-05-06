@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Presentation\Web\Controller;
 
-use App\Aggregator\Application\ReadModel\ArticleList;
-use App\Aggregator\Application\UseCase\Query\GetArticleList;
+use App\Aggregator\Application\ReadModel\ArticleOverviewList;
+use App\Aggregator\Application\UseCase\Query\GetArticleOverviewList;
 use App\Aggregator\Domain\Model\ValueObject\Filters\ArticleFilters;
 use App\SharedKernel\Domain\Model\ValueObject\Page;
 use App\SharedKernel\Presentation\Web\Controller\AbstractController;
@@ -15,20 +15,20 @@ use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 use Symfony\Component\Routing\Attribute\Route;
 
 /**
- * Class GetArticlesController.
+ * Class GetArticleOverviewListController.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
 #[AsController]
-#[Route('api/aggregator/articles', name: 'aggregator_articles', methods: ['GET'])]
-final class GetArticlesController extends AbstractController
+#[Route('api/aggregator/articles', name: 'aggregator_articles_overviews', methods: ['GET'])]
+final class GetArticleOverviewListController extends AbstractController
 {
     public function __invoke(
         #[MapQueryString] Page $page,
         #[MapQueryString] ArticleFilters $filters
     ): JsonResponse {
-        /** @var ArticleList $articles */
-        $articles = $this->handleQuery(new GetArticleList($filters, $page));
+        /** @var ArticleOverviewList $articles */
+        $articles = $this->handleQuery(new GetArticleOverviewList($filters, $page));
 
         return JsonResponse::fromJsonString($this->serialize($articles));
     }

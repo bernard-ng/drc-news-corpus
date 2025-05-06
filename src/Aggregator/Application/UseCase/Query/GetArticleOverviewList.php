@@ -8,11 +8,11 @@ use App\Aggregator\Domain\Model\ValueObject\Filters\ArticleFilters;
 use App\SharedKernel\Domain\Model\ValueObject\Page;
 
 /**
- * Class GetArticleList.
+ * Class GetArticleOverviewList.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final readonly class GetArticleList
+final readonly class GetArticleOverviewList
 {
     public function __construct(
         public ArticleFilters $filters,

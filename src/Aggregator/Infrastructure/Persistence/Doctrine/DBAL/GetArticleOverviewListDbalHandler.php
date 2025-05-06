@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL;
 
-use App\Aggregator\Application\ReadModel\ArticleList;
-use App\Aggregator\Application\UseCase\Query\GetArticleList;
-use App\Aggregator\Application\UseCase\QueryHandler\GetArticleListHandler;
+use App\Aggregator\Application\ReadModel\ArticleOverviewList;
+use App\Aggregator\Application\UseCase\Query\GetArticleOverviewList;
+use App\Aggregator\Application\UseCase\QueryHandler\GetArticleOverviewListHandler;
 use App\Aggregator\Domain\Model\ValueObject\Crawling\DateRange;
 use App\Aggregator\Domain\Model\ValueObject\Filters\ArticleFilters;
 use App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL\Features\ArticleQuery;
@@ -18,11 +18,11 @@ use Knp\Bundle\PaginatorBundle\Pagination\SlidingPaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 
 /**
- * Class GetArticleListDbalHandler.
+ * Class GetArticleOverviewListDbalHandler.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final readonly class GetArticleListDbalHandler implements GetArticleListHandler
+final readonly class GetArticleOverviewListDbalHandler implements GetArticleOverviewListHandler
 {
     use ArticleQuery;
 
@@ -33,9 +33,9 @@ final readonly class GetArticleListDbalHandler implements GetArticleListHandler
     }
 
     #[\Override]
-    public function __invoke(GetArticleList $query): ArticleList
+    public function __invoke(GetArticleOverviewList $query): ArticleOverviewList
     {
-        $qb = $this->createArticleBaseQuery()
+        $qb = $this->createArticleOverviewBaseQuery()
             ->orderBy('published_at', 'DESC');
 
         $qb = $this->applyFilters($qb, $query->filters);
@@ -47,7 +47,7 @@ final readonly class GetArticleListDbalHandler implements GetArticleListHandler
             throw NoResult::forQuery($qb->getSQL(), $qb->getParameters(), $e);
         }
 
-        return $this->mapArticleList($data);
+        return $this->mapArticleOverviewList($data);
     }
 
     private function applyFilters(QueryBuilder $qb, ArticleFilters $filters): QueryBuilder
