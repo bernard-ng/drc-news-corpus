@@ -5,7 +5,12 @@ declare(strict_types=1);
 namespace App\Aggregator\Presentation\Console;
 
 use App\Aggregator\Application\UseCase\Command\CreateSource;
+use App\Aggregator\Domain\Model\ValueObject\Scoring\Bias;
+use App\Aggregator\Domain\Model\ValueObject\Scoring\Credibility;
+use App\Aggregator\Domain\Model\ValueObject\Scoring\Reliability;
+use App\Aggregator\Domain\Model\ValueObject\Scoring\Transparency;
 use App\SharedKernel\Application\Messaging\CommandBus;
+use App\SharedKernel\Presentation\Console\AskArgumentFeature;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -19,6 +24,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class CreateSourceConsole extends Command
 {
+    use AskArgumentFeature;
+
     private SymfonyStyle $io;
 
     public function __construct(
@@ -31,6 +38,20 @@ class CreateSourceConsole extends Command
     protected function configure(): void
     {
         $this->addArgument('source', InputArgument::REQUIRED, 'the website source to crawle');
+        $this->addOption('bias', 'b', InputArgument::OPTIONAL, 'bias of the source', Bias::NEUTRAL->value);
+        $this->addOption('reliability', 'r', InputArgument::OPTIONAL, 'reliability of the source', Reliability::AVERAGE->value);
+        $this->addOption('transparency', 't', InputArgument::OPTIONAL, 'transparency of the source', Transparency::MEDIUM->value);
+    }
+
+    #[\Override]
+    protected function interact(InputInterface $input, OutputInterface $output): void
+    {
+        $this->io = new SymfonyStyle($input, $output);
+        $this->io->title('Create a new data source');
+
+        $this->askOption($input, 'bias');
+        $this->askOption($input, 'reliability');
+        $this->askOption($input, 'transparency');
     }
 
     #[\Override]
@@ -42,10 +63,20 @@ class CreateSourceConsole extends Command
     #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        if (! $this->io->confirm('Do you want to continue?', false)) {
+            $this->io->warning('Process aborted');
+            return Command::FAILURE;
+        }
+
         /** @var string $source */
         $source = $input->getArgument('source');
+        $credibility = new Credibility(
+            bias: Bias::from($input->getOption('bias')),
+            reliability: Reliability::from($input->getOption('reliability')),
+            transparency: Transparency::from($input->getOption('transparency')),
+        );
 
-        $this->commandBus->handle(new CreateSource($source));
+        $this->commandBus->handle(new CreateSource($source, $credibility));
 
         $this->io->success('Source add successfully');
         return Command::SUCCESS;

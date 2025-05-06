@@ -26,4 +26,15 @@ trait AskArgumentFeature
             $input->setArgument($name, $value);
         }
     }
+
+    private function askOption(InputInterface $input, string $name): void
+    {
+        $value = \strval($input->getOption($name));
+        if ($value !== '') {
+            $this->io->text(\sprintf(' > <info>%s</info>: %s', $name, $value));
+        } else {
+            $value = $this->io->ask(\strtoupper($name));
+            $input->setOption($name, $value);
+        }
+    }
 }

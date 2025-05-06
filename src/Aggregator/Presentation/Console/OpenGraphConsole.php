@@ -14,6 +14,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -49,6 +50,7 @@ class OpenGraphConsole extends Command
     #[\Override]
     protected function configure(): void
     {
+        $this->addArgument('source', InputArgument::REQUIRED, 'The source to crawl');
         $this->addOption('batch', null, InputOption::VALUE_OPTIONAL, 'Batch size', 50);
     }
 
@@ -63,6 +65,7 @@ class OpenGraphConsole extends Command
 
         $index = 0;
         $batchSize = $input->getOption('batch') ?? 50;
+        $source = $input->getArgument('source');
 
         try {
             $this->entityManager->getConnection()->executeQuery('SET SESSION interactive_timeout = 86400;');
@@ -74,9 +77,14 @@ class OpenGraphConsole extends Command
             return Command::FAILURE;
         }
 
-        $query = $this->entityManager->createQuery(
-            sprintf('SELECT a FROM %s a WHERE a.metadata IS NULL ORDER BY a.publishedAt DESC', Article::class)
-        );
+        $query = $this->entityManager
+            ->createQuery(<<<'DQL'
+                SELECT a 
+                FROM App\Aggregator\Domain\Model\Entity\Article a 
+                WHERE a.source = :source AND a.metadata IS NULL 
+                ORDER BY a.publishedAt DESC
+            DQL)
+            ->setParameter('source', $source);
 
         $this->stopwatch->start(self::WATCH_EVENT_NAME);
 

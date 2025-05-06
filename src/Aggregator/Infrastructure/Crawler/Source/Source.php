@@ -14,6 +14,7 @@ use App\Aggregator\Domain\Service\Crawling\DateParser;
 use App\Aggregator\Domain\Service\Crawling\OpenGraph\OpenGraphConsumer;
 use App\Aggregator\Domain\Service\Crawling\OpenGraph\OpenGraphObject;
 use App\Aggregator\Domain\Service\Crawling\SourceCrawler;
+use App\Aggregator\Infrastructure\Crawler\UserAgents;
 use App\SharedKernel\Application\Messaging\CommandBus;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
@@ -76,7 +77,11 @@ abstract class Source implements SourceCrawler
             $this->logger->notice('> Page ' . $page);
         }
 
-        $response = $this->client->request('GET', $url)->getContent();
+        $response = $this->client->request('GET', $url, [
+            'headers' => [
+                'User-Agent' => UserAgents::random(),
+            ],
+        ])->getContent();
         return new Crawler($response);
     }
 
