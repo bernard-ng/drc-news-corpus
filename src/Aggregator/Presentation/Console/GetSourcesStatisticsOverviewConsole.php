@@ -42,11 +42,12 @@ class GetSourcesStatisticsOverviewConsole extends Command
 
         $this->io->title('Stats about the articles in the database');
         $this->io->table(
-            ['Source', 'Articles', 'CrawledAt'],
+            ['Source', 'Articles', 'Metadata', 'CrawledAt'],
             array_map(
                 fn (SourceOverview $stat): array => [
                     $stat->source,
                     number_format($stat->articles, decimal_separator: '.', thousands_separator: ','),
+                    number_format($stat->metadataAvailable, decimal_separator: '.', thousands_separator: ','),
                     $stat->crawledAt,
                 ],
                 $stats->items

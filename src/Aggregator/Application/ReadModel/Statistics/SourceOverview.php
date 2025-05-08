@@ -16,7 +16,8 @@ final readonly class SourceOverview implements \JsonSerializable
         public string $source,
         public string $url,
         public string $crawledAt,
-        public ?string $updatedAt = null
+        public ?string $updatedAt = null,
+        public int $metadataAvailable = 0,
     ) {
     }
 
@@ -29,6 +30,7 @@ final readonly class SourceOverview implements \JsonSerializable
             'url' => $this->url,
             'crawledAt' => $this->crawledAt,
             'updatedAt' => $this->updatedAt,
+            'metadataAvailable' => $this->metadataAvailable,
         ];
     }
 }

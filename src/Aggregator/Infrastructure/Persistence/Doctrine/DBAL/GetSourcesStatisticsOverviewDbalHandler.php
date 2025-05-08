@@ -32,6 +32,7 @@ final readonly class GetSourcesStatisticsOverviewDbalHandler implements GetSourc
         $qb = $this->connexion->createQueryBuilder()
             ->select('COUNT(link) AS total, MAX(crawled_at) AS crawled_at, source')
             ->addSelect('s.updated_at AS updated_at, s.url as url')
+            ->addSelect('COUNT(CASE WHEN metadata IS NOT NULL THEN 1 ELSE NULL END) AS metadata_available')
             ->leftJoin('article', 'source', 's', 'article.source = s.name')
             ->from('article')
             ->groupBy('source')
@@ -47,7 +48,8 @@ final readonly class GetSourcesStatisticsOverviewDbalHandler implements GetSourc
                 source: Mapping::string($item, 'source'),
                 url: Mapping::string($item, 'url'),
                 crawledAt: Mapping::string($item, 'crawled_at'),
-                updatedAt: Mapping::nullableDatetime($data, 'updated_at')?->format('Y-m-d H:i:s')
+                updatedAt: Mapping::nullableDatetime($item, 'updated_at')?->format('Y-m-d H:i:s'),
+                metadataAvailable: Mapping::integer($item, 'metadata_available')
             ), $data));
         } catch (\Throwable $e) {
             throw NoResult::forQuery($qb->getSQL(), $qb->getParameters(), $e);

@@ -9,7 +9,7 @@ rm -f "${LOG_DIR}"/*.log
 
 for SOURCE in "${SOURCES[@]}"; do
     LOG_FILE="${LOG_DIR}/${SOURCE}.log"
-    nohup $BASE_CMD "$SOURCE" -vvv --no-interfaction > "$LOG_FILE" 2>&1 &
+    nohup $BASE_CMD "$SOURCE" -vvv --no-interaction > "$LOG_FILE" 2>&1 &
 done
 
 echo "All open graph crawlers started in the background."
