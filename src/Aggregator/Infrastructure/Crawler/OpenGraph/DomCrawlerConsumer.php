@@ -8,6 +8,7 @@ use App\Aggregator\Domain\Service\Crawling\OpenGraph\Objects\Website;
 use App\Aggregator\Domain\Service\Crawling\OpenGraph\OpenGraphConsumer;
 use App\Aggregator\Domain\Service\Crawling\OpenGraph\OpenGraphObject;
 use App\Aggregator\Domain\Service\Crawling\OpenGraph\OpenGraphProperty;
+use App\Aggregator\Infrastructure\Crawler\HttpClientFactory;
 use App\Aggregator\Infrastructure\Crawler\UserAgents;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DomCrawler\Crawler;
@@ -20,12 +21,15 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
  */
 final readonly class DomCrawlerConsumer implements OpenGraphConsumer
 {
+    private HttpClientInterface $client;
+
     public function __construct(
-        private HttpClientInterface $client,
+        HttpClientFactory $clientFactory,
         private LoggerInterface $logger,
         private bool $useFallbackMode = true,
         private bool $debug = false,
     ) {
+        $this->client = $clientFactory->create();
     }
 
     public function consumeUrl(string $url): ?OpenGraphObject

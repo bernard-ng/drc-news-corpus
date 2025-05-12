@@ -14,7 +14,7 @@ use App\Aggregator\Domain\Service\Crawling\DateParser;
 use App\Aggregator\Domain\Service\Crawling\OpenGraph\OpenGraphConsumer;
 use App\Aggregator\Domain\Service\Crawling\OpenGraph\OpenGraphObject;
 use App\Aggregator\Domain\Service\Crawling\SourceCrawler;
-use App\Aggregator\Infrastructure\Crawler\UserAgents;
+use App\Aggregator\Infrastructure\Crawler\HttpClientFactory;
 use App\SharedKernel\Application\Messaging\CommandBus;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
@@ -39,8 +39,10 @@ abstract class Source implements SourceCrawler
 
     protected Stopwatch $stopwatch;
 
+    protected HttpClientInterface $client;
+
     public function __construct(
-        protected HttpClientInterface $client,
+        HttpClientFactory $clientFactory,
         protected EventDispatcherInterface $dispatcher,
         protected LoggerInterface $logger,
         protected DateParser $dateParser,
@@ -48,6 +50,7 @@ abstract class Source implements SourceCrawler
         protected OpenGraphConsumer $openGraphConsumer
     ) {
         $this->stopwatch = new Stopwatch();
+        $this->client = $clientFactory->create();
     }
 
     #[\Override]
@@ -77,11 +80,7 @@ abstract class Source implements SourceCrawler
             $this->logger->notice('> Page ' . $page);
         }
 
-        $response = $this->client->request('GET', $url, [
-            'headers' => [
-                'User-Agent' => UserAgents::random(),
-            ],
-        ])->getContent();
+        $response = $this->client->request('GET', $url)->getContent();
         return new Crawler($response);
     }
 
