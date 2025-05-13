@@ -6,6 +6,7 @@ namespace App\Aggregator\Application\ReadModel;
 
 use App\Aggregator\Domain\Model\Identity\ArticleId;
 use App\Aggregator\Domain\Model\ValueObject\Link;
+use App\Aggregator\Domain\Model\ValueObject\ReadingTime;
 
 /**
  * Class ArticleOverview.
@@ -22,6 +23,7 @@ final readonly class ArticleOverview implements \JsonSerializable
         public string $excerpt,
         public string $source,
         public ?string $image,
+        public ReadingTime $readingTime,
         public \DateTimeImmutable $publishedAt,
     ) {
     }
@@ -37,6 +39,7 @@ final readonly class ArticleOverview implements \JsonSerializable
             'excerpt' => $this->excerpt,
             'source' => $this->source,
             'image' => $this->image,
+            'readingTime' => (string) $this->readingTime,
             'publishedAt' => $this->publishedAt,
         ];
     }

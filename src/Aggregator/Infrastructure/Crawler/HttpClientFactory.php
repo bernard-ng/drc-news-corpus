@@ -31,7 +31,7 @@ final readonly class HttpClientFactory
             'headers' => [
                 'User-Agent' => UserAgents::random(),
             ],
-            'proxy' => $proxy !== null ? "https://{$proxy}" : null,
+            'proxy' => $proxy !== null ? 'https://' . $proxy : null,
         ]);
     }
 
@@ -48,10 +48,10 @@ final readonly class HttpClientFactory
 
             /** @var list<string> $proxies */
             $proxies = preg_split('/\r\n|\n|\r/', $content);
-            $proxies = array_filter($proxies, static fn ($proxy) => ! empty($proxy));
+            $proxies = array_filter($proxies, static fn ($proxy): bool => $proxy !== '' && $proxy !== '0');
 
             $proxy = $proxies[array_rand($proxies)];
-            $this->logger->info("HttpClient is using proxy: {$proxy}");
+            $this->logger->info('HttpClient is using proxy: ' . $proxy);
 
             return $proxy;
         } catch (\Throwable $e) {

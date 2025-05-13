@@ -10,6 +10,7 @@ use App\Aggregator\Application\ReadModel\ArticleOverviewList;
 use App\Aggregator\Domain\Model\Identity\ArticleId;
 use App\Aggregator\Domain\Model\ValueObject\Crawling\OpenGraph;
 use App\Aggregator\Domain\Model\ValueObject\Link;
+use App\Aggregator\Domain\Model\ValueObject\ReadingTime;
 use App\Aggregator\Domain\Model\ValueObject\Scoring\Bias;
 use App\Aggregator\Domain\Model\ValueObject\Scoring\Credibility;
 use App\Aggregator\Domain\Model\ValueObject\Scoring\Reliability;
@@ -31,7 +32,7 @@ trait ArticleQuery
     {
         return $this->connection->createQueryBuilder()
             ->select('id, title, link, categories, body, source, hash, published_at, crawled_at, updated_at')
-            ->addSelect('bias, transparency, reliability, sentiment, metadata')
+            ->addSelect('bias, transparency, reliability, sentiment, metadata, reading_time')
             ->from('article');
     }
 
@@ -39,7 +40,7 @@ trait ArticleQuery
     {
         return $this->connection->createQueryBuilder()
             ->select('id, title, link, categories, LEFT(body, 200) as excerpt')
-            ->addSelect('metadata, source, published_at')
+            ->addSelect('metadata, source, published_at, reading_time')
             ->from('article');
     }
 
@@ -69,6 +70,7 @@ trait ArticleQuery
             trim(Mapping::string($data, 'excerpt')),
             Mapping::string($data, 'source'),
             $openGraph?->image,
+            ReadingTime::create(Mapping::nullableInteger($data, 'reading_time')),
             Mapping::datetime($data, 'published_at')
         );
     }
@@ -90,6 +92,7 @@ trait ArticleQuery
             ),
             Mapping::enum($data, 'sentiment', Sentiment::class),
             OpenGraph::tryFrom(Mapping::nullableString($data, 'metadata')),
+            ReadingTime::create(Mapping::nullableInteger($data, 'reading_time')),
             Mapping::datetime($data, 'published_at'),
             Mapping::datetime($data, 'crawled_at'),
             Mapping::nullableDatetime($data, 'updated_at')

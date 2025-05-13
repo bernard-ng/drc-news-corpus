@@ -32,6 +32,7 @@
             </options>
         </field>
         <field name="metadata" type="open_graph" nullable="true" />
+        <embedded name="readingTime" class="App\Aggregator\Domain\Model\ValueObject\ReadingTime" use-column-prefix="false" />
 
         <field name="publishedAt" type="datetime_immutable" />
         <field name="crawledAt" type="datetime_immutable" />

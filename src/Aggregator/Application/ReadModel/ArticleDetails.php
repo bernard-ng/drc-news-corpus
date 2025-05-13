@@ -7,6 +7,7 @@ namespace App\Aggregator\Application\ReadModel;
 use App\Aggregator\Domain\Model\Identity\ArticleId;
 use App\Aggregator\Domain\Model\ValueObject\Crawling\OpenGraph;
 use App\Aggregator\Domain\Model\ValueObject\Link;
+use App\Aggregator\Domain\Model\ValueObject\ReadingTime;
 use App\Aggregator\Domain\Model\ValueObject\Scoring\Credibility;
 use App\Aggregator\Domain\Model\ValueObject\Scoring\Sentiment;
 
@@ -28,6 +29,7 @@ final readonly class ArticleDetails implements \JsonSerializable
         public Credibility $credibility,
         public Sentiment $sentiment,
         public ?OpenGraph $metadata,
+        public ReadingTime $readingTime,
         public \DateTimeImmutable $publishedAt,
         public \DateTimeImmutable $crawledAt,
         public ?\DateTimeImmutable $updatedAt
@@ -48,6 +50,7 @@ final readonly class ArticleDetails implements \JsonSerializable
             'credibility' => $this->credibility,
             'sentiment' => $this->sentiment,
             'metadata' => $this->metadata,
+            'readingTime' => (string) $this->readingTime,
             'publishedAt' => $this->publishedAt,
             'crawledAt' => $this->crawledAt,
             'updatedAt' => $this->updatedAt,

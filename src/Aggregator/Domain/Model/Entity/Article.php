@@ -7,6 +7,7 @@ namespace App\Aggregator\Domain\Model\Entity;
 use App\Aggregator\Domain\Model\Identity\ArticleId;
 use App\Aggregator\Domain\Model\ValueObject\Crawling\OpenGraph;
 use App\Aggregator\Domain\Model\ValueObject\Link;
+use App\Aggregator\Domain\Model\ValueObject\ReadingTime;
 use App\Aggregator\Domain\Model\ValueObject\Scoring\Credibility;
 use App\Aggregator\Domain\Model\ValueObject\Scoring\Sentiment;
 use App\Aggregator\Domain\Service\Crawling\OpenGraph\OpenGraphObject;
@@ -32,6 +33,7 @@ class Article
         private(set) Credibility $credibility = new Credibility(),
         private(set) Sentiment $sentiment = Sentiment::NEUTRAL,
         private(set) ?OpenGraph $metadata = null,
+        private(set) ?ReadingTime $readingTime = null,
         private(set) ?\DateTimeImmutable $updatedAt = null
     ) {
         $this->id = new ArticleId();
@@ -56,6 +58,14 @@ class Article
     public function assignCategories(string $categories): self
     {
         $this->categories = $categories;
+        $this->updatedAt = new \DateTimeImmutable();
+
+        return $this;
+    }
+
+    public function computeReadingTime(): self
+    {
+        $this->readingTime = ReadingTime::fromContent($this->body);
         $this->updatedAt = new \DateTimeImmutable();
 
         return $this;

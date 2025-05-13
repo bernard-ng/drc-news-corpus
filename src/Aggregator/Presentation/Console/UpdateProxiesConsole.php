@@ -50,7 +50,7 @@ final class UpdateProxiesConsole extends Command
             Assert::string($content);
 
             $this->filesystem->dumpFile(
-                filename: "{$this->projectDir}/data/proxies.txt",
+                filename: $this->projectDir . '/data/proxies.txt',
                 content: $content
             );
         } catch (\Throwable $e) {
