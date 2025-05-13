@@ -47,7 +47,9 @@ final readonly class CreateArticleHandler implements CommandHandler
             source: $source,
             publishedAt: $publishedAt
         );
-        $article->defineOpenGraph($command->metadata);
+        $article
+            ->defineOpenGraph($command->metadata)
+            ->computeReadingTime();
 
         $this->articleRepository->add($article);
     }
