@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\IdentityAndAccess\Domain\Event;
 
 use App\IdentityAndAccess\Domain\Model\Identity\UserId;
-use App\SharedKernel\Domain\Model\ValueObject\Email;
+use App\SharedKernel\Domain\Model\ValueObject\EmailAddress;
 
 /**
  * Class EmailUpdated.
@@ -16,8 +16,8 @@ final readonly class EmailUpdated
 {
     public function __construct(
         public UserId $userId,
-        public Email $previous,
-        public Email $current
+        public EmailAddress $previous,
+        public EmailAddress $current
     ) {
     }
 }

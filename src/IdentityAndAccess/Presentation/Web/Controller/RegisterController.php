@@ -6,7 +6,7 @@ namespace App\IdentityAndAccess\Presentation\Web\Controller;
 
 use App\IdentityAndAccess\Application\UseCase\Command\Register;
 use App\IdentityAndAccess\Presentation\Web\WriteModel\RegisterModel;
-use App\SharedKernel\Domain\Model\ValueObject\Email;
+use App\SharedKernel\Domain\Model\ValueObject\EmailAddress;
 use App\SharedKernel\Presentation\Web\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
@@ -24,7 +24,7 @@ final class RegisterController extends AbstractController
     {
         $this->handleCommand(new Register(
             $model->name,
-            Email::from($model->email),
+            EmailAddress::from($model->email),
             $model->password
         ));
 

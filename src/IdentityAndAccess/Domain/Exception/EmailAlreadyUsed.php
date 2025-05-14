@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\IdentityAndAccess\Domain\Exception;
 
 use App\SharedKernel\Domain\Exception\UserFacingError;
-use App\SharedKernel\Domain\Model\ValueObject\Email;
+use App\SharedKernel\Domain\Model\ValueObject\EmailAddress;
 
 /**
  * Class EmailAlreadyUsed.
@@ -14,7 +14,7 @@ use App\SharedKernel\Domain\Model\ValueObject\Email;
  */
 final class EmailAlreadyUsed extends \DomainException implements UserFacingError
 {
-    public static function with(Email $email): self
+    public static function with(EmailAddress $email): self
     {
         return new self(sprintf('the %s email is already used by another user', $email->value));
     }

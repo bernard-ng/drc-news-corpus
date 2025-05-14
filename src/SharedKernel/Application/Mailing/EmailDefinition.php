@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\SharedKernel\Application\Mailing;
 
-use App\SharedKernel\Domain\Model\ValueObject\Email;
+use App\SharedKernel\Domain\Model\ValueObject\EmailAddress;
 
 /**
  * Interface EmailDefinition.
@@ -13,7 +13,7 @@ use App\SharedKernel\Domain\Model\ValueObject\Email;
  */
 interface EmailDefinition
 {
-    public function recipient(): Email;
+    public function recipient(): EmailAddress;
 
     public function subject(): string;
 

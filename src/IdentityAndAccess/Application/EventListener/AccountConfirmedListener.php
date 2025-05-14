@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\IdentityAndAccess\Application\EventListener;
 
-use App\IdentityAndAccess\Application\Email\AccountConfirmedEmail;
+use App\IdentityAndAccess\Application\Mailing\AccountConfirmedEmail;
 use App\IdentityAndAccess\Domain\Event\AccountConfirmed;
 use App\IdentityAndAccess\Domain\Model\Repository\UserRepository;
 use App\SharedKernel\Application\Mailing\Mailer;

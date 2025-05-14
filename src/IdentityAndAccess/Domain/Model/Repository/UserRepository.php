@@ -6,7 +6,7 @@ namespace App\IdentityAndAccess\Domain\Model\Repository;
 
 use App\IdentityAndAccess\Domain\Model\Entity\User;
 use App\IdentityAndAccess\Domain\Model\Identity\UserId;
-use App\SharedKernel\Domain\Model\ValueObject\Email;
+use App\SharedKernel\Domain\Model\ValueObject\EmailAddress;
 
 /**
  * Interface UserRepository.
@@ -21,5 +21,5 @@ interface UserRepository
 
     public function getById(UserId $userId): User;
 
-    public function getByEmail(Email $email): ?User;
+    public function getByEmail(EmailAddress $email): ?User;
 }

@@ -2,27 +2,27 @@
 
 declare(strict_types=1);
 
-namespace App\IdentityAndAccess\Application\Email;
+namespace App\IdentityAndAccess\Application\Mailing;
 
+use App\IdentityAndAccess\Domain\Model\ValueObject\Secret\GeneratedToken;
 use App\SharedKernel\Application\Mailing\EmailDefinition;
-use App\SharedKernel\Domain\Model\ValueObject\Email;
+use App\SharedKernel\Domain\Model\ValueObject\EmailAddress;
 
 /**
- * Class UserConfirmedEmail.
+ * Class PasswordForgottenEmail.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final readonly class AccountConfirmedEmail implements EmailDefinition
+final readonly class PasswordForgottenEmail implements EmailDefinition
 {
     public function __construct(
-        private Email $recipient,
-        private bool $isSocialLogin,
-        private ?string $socialLoginService
+        private EmailAddress $recipient,
+        private GeneratedToken $token
     ) {
     }
 
     #[\Override]
-    public function recipient(): Email
+    public function recipient(): EmailAddress
     {
         return $this->recipient;
     }
@@ -30,7 +30,7 @@ final readonly class AccountConfirmedEmail implements EmailDefinition
     #[\Override]
     public function subject(): string
     {
-        return 'identity_and_access.emails.subjects.account_confirmed';
+        return 'identity_and_access.emails.subjects.password_forgotten';
     }
 
     #[\Override]
@@ -42,15 +42,14 @@ final readonly class AccountConfirmedEmail implements EmailDefinition
     #[\Override]
     public function template(): string
     {
-        return 'identity_and_access/account_confirmed';
+        return 'identity_and_access/password_forgotten';
     }
 
     #[\Override]
     public function templateVariables(): array
     {
         return [
-            'is_social_login' => $this->isSocialLogin,
-            'social_login_service' => $this->socialLoginService,
+            'token' => $this->token,
         ];
     }
 

@@ -8,11 +8,11 @@ use App\SharedKernel\Domain\Assert;
 use App\SharedKernel\Domain\Exception\InvalidEmailAddress;
 
 /**
- * Class Email.
+ * Class EmailAddress.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final readonly class Email implements \Stringable
+final readonly class EmailAddress implements \Stringable
 {
     public string $value;
 

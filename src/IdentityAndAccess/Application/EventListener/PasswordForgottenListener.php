@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\IdentityAndAccess\Application\EventListener;
 
-use App\IdentityAndAccess\Application\Email\PasswordForgottenEmail;
+use App\IdentityAndAccess\Application\Mailing\PasswordForgottenEmail;
 use App\IdentityAndAccess\Domain\Event\PasswordForgotten;
 use App\IdentityAndAccess\Domain\Model\Repository\UserRepository;
 use App\SharedKernel\Application\Mailing\Mailer;
