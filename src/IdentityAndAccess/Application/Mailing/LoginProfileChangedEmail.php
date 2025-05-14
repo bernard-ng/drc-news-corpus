@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\IdentityAndAccess\Application\Email;
+namespace App\IdentityAndAccess\Application\Mailing;
 
 use App\SharedKernel\Application\Mailing\EmailDefinition;
-use App\SharedKernel\Domain\Model\ValueObject\Email;
+use App\SharedKernel\Domain\Model\ValueObject\EmailAddress;
 use App\SharedKernel\Domain\Model\ValueObject\Tracking\Device;
 use App\SharedKernel\Domain\Model\ValueObject\Tracking\GeoLocation;
 
@@ -17,14 +17,14 @@ use App\SharedKernel\Domain\Model\ValueObject\Tracking\GeoLocation;
 final readonly class LoginProfileChangedEmail implements EmailDefinition
 {
     public function __construct(
-        private Email $recipient,
+        private EmailAddress $recipient,
         private Device $device,
         private GeoLocation $location
     ) {
     }
 
     #[\Override]
-    public function recipient(): Email
+    public function recipient(): EmailAddress
     {
         return $this->recipient;
     }

@@ -8,7 +8,7 @@ use App\IdentityAndAccess\Domain\Exception\UserNotFound;
 use App\IdentityAndAccess\Domain\Model\Entity\User;
 use App\IdentityAndAccess\Domain\Model\Identity\UserId;
 use App\IdentityAndAccess\Domain\Model\Repository\UserRepository;
-use App\SharedKernel\Domain\Model\ValueObject\Email;
+use App\SharedKernel\Domain\Model\ValueObject\EmailAddress;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -55,7 +55,7 @@ final class UserOrmRepository extends ServiceEntityRepository implements UserRep
     }
 
     #[\Override]
-    public function getByEmail(Email $email): ?User
+    public function getByEmail(EmailAddress $email): ?User
     {
         return $this->findOneBy([
             'email' => $email,

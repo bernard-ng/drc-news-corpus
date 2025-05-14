@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\IdentityAndAccess\Application\UseCase\Command;
 
-use App\SharedKernel\Domain\Model\ValueObject\Email;
+use App\SharedKernel\Domain\Model\ValueObject\EmailAddress;
 
 /**
  * Class RequestPassword.
@@ -14,7 +14,7 @@ use App\SharedKernel\Domain\Model\ValueObject\Email;
 final readonly class RequestPassword
 {
     public function __construct(
-        public Email $email
+        public EmailAddress $email
     ) {
     }
 }

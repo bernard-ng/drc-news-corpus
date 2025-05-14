@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\IdentityAndAccess\Application\Email;
+namespace App\IdentityAndAccess\Application\Mailing;
 
 use App\IdentityAndAccess\Domain\Model\ValueObject\Secret\GeneratedToken;
 use App\SharedKernel\Application\Mailing\EmailDefinition;
-use App\SharedKernel\Domain\Model\ValueObject\Email;
+use App\SharedKernel\Domain\Model\ValueObject\EmailAddress;
 
 /**
  * Class UserRegisteredEmail.
@@ -16,14 +16,14 @@ use App\SharedKernel\Domain\Model\ValueObject\Email;
 final readonly class ConfirmationRequestedEmail implements EmailDefinition
 {
     public function __construct(
-        private Email $recipient,
+        private EmailAddress $recipient,
         private string $name,
         private GeneratedToken $token
     ) {
     }
 
     #[\Override]
-    public function recipient(): Email
+    public function recipient(): EmailAddress
     {
         return $this->recipient;
     }

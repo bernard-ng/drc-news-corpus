@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Types;
 
-use App\SharedKernel\Domain\Model\ValueObject\Email;
+use App\SharedKernel\Domain\Model\ValueObject\EmailAddress;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\DBAL\Types\Type;
@@ -27,18 +27,18 @@ final class EmailType extends Type
     }
 
     #[\Override]
-    public function convertToPHPValue(mixed $value, AbstractPlatform $platform): ?Email
+    public function convertToPHPValue(mixed $value, AbstractPlatform $platform): ?EmailAddress
     {
         if ($value === null) {
             return null;
         }
 
         if (! \is_string($value)) {
-            throw ConversionException::conversionFailedInvalidType($value, $this->getName(), ['null', 'string', Email::class]);
+            throw ConversionException::conversionFailedInvalidType($value, $this->getName(), ['null', 'string', EmailAddress::class]);
         }
 
         try {
-            return Email::from($value);
+            return EmailAddress::from($value);
         } catch (\Throwable $e) {
             throw ConversionException::conversionFailed($value, $this->getName(), $e);
         }
@@ -47,7 +47,7 @@ final class EmailType extends Type
     #[\Override]
     public function convertToDatabaseValue($value, AbstractPlatform $platform): ?string
     {
-        if ($value instanceof Email) {
+        if ($value instanceof EmailAddress) {
             return (string) $value;
         }
 
@@ -56,11 +56,11 @@ final class EmailType extends Type
         }
 
         if (! \is_string($value)) {
-            throw ConversionException::conversionFailedInvalidType($value, $this->getName(), ['null', 'string', Email::class]);
+            throw ConversionException::conversionFailedInvalidType($value, $this->getName(), ['null', 'string', EmailAddress::class]);
         }
 
         try {
-            return (string) Email::from($value);
+            return (string) EmailAddress::from($value);
         } catch (\Throwable $e) {
             throw ConversionException::conversionFailed($value, $this->getName(), $e);
         }

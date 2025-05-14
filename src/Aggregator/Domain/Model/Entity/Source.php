@@ -16,9 +16,11 @@ use App\Aggregator\Domain\Model\ValueObject\Scoring\Credibility;
 class Source
 {
     public function __construct(
-        public readonly string $name,
+        public readonly string $name, // this is the primary key
         public readonly string $url,
         private(set) Credibility $credibility = new Credibility(),
+        private(set) ?string $displayName = null,
+        private(set) ?string $description = null,
         private(set) ?\DateTimeImmutable $updatedAt = null
     ) {
     }
@@ -31,6 +33,16 @@ class Source
     public function defineCredibility(Credibility $credibility): self
     {
         $this->credibility = $credibility;
+        $this->updatedAt = new \DateTimeImmutable();
+
+        return $this;
+    }
+
+    public function defineProfileInfos(string $displayName, string $description): self
+    {
+        $this->displayName = $displayName;
+        $this->description = $description;
+
         $this->updatedAt = new \DateTimeImmutable();
 
         return $this;

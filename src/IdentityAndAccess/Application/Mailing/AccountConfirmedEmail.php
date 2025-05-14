@@ -2,27 +2,27 @@
 
 declare(strict_types=1);
 
-namespace App\IdentityAndAccess\Application\Email;
+namespace App\IdentityAndAccess\Application\Mailing;
 
-use App\IdentityAndAccess\Domain\Model\ValueObject\Secret\GeneratedToken;
 use App\SharedKernel\Application\Mailing\EmailDefinition;
-use App\SharedKernel\Domain\Model\ValueObject\Email;
+use App\SharedKernel\Domain\Model\ValueObject\EmailAddress;
 
 /**
- * Class AccountBlockedEmail.
+ * Class UserConfirmedEmail.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final readonly class AccountLockedEmail implements EmailDefinition
+final readonly class AccountConfirmedEmail implements EmailDefinition
 {
     public function __construct(
-        private Email $recipient,
-        private GeneratedToken $token
+        private EmailAddress $recipient,
+        private bool $isSocialLogin,
+        private ?string $socialLoginService
     ) {
     }
 
     #[\Override]
-    public function recipient(): Email
+    public function recipient(): EmailAddress
     {
         return $this->recipient;
     }
@@ -30,7 +30,7 @@ final readonly class AccountLockedEmail implements EmailDefinition
     #[\Override]
     public function subject(): string
     {
-        return 'identity_and_access.emails.subjects.account_locked';
+        return 'identity_and_access.emails.subjects.account_confirmed';
     }
 
     #[\Override]
@@ -42,14 +42,15 @@ final readonly class AccountLockedEmail implements EmailDefinition
     #[\Override]
     public function template(): string
     {
-        return 'identity_and_access/account_locked';
+        return 'identity_and_access/account_confirmed';
     }
 
     #[\Override]
     public function templateVariables(): array
     {
         return [
-            'token' => $this->token,
+            'is_social_login' => $this->isSocialLogin,
+            'social_login_service' => $this->socialLoginService,
         ];
     }
 

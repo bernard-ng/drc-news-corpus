@@ -8,7 +8,7 @@ use App\Aggregator\Application\Mailing\SourceCrawledEmail;
 use App\Aggregator\Domain\Event\SourceCrawled;
 use App\SharedKernel\Application\Mailing\Mailer;
 use App\SharedKernel\Domain\EventListener\EventListener;
-use App\SharedKernel\Domain\Model\ValueObject\Email;
+use App\SharedKernel\Domain\Model\ValueObject\EmailAddress;
 
 /**
  * Class SourceFetchedListener.
@@ -26,7 +26,7 @@ final readonly class SourceCrawledListener implements EventListener
     public function __invoke(SourceCrawled $event): void
     {
         $email = new SourceCrawledEmail(
-            Email::from($this->crawlingNotificationEmail),
+            EmailAddress::from($this->crawlingNotificationEmail),
             $event->event,
             $event->source
         );

@@ -2,27 +2,25 @@
 
 declare(strict_types=1);
 
-namespace App\IdentityAndAccess\Application\Email;
+namespace App\IdentityAndAccess\Application\Mailing;
 
-use App\IdentityAndAccess\Domain\Model\ValueObject\Secret\GeneratedCode;
 use App\SharedKernel\Application\Mailing\EmailDefinition;
-use App\SharedKernel\Domain\Model\ValueObject\Email;
+use App\SharedKernel\Domain\Model\ValueObject\EmailAddress;
 
 /**
- * Class PasswordCreatedEmail.
+ * Class PasswordResetEmail.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final readonly class PasswordCreatedEmail implements EmailDefinition
+final readonly class PasswordResetEmail implements EmailDefinition
 {
     public function __construct(
-        private Email $recipient,
-        private GeneratedCode $code
+        private EmailAddress $recipient,
     ) {
     }
 
     #[\Override]
-    public function recipient(): Email
+    public function recipient(): EmailAddress
     {
         return $this->recipient;
     }
@@ -30,7 +28,7 @@ final readonly class PasswordCreatedEmail implements EmailDefinition
     #[\Override]
     public function subject(): string
     {
-        return 'identity_and_access.emails.subjects.password_created';
+        return 'identity_and_access.emails.subjects.password_reset';
     }
 
     #[\Override]
@@ -42,15 +40,13 @@ final readonly class PasswordCreatedEmail implements EmailDefinition
     #[\Override]
     public function template(): string
     {
-        return 'identity_and_access/password_created';
+        return 'identity_and_access/password_reset';
     }
 
     #[\Override]
     public function templateVariables(): array
     {
-        return [
-            'code' => $this->code,
-        ];
+        return [];
     }
 
     #[\Override]

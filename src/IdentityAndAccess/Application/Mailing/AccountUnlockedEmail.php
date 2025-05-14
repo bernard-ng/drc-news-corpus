@@ -2,25 +2,25 @@
 
 declare(strict_types=1);
 
-namespace App\IdentityAndAccess\Application\Email;
+namespace App\IdentityAndAccess\Application\Mailing;
 
 use App\SharedKernel\Application\Mailing\EmailDefinition;
-use App\SharedKernel\Domain\Model\ValueObject\Email;
+use App\SharedKernel\Domain\Model\ValueObject\EmailAddress;
 
 /**
- * Class PasswordUpdatedEmail.
+ * Class AccountUnlockedEmail.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final readonly class PasswordUpdatedEmail implements EmailDefinition
+final readonly class AccountUnlockedEmail implements EmailDefinition
 {
     public function __construct(
-        private Email $recipient
+        private EmailAddress $recipient
     ) {
     }
 
     #[\Override]
-    public function recipient(): Email
+    public function recipient(): EmailAddress
     {
         return $this->recipient;
     }
@@ -28,7 +28,7 @@ final readonly class PasswordUpdatedEmail implements EmailDefinition
     #[\Override]
     public function subject(): string
     {
-        return 'identity_and_access.emails.subjects.password_updated';
+        return 'identity_and_access.emails.subjects.account_unlocked';
     }
 
     #[\Override]
@@ -40,7 +40,7 @@ final readonly class PasswordUpdatedEmail implements EmailDefinition
     #[\Override]
     public function template(): string
     {
-        return 'identity_and_access/password_updated';
+        return 'identity_and_access/account_unlocked';
     }
 
     #[\Override]

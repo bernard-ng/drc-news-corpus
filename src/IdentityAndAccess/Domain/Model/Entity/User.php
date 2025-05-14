@@ -20,7 +20,7 @@ use App\IdentityAndAccess\Domain\Model\ValueObject\Roles;
 use App\IdentityAndAccess\Domain\Model\ValueObject\Secret\GeneratedCode;
 use App\IdentityAndAccess\Domain\Service\PasswordHasher;
 use App\SharedKernel\Domain\EventDispatcher\EventEmitterTrait;
-use App\SharedKernel\Domain\Model\ValueObject\Email;
+use App\SharedKernel\Domain\Model\ValueObject\EmailAddress;
 
 /**
  * Class User.
@@ -35,7 +35,7 @@ class User
 
     private function __construct(
         private(set) string $name,
-        private(set) Email $email,
+        private(set) EmailAddress $email,
         private(set) Roles $roles,
         private(set) ?string $password = null,
         private(set) bool $isLocked = false,
@@ -70,7 +70,7 @@ class User
         return $this;
     }
 
-    public static function register(string $name, Email $email, ?Roles $roles): self
+    public static function register(string $name, EmailAddress $email, ?Roles $roles): self
     {
         return new self($name, $email, $roles ?? Roles::user());
     }
@@ -84,7 +84,7 @@ class User
         return $this;
     }
 
-    public function updateEmail(Email $email): self
+    public function updateEmail(EmailAddress $email): self
     {
         $previous = $this->email;
         $this->email = $email;

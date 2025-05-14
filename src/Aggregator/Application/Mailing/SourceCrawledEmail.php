@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Aggregator\Application\Mailing;
 
 use App\SharedKernel\Application\Mailing\EmailDefinition;
-use App\SharedKernel\Domain\Model\ValueObject\Email;
+use App\SharedKernel\Domain\Model\ValueObject\EmailAddress;
 
 /**
  * Class SourceFetched.
@@ -15,14 +15,14 @@ use App\SharedKernel\Domain\Model\ValueObject\Email;
 final readonly class SourceCrawledEmail implements EmailDefinition
 {
     public function __construct(
-        private Email $recipient,
+        private EmailAddress $recipient,
         private string $event,
         private string $source,
     ) {
     }
 
     #[\Override]
-    public function recipient(): Email
+    public function recipient(): EmailAddress
     {
         return $this->recipient;
     }

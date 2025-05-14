@@ -6,7 +6,7 @@ namespace App\IdentityAndAccess\Infrastructure\Framework\Symfony\Security;
 
 use App\IdentityAndAccess\Domain\Model\Entity\User;
 use App\IdentityAndAccess\Domain\Model\Identity\UserId;
-use App\SharedKernel\Domain\Model\ValueObject\Email;
+use App\SharedKernel\Domain\Model\ValueObject\EmailAddress;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -20,7 +20,7 @@ final readonly class SecurityUser implements UserInterface, PasswordAuthenticate
 {
     public function __construct(
         public UserId $userId,
-        public Email $email,
+        public EmailAddress $email,
         public ?string $password,
         public array $roles,
         public bool $isLocked,

@@ -2,25 +2,27 @@
 
 declare(strict_types=1);
 
-namespace App\IdentityAndAccess\Application\Email;
+namespace App\IdentityAndAccess\Application\Mailing;
 
+use App\IdentityAndAccess\Domain\Model\ValueObject\Secret\GeneratedToken;
 use App\SharedKernel\Application\Mailing\EmailDefinition;
-use App\SharedKernel\Domain\Model\ValueObject\Email;
+use App\SharedKernel\Domain\Model\ValueObject\EmailAddress;
 
 /**
- * Class PasswordResetEmail.
+ * Class AccountBlockedEmail.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final readonly class PasswordResetEmail implements EmailDefinition
+final readonly class AccountLockedEmail implements EmailDefinition
 {
     public function __construct(
-        private Email $recipient,
+        private EmailAddress $recipient,
+        private GeneratedToken $token
     ) {
     }
 
     #[\Override]
-    public function recipient(): Email
+    public function recipient(): EmailAddress
     {
         return $this->recipient;
     }
@@ -28,7 +30,7 @@ final readonly class PasswordResetEmail implements EmailDefinition
     #[\Override]
     public function subject(): string
     {
-        return 'identity_and_access.emails.subjects.password_reset';
+        return 'identity_and_access.emails.subjects.account_locked';
     }
 
     #[\Override]
@@ -40,13 +42,15 @@ final readonly class PasswordResetEmail implements EmailDefinition
     #[\Override]
     public function template(): string
     {
-        return 'identity_and_access/password_reset';
+        return 'identity_and_access/account_locked';
     }
 
     #[\Override]
     public function templateVariables(): array
     {
-        return [];
+        return [
+            'token' => $this->token,
+        ];
     }
 
     #[\Override]

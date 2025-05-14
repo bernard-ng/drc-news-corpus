@@ -6,7 +6,7 @@ namespace App\IdentityAndAccess\Presentation\Web\Controller;
 
 use App\IdentityAndAccess\Application\UseCase\Command\RequestPassword;
 use App\IdentityAndAccess\Presentation\Web\WriteModel\RequestPasswordModel;
-use App\SharedKernel\Domain\Model\ValueObject\Email;
+use App\SharedKernel\Domain\Model\ValueObject\EmailAddress;
 use App\SharedKernel\Presentation\Web\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
@@ -22,7 +22,7 @@ final class RequestPasswordController extends AbstractController
 {
     public function __invoke(#[MapRequestPayload] RequestPasswordModel $model): JsonResponse
     {
-        $email = Email::from($model->email);
+        $email = EmailAddress::from($model->email);
         $this->handleCommand(new RequestPassword($email));
 
         return new JsonResponse(status: 200);

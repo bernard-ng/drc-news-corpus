@@ -6,7 +6,7 @@ namespace App\IdentityAndAccess\Domain\Exception;
 
 use App\IdentityAndAccess\Domain\Model\Identity\UserId;
 use App\SharedKernel\Domain\Exception\UserFacingError;
-use App\SharedKernel\Domain\Model\ValueObject\Email;
+use App\SharedKernel\Domain\Model\ValueObject\EmailAddress;
 
 /**
  * Class UserNotFound.
@@ -15,7 +15,7 @@ use App\SharedKernel\Domain\Model\ValueObject\Email;
  */
 final class UserNotFound extends \DomainException implements UserFacingError
 {
-    public static function withEmail(Email $email): self
+    public static function withEmail(EmailAddress $email): self
     {
         return new self(\sprintf('User with email %s was not found', $email->value));
     }

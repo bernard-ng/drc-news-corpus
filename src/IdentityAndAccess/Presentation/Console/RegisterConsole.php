@@ -7,7 +7,7 @@ namespace App\IdentityAndAccess\Presentation\Console;
 use App\IdentityAndAccess\Application\UseCase\Command\Register;
 use App\IdentityAndAccess\Domain\Model\ValueObject\Roles;
 use App\SharedKernel\Application\Messaging\CommandBus;
-use App\SharedKernel\Domain\Model\ValueObject\Email;
+use App\SharedKernel\Domain\Model\ValueObject\EmailAddress;
 use App\SharedKernel\Presentation\Console\AskArgumentFeature;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -83,7 +83,7 @@ final class RegisterConsole extends Command
         /** @var bool $admin */
         $admin = $input->getOption('admin');
 
-        $command = new Register($name, Email::from($email), $password, $admin ? Roles::admin() : Roles::user());
+        $command = new Register($name, EmailAddress::from($email), $password, $admin ? Roles::admin() : Roles::user());
         $this->commandBus->handle($command);
         $this->io->success(\sprintf('%s was created: %s', $admin ? 'ADMIN' : 'USER', $email));
 

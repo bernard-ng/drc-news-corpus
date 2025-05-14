@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\IdentityAndAccess\Application\EventListener;
 
-use App\IdentityAndAccess\Application\Email\AccountUnlockedEmail;
+use App\IdentityAndAccess\Application\Mailing\AccountUnlockedEmail;
 use App\IdentityAndAccess\Domain\Event\AccountUnlocked;
 use App\IdentityAndAccess\Domain\Model\Repository\UserRepository;
 use App\SharedKernel\Application\Mailing\Mailer;
