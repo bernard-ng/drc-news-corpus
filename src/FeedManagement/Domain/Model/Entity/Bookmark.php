@@ -16,7 +16,7 @@ use App\SharedKernel\Domain\Model\Collection\DataCollection;
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final class Bookmark
+class Bookmark
 {
     public readonly BookmarkId $id;
 
