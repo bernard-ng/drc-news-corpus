@@ -19,11 +19,16 @@ use Symfony\Component\Routing\Requirement\Requirement;
  * @author bernard-ng <bernard@devscast.tech>
  */
 #[AsController]
-#[Route('api/aggregator/articles/{id}', name: 'aggregator_articles_details', requirements: [
-    'id' => Requirement::UUID,
-], methods: ['GET'])]
 final class GetArticleDetailsController extends AbstractController
 {
+    #[Route(
+        path: 'api/aggregator/articles/{id}',
+        name: 'aggregator_article_details',
+        requirements: [
+            'id' => Requirement::UUID_V7,
+        ],
+        methods: ['GET']
+    )]
     public function __invoke(ArticleId $id): JsonResponse
     {
         /** @var ArticleDetails $article */

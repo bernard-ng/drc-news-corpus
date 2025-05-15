@@ -28,7 +28,7 @@
 
         <embedded name="roles" class="App\IdentityAndAccess\Domain\Model\ValueObject\Roles" use-column-prefix="false" />
 
-        <field name="createdAt" type="date_immutable" />
-        <field name="updatedAt" type="date_immutable" nullable="true" />
+        <field name="createdAt" type="datetime_immutable" />
+        <field name="updatedAt" type="datetime_immutable" nullable="true" />
      </entity>
 </doctrine-mapping>

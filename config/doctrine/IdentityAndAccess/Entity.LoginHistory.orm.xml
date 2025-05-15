@@ -21,6 +21,6 @@
         <embedded name="location" class="App\SharedKernel\Domain\Model\ValueObject\Tracking\GeoLocation" />
 
 
-        <field name="createdAt" type="date_immutable"/>
+        <field name="createdAt" type="datetime_immutable"/>
     </entity>
 </doctrine-mapping>

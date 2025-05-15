@@ -10,6 +10,7 @@ use App\SharedKernel\Presentation\Web\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Requirement\Requirement;
 
 /**
  * Class GetSourceStatisticsDetailsController.
@@ -17,9 +18,16 @@ use Symfony\Component\Routing\Attribute\Route;
  * @author bernard-ng <bernard@devscast.tech>
  */
 #[AsController]
-#[Route('/api/aggregator/statistics/{source}', name: 'aggregator_statistics_details', methods: ['GET'])]
 final class GetSourceStatisticsDetailsController extends AbstractController
 {
+    #[Route(
+        path: '/api/aggregator/statistics/{source}',
+        name: 'aggregator_source_statistics_details',
+        requirements: [
+            'source' => Requirement::ASCII_SLUG,
+        ],
+        methods: ['GET']
+    )]
     public function __invoke(string $source): JsonResponse
     {
         /** @var SourceStatisticsDetails $stats */

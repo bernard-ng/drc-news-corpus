@@ -1,0 +1,20 @@
+meta {
+  name: remove-article-from-bookmark
+  type: http
+  seq: 4
+}
+
+delete {
+  url: {{baseUrl}}/feed/bookmarks/:bookmarkId/articles/:articleId
+  body: none
+  auth: bearer
+}
+
+params:path {
+  articleId: 019549f9-13d8-725b-81f6-3c7e75aa5a26
+  bookmarkId: 0196d1dc-eb76-7481-8ba5-90c73f838411
+}
+
+auth:bearer {
+  token: {{token}}
+}
