@@ -15,6 +15,7 @@ identity_and_access.exceptions.password_already_defined: Désolé un mot de pass
 identity_and_access.exceptions.account_is_locked: Pour des raisons de sécurité, votre compte a été verrouillé. Suivez les instructions envoyées à votre adresse email pour le déverrouiller.
 identity_and_access.exceptions.account_not_confirmed: Votre compte n'est pas encore confirmé. Veuillez suivre les instructions envoyées à votre adresse email pour le confirmer.
 Invalid credentials.: Identifiants incorrects.
+identity_and_access.exceptions.permission_not_granted: Impossible de continuer, {reason}.
 
 # Emails
 identity_and_access.emails.subjects.password_created: "[DRC News] Connectez-vous à votre compte avec ce mot de passe par défaut"

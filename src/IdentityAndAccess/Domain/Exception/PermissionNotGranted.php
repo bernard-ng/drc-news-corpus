@@ -26,7 +26,7 @@ final class PermissionNotGranted extends \DomainException implements UserFacingE
     public function translationParameters(): array
     {
         return [
-            'reason' => $this->message,
+            '{reason}' => $this->message,
         ];
     }
 

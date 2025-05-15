@@ -11,9 +11,11 @@ use App\FeedManagement\Application\ReadModel\BookmarkedArticle;
 use App\FeedManagement\Application\ReadModel\BookmarkedArticleList;
 use App\FeedManagement\Application\UseCase\Query\GetBookmarkedArticleList;
 use App\FeedManagement\Application\UseCase\QueryHandler\GetBookmarkedArticleListHandler;
+use App\FeedManagement\Infrastructure\Persistence\Doctrine\CacheKey\BookmarkCacheKey;
 use App\SharedKernel\Domain\Model\ValueObject\Pagination;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Mapping;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\NoResult;
+use Doctrine\DBAL\Cache\QueryCacheProfile;
 use Doctrine\DBAL\Connection;
 use Knp\Bundle\PaginatorBundle\Pagination\SlidingPaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -42,7 +44,7 @@ final readonly class GetBookmarkedArticleListDbalHandler implements GetBookmarke
             ->where('b.id = :bookmarkId AND b.user_id = :userId')
             ->setParameter('bookmarkId', $query->bookmarkId->toBinary())
             ->setParameter('userId', $query->userId->toBinary())
-            //->enableResultCache(new QueryCacheProfile(0, BookmarkCacheKey::BOOKMARKED_ARTICLE_LIST->withId($query->bookmarkId->toString())))
+            ->enableResultCache(new QueryCacheProfile(0, BookmarkCacheKey::BOOKMARKED_ARTICLE_LIST->withId($query->bookmarkId->toString())))
         ;
 
         try {

@@ -9,9 +9,11 @@ use App\FeedManagement\Application\ReadModel\BookmarkInfosList;
 use App\FeedManagement\Application\UseCase\Query\GetBookmarkInfosList;
 use App\FeedManagement\Application\UseCase\QueryHandler\GetBookmarkInfosListHandler;
 use App\FeedManagement\Domain\Model\Identity\BookmarkId;
+use App\FeedManagement\Infrastructure\Persistence\Doctrine\CacheKey\BookmarkCacheKey;
 use App\SharedKernel\Domain\Model\ValueObject\Pagination;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Mapping;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\NoResult;
+use Doctrine\DBAL\Cache\QueryCacheProfile;
 use Doctrine\DBAL\Connection;
 use Knp\Bundle\PaginatorBundle\Pagination\SlidingPaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -41,7 +43,7 @@ final readonly class GetBookmarkInfosListDbalHandler implements GetBookmarkInfos
             ->setParameter('userId', $query->userId->toBinary())
             ->orderBy('b.created_at', 'DESC')
             ->groupBy('b.id')
-            //->enableResultCache(new QueryCacheProfile(0, BookmarkCacheKey::BOOKMARK_INFO_LIST->withId($query->userId->toString())))
+            ->enableResultCache(new QueryCacheProfile(0, BookmarkCacheKey::BOOKMARK_INFO_LIST->withId($query->userId->toString())))
         ;
 
         try {

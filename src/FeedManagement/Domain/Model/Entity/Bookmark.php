@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\FeedManagement\Domain\Model\Entity;
 
 use App\Aggregator\Domain\Model\Entity\Article;
+use App\FeedManagement\Domain\Exception\ArticleAlreadyBookmarked;
+use App\FeedManagement\Domain\Exception\BookmarkedArticleNotFound;
 use App\FeedManagement\Domain\Model\Identity\BookmarkId;
 use App\IdentityAndAccess\Domain\Model\Entity\User;
 use App\SharedKernel\Domain\Model\Collection\DataCollection;
@@ -60,16 +62,22 @@ final class Bookmark
 
     public function addArticle(Article $article): self
     {
-        if (! $this->articles->contains($article)) {
-            $this->articles->add($article);
-            $this->updatedAt = new \DateTimeImmutable();
+        if ($this->articles->contains($article)) {
+            throw ArticleAlreadyBookmarked::with($article->id, $this->id);
         }
+
+        $this->articles->add($article);
+        $this->updatedAt = new \DateTimeImmutable();
 
         return $this;
     }
 
     public function removeArticle(Article $article): self
     {
+        if (! $this->articles->contains($article)) {
+            throw BookmarkedArticleNotFound::with($article->id, $this->id);
+        }
+
         $this->articles->removeElement($article);
 
         return $this;

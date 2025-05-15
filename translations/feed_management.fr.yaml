@@ -1,0 +1,8 @@
+
+# Exception
+feed_management.exceptions.article_already_bookmarked: L'article a déjà été ajouté au signet
+feed_management.exceptions.bookmarked_article_not_found: L'article n'a pas été trouvé dans le signet
+feed_management.exceptions.bookmark_not_found: Le signet n'a pas été trouvé
+feed_management.exceptions.cannot_add_article_to_bookmark: Vous n'avez pas la permission d'ajouter cet article au signet
+feed_management.exceptions.cannot_delete_bookmark: Vous n'avez pas la permission de supprimer ce signet
+feed_management.exceptions.cannot_update_bookmark: Vous n'avez pas la permission de mettre à jour ce signet
