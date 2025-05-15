@@ -1,0 +1,27 @@
+meta {
+  name: update-bookmark
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{baseUrl}}/feed/bookmarks/:bookmarkId
+  body: json
+  auth: bearer
+}
+
+params:path {
+  bookmarkId: 0196d1dc-eb76-7481-8ba5-90c73f838411
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "updated name",
+    "description": "some description",
+    "isPublic": true
+  }
+}

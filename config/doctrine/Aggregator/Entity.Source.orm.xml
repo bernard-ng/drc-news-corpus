@@ -16,6 +16,6 @@
 
         <embedded name="credibility" class="App\Aggregator\Domain\Model\ValueObject\Scoring\Credibility" use-column-prefix="false" />
 
-        <field name="updatedAt" type="date_immutable" nullable="true"/>
+        <field name="updatedAt" type="datetime_immutable" nullable="true"/>
     </entity>
 </doctrine-mapping>

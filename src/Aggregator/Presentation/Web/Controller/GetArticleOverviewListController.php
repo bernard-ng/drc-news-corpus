@@ -20,9 +20,13 @@ use Symfony\Component\Routing\Attribute\Route;
  * @author bernard-ng <bernard@devscast.tech>
  */
 #[AsController]
-#[Route('api/aggregator/articles', name: 'aggregator_articles_overviews', methods: ['GET'])]
 final class GetArticleOverviewListController extends AbstractController
 {
+    #[Route(
+        path: 'api/aggregator/articles',
+        name: 'aggregator_article_overview_list',
+        methods: ['GET']
+    )]
     public function __invoke(
         #[MapQueryString] Page $page,
         #[MapQueryString] ArticleFilters $filters

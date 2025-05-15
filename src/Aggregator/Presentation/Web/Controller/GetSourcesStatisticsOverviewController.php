@@ -17,9 +17,13 @@ use Symfony\Component\Routing\Attribute\Route;
  * @author bernard-ng <bernard@devscast.tech>
  */
 #[AsController]
-#[Route('/api/aggregator/statistics', name: 'aggregator_statistics_overview', methods: ['GET'])]
 final class GetSourcesStatisticsOverviewController extends AbstractController
 {
+    #[Route(
+        path: '/api/aggregator/statistics',
+        name: 'aggregator_source_statistics_overview',
+        methods: ['GET']
+    )]
     public function __invoke(): JsonResponse
     {
         /** @var SourcesStatisticsOverview $stats */

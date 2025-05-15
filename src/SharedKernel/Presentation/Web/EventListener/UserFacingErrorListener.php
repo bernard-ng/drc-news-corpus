@@ -6,6 +6,7 @@ namespace App\SharedKernel\Presentation\Web\EventListener;
 
 use App\Aggregator\Domain\Exception\ArticleNotFound;
 use App\Aggregator\Domain\Exception\SourceNotFound;
+use App\IdentityAndAccess\Domain\Exception\PermissionNotGranted;
 use App\IdentityAndAccess\Domain\Exception\UserNotFound;
 use App\SharedKernel\Domain\Exception\InvalidArgument;
 use App\SharedKernel\Domain\Exception\UserFacingError;
@@ -32,6 +33,10 @@ final readonly class UserFacingErrorListener
 
     private const array BAD_REQUEST_EXCEPTIONS = [
         InvalidArgument::class,
+    ];
+
+    private const array FORBIDDEN_EXCEPTIONS = [
+        PermissionNotGranted::class,
     ];
 
     public function __construct(
@@ -66,6 +71,7 @@ final readonly class UserFacingErrorListener
         return match (true) {
             in_array($exception::class, self::NOT_FOUND_EXCEPTIONS) => Response::HTTP_NOT_FOUND,
             in_array($exception::class, self::BAD_REQUEST_EXCEPTIONS) => Response::HTTP_BAD_REQUEST,
+            in_array($exception::class, self::FORBIDDEN_EXCEPTIONS) => Response::HTTP_FORBIDDEN,
             default => Response::HTTP_UNPROCESSABLE_ENTITY
         };
     }

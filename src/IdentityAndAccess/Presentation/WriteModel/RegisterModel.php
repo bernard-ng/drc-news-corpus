@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\IdentityAndAccess\Presentation\Web\WriteModel;
+namespace App\IdentityAndAccess\Presentation\WriteModel;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -14,6 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 final class RegisterModel
 {
     #[Assert\NotBlank]
+    #[Assert\Length(min: 3, max: 255)]
     public string $name;
 
     #[Assert\NotBlank]

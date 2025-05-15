@@ -36,6 +36,6 @@
 
         <field name="publishedAt" type="datetime_immutable" />
         <field name="crawledAt" type="datetime_immutable" />
-        <field name="updatedAt" type="date_immutable" nullable="true" />
+        <field name="updatedAt" type="datetime_immutable" nullable="true" />
     </entity>
 </doctrine-mapping>

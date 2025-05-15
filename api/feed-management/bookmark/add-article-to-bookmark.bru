@@ -1,0 +1,20 @@
+meta {
+  name: add-article-to-bookmark
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/feed/bookmarks/:bookmarkId/articles/:articleId
+  body: none
+  auth: bearer
+}
+
+params:path {
+  articleId: 01969320-8c93-77ad-b6db-843df8efae9d
+  bookmarkId: 0196d1dc-eb76-7481-8ba5-90c73f838411
+}
+
+auth:bearer {
+  token: {{token}}
+}

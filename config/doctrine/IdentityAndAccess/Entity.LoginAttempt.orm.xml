@@ -16,6 +16,6 @@
             <join-column nullable="false" on-delete="CASCADE" />
         </many-to-one>
 
-        <field name="createdAt" type="date_immutable"/>
+        <field name="createdAt" type="datetime_immutable"/>
     </entity>
 </doctrine-mapping>

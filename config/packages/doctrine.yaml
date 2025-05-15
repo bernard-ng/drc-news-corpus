@@ -10,13 +10,21 @@ doctrine:
         use_savepoints: true
         result_cache: 'cache.dbal'
         types:
+            # Shared Kernel
             email: App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Types\EmailType
+
+            # Aggregator
             article_id: App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL\Types\ArticleIdType
             open_graph: App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL\Types\OpenGraphType
+
+            # Identity and Access
             user_id: App\IdentityAndAccess\Infrastructure\Persistence\Doctrine\DBAL\Types\UserIdType
             login_attempt_id: App\IdentityAndAccess\Infrastructure\Persistence\Doctrine\DBAL\Types\LoginAttemptIdType
             login_history_id: App\IdentityAndAccess\Infrastructure\Persistence\Doctrine\DBAL\Types\LoginHistoryIdType
             verification_token_id: App\IdentityAndAccess\Infrastructure\Persistence\Doctrine\DBAL\Types\VerificationTokenIdType
+
+            # FeedManagement
+            bookmark_id: App\FeedManagement\Infrastructure\Persistence\Doctrine\DBAL\Types\BookmarkIdType
     orm:
         auto_generate_proxy_classes: true
         enable_lazy_ghost_objects: true
@@ -35,6 +43,11 @@ doctrine:
                 type: xml
                 dir: '%kernel.project_dir%/config/doctrine/IdentityAndAccess'
                 prefix: 'App\IdentityAndAccess\Domain\Model'
+            FeedManagement:
+                is_bundle: false
+                type: xml
+                dir: '%kernel.project_dir%/config/doctrine/FeedManagement'
+                prefix: 'App\FeedManagement\Domain\Model'
             SharedKernel:
                 is_bundle: false
                 type: xml

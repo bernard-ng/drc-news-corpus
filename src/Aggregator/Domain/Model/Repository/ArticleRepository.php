@@ -19,7 +19,7 @@ interface ArticleRepository
 
     public function remove(Article $article): void;
 
-    public function getById(ArticleId $id): ?Article;
+    public function getById(ArticleId $id): Article;
 
     public function getByHash(string $hash): ?Article;
 

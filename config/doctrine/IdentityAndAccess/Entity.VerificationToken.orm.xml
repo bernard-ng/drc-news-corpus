@@ -18,6 +18,6 @@
         <field name="purpose" enum-type="App\IdentityAndAccess\Domain\Model\ValueObject\Secret\TokenPurpose" />
         <embedded name="token" class="App\IdentityAndAccess\Domain\Model\ValueObject\Secret\GeneratedToken" use-column-prefix="false" />
 
-        <field name="createdAt" type="date_immutable"/>
+        <field name="createdAt" type="datetime_immutable"/>
     </entity>
 </doctrine-mapping>
