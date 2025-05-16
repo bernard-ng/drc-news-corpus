@@ -11,7 +11,7 @@ use App\SharedKernel\Domain\Assert;
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final readonly class Link implements \Stringable
+final readonly class Link implements \Stringable, \JsonSerializable
 {
     public string $link;
 
@@ -33,5 +33,10 @@ final readonly class Link implements \Stringable
     public static function from(string $url, ?string $source = null): self
     {
         return new self($url, $source);
+    }
+
+    public function jsonSerialize(): string
+    {
+        return $this->link;
     }
 }

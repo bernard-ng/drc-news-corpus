@@ -8,7 +8,7 @@ use App\Aggregator\Application\ReadModel\ArticleDetails;
 use App\Aggregator\Application\UseCase\Query\GetArticleDetails;
 use App\Aggregator\Application\UseCase\QueryHandler\GetArticleDetailsHandler;
 use App\Aggregator\Domain\Exception\ArticleNotFound;
-use App\Aggregator\Infrastructure\Persistence\Doctrine\CacheKey;
+use App\Aggregator\Infrastructure\Persistence\Doctrine\CacheKey\ArticleCacheKey;
 use App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL\Features\ArticleQuery;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\NoResult;
 use Doctrine\DBAL\Cache\QueryCacheProfile;
@@ -35,7 +35,7 @@ final readonly class GetArticleDetailsDbalHandler implements GetArticleDetailsHa
         $qb = $this->createArticleBaseQuery()
             ->where('id = :id')
             ->setParameter('id', $query->id->toBinary(), ParameterType::BINARY)
-            ->enableResultCache(new QueryCacheProfile(0, CacheKey::ARTICLE_DETAILS->withId($query->id->toString())))
+            ->enableResultCache(new QueryCacheProfile(0, ArticleCacheKey::ARTICLE_DETAILS->withId($query->id->toString())))
         ;
 
         try {

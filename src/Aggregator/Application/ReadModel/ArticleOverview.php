@@ -13,7 +13,7 @@ use App\Aggregator\Domain\Model\ValueObject\ReadingTime;
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final readonly class ArticleOverview implements \JsonSerializable
+final readonly class ArticleOverview
 {
     public function __construct(
         public ArticleId $id,
@@ -25,22 +25,7 @@ final readonly class ArticleOverview implements \JsonSerializable
         public ?string $image,
         public ReadingTime $readingTime,
         public \DateTimeImmutable $publishedAt,
+        public bool $bookmarked = false
     ) {
-    }
-
-    #[\Override]
-    public function jsonSerialize(): array
-    {
-        return [
-            'id' => $this->id,
-            'title' => $this->title,
-            'link' => (string) $this->link,
-            'categories' => $this->categories,
-            'excerpt' => $this->excerpt,
-            'source' => $this->source,
-            'image' => $this->image,
-            'readingTime' => (string) $this->readingTime,
-            'publishedAt' => $this->publishedAt,
-        ];
     }
 }

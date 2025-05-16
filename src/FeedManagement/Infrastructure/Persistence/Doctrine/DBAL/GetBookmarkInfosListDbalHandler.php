@@ -15,6 +15,7 @@ use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Mapping;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\NoResult;
 use Doctrine\DBAL\Cache\QueryCacheProfile;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ParameterType;
 use Knp\Bundle\PaginatorBundle\Pagination\SlidingPaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 
@@ -40,10 +41,10 @@ final readonly class GetBookmarkInfosListDbalHandler implements GetBookmarkInfos
             ->addSelect('COUNT(ba.article_id) AS bookmark_articles_count, b.is_public AS bookmark_is_public')
             ->leftJoin('b', 'bookmark_article', 'ba', 'ba.bookmark_id = b.id')
             ->where('b.user_id = :userId')
-            ->setParameter('userId', $query->userId->toBinary())
+            ->setParameter('userId', $query->userId->toBinary(), ParameterType::BINARY)
             ->orderBy('b.created_at', 'DESC')
             ->groupBy('b.id')
-            ->enableResultCache(new QueryCacheProfile(0, BookmarkCacheKey::BOOKMARK_INFO_LIST->withId($query->userId->toString())))
+            ->enableResultCache(new QueryCacheProfile(0, BookmarkCacheKey::BOOKMARK_LIST->withId($query->userId->toString())))
         ;
 
         try {

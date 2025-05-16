@@ -8,8 +8,8 @@ use App\Aggregator\Application\ReadModel\ArticleOverviewList;
 use App\Aggregator\Application\UseCase\Query\GetArticleOverviewList;
 use App\Aggregator\Application\UseCase\QueryHandler\GetArticleOverviewListHandler;
 use App\Aggregator\Domain\Model\ValueObject\Crawling\DateRange;
-use App\Aggregator\Domain\Model\ValueObject\Filters\ArticleFilters;
 use App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL\Features\ArticleQuery;
+use App\SharedKernel\Domain\Model\Filters\FiltersQuery;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\NoResult;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
@@ -50,7 +50,7 @@ final readonly class GetArticleOverviewListDbalHandler implements GetArticleOver
         return $this->mapArticleOverviewList($data);
     }
 
-    private function applyFilters(QueryBuilder $qb, ArticleFilters $filters): QueryBuilder
+    private function applyFilters(QueryBuilder $qb, FiltersQuery $filters): QueryBuilder
     {
         if ($filters->source !== null) {
             $qb->andWhere('source = :source')

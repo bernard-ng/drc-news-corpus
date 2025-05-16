@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Aggregator\Infrastructure\Persistence\Doctrine\EventListener;
 
 use App\Aggregator\Domain\Model\Entity\Article;
-use App\Aggregator\Infrastructure\Persistence\Doctrine\CacheKey;
+use App\Aggregator\Infrastructure\Persistence\Doctrine\CacheKey\ArticleCacheKey;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
@@ -40,12 +40,7 @@ final readonly class ArticleCacheInvalidationListener
     {
         try {
             $this->cache?->deleteItems([
-                CacheKey::ARTICLE_DETAILS->withId($entity->id->toString()),
-                CacheKey::SOURCE_OVERVIEW->withId($entity->source->name),
-                CacheKey::SOURCES_STATISTICS_OVERVIEW->withId($entity->source->name),
-                CacheKey::SOURCES_STATISTICS_OVERVIEW->withId($entity->source->name),
-                CacheKey::SOURCE_CATEGORIES_SHARES->withId($entity->source->name),
-                CacheKey::SOURCE_PUBLICATION_GRAPH->withId($entity->source->name),
+                ArticleCacheKey::ARTICLE_DETAILS->withId($entity->id->toString()),
             ]);
         } catch (\Throwable $e) {
             $this->logger->emergency('Failed to invalidate article cache', [

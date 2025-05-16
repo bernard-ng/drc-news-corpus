@@ -31,8 +31,10 @@ final class GetArticleDetailsController extends AbstractController
     )]
     public function __invoke(ArticleId $id): JsonResponse
     {
+        $securityUser = $this->getSecurityUser();
+
         /** @var ArticleDetails $article */
-        $article = $this->handleQuery(new GetArticleDetails($id));
+        $article = $this->handleQuery(new GetArticleDetails($id, $securityUser->userId));
 
         return JsonResponse::fromJsonString($this->serialize($article));
     }

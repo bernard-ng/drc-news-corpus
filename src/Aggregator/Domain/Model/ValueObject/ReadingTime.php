@@ -9,7 +9,7 @@ namespace App\Aggregator\Domain\Model\ValueObject;
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final readonly class ReadingTime implements \Stringable
+final readonly class ReadingTime implements \Stringable, \JsonSerializable
 {
     public const int WORDS_PER_MINUTE = 200;
 
@@ -49,5 +49,10 @@ final readonly class ReadingTime implements \Stringable
     public static function fromContent(string $content): self
     {
         return new self($content);
+    }
+
+    public function jsonSerialize(): string
+    {
+        return (string) $this->readingTime;
     }
 }

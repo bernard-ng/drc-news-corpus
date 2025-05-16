@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Presentation\Console;
 
-use App\Aggregator\Application\ReadModel\Statistics\SourceOverview;
-use App\Aggregator\Application\ReadModel\Statistics\SourcesStatisticsOverview;
-use App\Aggregator\Application\UseCase\Query\GetSourcesStatisticsOverview;
+use App\Aggregator\Application\ReadModel\Source\SourceOverview;
+use App\Aggregator\Application\ReadModel\Source\SourceOverviewList;
+use App\Aggregator\Application\UseCase\Query\GetSourceOverviewList;
 use App\SharedKernel\Application\Messaging\QueryBus;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -18,7 +18,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:stats',
     description: 'show stats about the articles in the database',
 )]
-class GetSourcesStatisticsOverviewConsole extends Command
+class GetSourceOverviewListConsole extends Command
 {
     private SymfonyStyle $io;
 
@@ -37,16 +37,16 @@ class GetSourcesStatisticsOverviewConsole extends Command
     #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        /** @var SourcesStatisticsOverview $stats */
-        $stats = $this->queryBus->handle(new GetSourcesStatisticsOverview());
+        /** @var SourceOverviewList $stats */
+        $stats = $this->queryBus->handle(new GetSourceOverviewList());
 
         $this->io->title('Stats about the articles in the database');
         $this->io->table(
             ['Source', 'Articles', 'Metadata', 'CrawledAt'],
             array_map(
                 fn (SourceOverview $stat): array => [
-                    $stat->source,
-                    number_format($stat->articles, decimal_separator: '.', thousands_separator: ','),
+                    $stat->name,
+                    number_format($stat->articlesCount, decimal_separator: '.', thousands_separator: ','),
                     number_format($stat->metadataAvailable, decimal_separator: '.', thousands_separator: ','),
                     $stat->crawledAt,
                 ],

@@ -17,6 +17,7 @@ use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Mapping;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\NoResult;
 use Doctrine\DBAL\Cache\QueryCacheProfile;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ParameterType;
 use Knp\Bundle\PaginatorBundle\Pagination\SlidingPaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 
@@ -42,8 +43,8 @@ final readonly class GetBookmarkedArticleListDbalHandler implements GetBookmarke
             ->leftJoin('ba', 'article', 'a', 'a.id = ba.article_id')
             ->leftJoin('ba', 'bookmark', 'b', 'b.id = ba.bookmark_id')
             ->where('b.id = :bookmarkId AND b.user_id = :userId')
-            ->setParameter('bookmarkId', $query->bookmarkId->toBinary())
-            ->setParameter('userId', $query->userId->toBinary())
+            ->setParameter('bookmarkId', $query->bookmarkId->toBinary(), ParameterType::BINARY)
+            ->setParameter('userId', $query->userId->toBinary(), ParameterType::BINARY)
             ->enableResultCache(new QueryCacheProfile(0, BookmarkCacheKey::BOOKMARKED_ARTICLE_LIST->withId($query->bookmarkId->toString())))
         ;
 

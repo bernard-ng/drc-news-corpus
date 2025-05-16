@@ -2,18 +2,20 @@
 
 declare(strict_types=1);
 
-namespace App\Aggregator\Application\ReadModel\Statistics;
+namespace App\Aggregator\Application\ReadModel\Source;
 
 use App\SharedKernel\Domain\Assert;
+use App\SharedKernel\Domain\Model\ValueObject\Pagination;
 
 /**
- * Class SourcesStatisticsOverview.
+ * Class SourceOverviewList.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final readonly class SourcesStatisticsOverview
+final readonly class SourceOverviewList
 {
     public function __construct(
+        public Pagination $pagination,
         public array $items = []
     ) {
         Assert::allIsInstanceOf($items, SourceOverview::class);

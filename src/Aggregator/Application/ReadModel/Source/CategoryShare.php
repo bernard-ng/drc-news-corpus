@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Aggregator\Application\ReadModel\Statistics;
+namespace App\Aggregator\Application\ReadModel\Source;
 
 /**
  * Class CategoryShare.

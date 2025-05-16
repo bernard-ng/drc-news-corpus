@@ -42,7 +42,7 @@ final readonly class BookmarkCacheInvalidationListener
             $this->cache?->deleteItems([
                 BookmarkCacheKey::BOOKMARK_INFO->withId($entity->id->toString()),
                 BookmarkCacheKey::BOOKMARKED_ARTICLE_LIST->withId($entity->id->toString()),
-                BookmarkCacheKey::BOOKMARK_INFO_LIST->withId($entity->user->id->toString()),
+                BookmarkCacheKey::BOOKMARK_LIST->withId($entity->user->id->toString()),
             ]);
         } catch (\Throwable $e) {
             $this->logger->emergency('Failed to invalidate bookmark cache', [

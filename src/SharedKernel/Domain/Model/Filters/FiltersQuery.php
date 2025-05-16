@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace App\Aggregator\Domain\Model\ValueObject\Filters;
+namespace App\SharedKernel\Domain\Model\Filters;
 
 use App\Aggregator\Domain\Model\ValueObject\Crawling\DateRange;
 
 /**
- * Class ArticleFilters.
+ * Class FiltersQuery.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final readonly class ArticleFilters
+final readonly class FiltersQuery
 {
     public function __construct(
         public ?string $search = null,

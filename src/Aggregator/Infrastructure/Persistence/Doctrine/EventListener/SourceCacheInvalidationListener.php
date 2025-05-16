@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Aggregator\Infrastructure\Persistence\Doctrine\EventListener;
 
 use App\Aggregator\Domain\Model\Entity\Source;
-use App\Aggregator\Infrastructure\Persistence\Doctrine\CacheKey;
+use App\Aggregator\Infrastructure\Persistence\Doctrine\CacheKey\SourceCacheKey;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
@@ -40,8 +40,11 @@ final readonly class SourceCacheInvalidationListener
     {
         try {
             $this->cache?->deleteItems([
-                CacheKey::SOURCE_OVERVIEW->withId($entity->name),
-                CacheKey::SOURCES_STATISTICS_OVERVIEW->withId($entity->name),
+                SourceCacheKey::SOURCE_OVERVIEW->withId($entity->name),
+                SourceCacheKey::SOURCE_OVERVIEW_LIST->withId($entity->name),
+                SourceCacheKey::SOURCE_PUBLICATION_GRAPH->withId($entity->name),
+                SourceCacheKey::SOURCE_CATEGORY_SHARES->withId($entity->name),
+                SourceCacheKey::SOURCE_DETAILS->withId($entity->name),
             ]);
         } catch (\Throwable $e) {
             $this->logger->emergency('Failed to invalidate source cache', [

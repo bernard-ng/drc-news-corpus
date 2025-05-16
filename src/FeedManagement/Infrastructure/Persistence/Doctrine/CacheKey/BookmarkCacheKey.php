@@ -13,7 +13,7 @@ enum BookmarkCacheKey: string
 {
     case BOOKMARK_INFO = 'bookmark_info_%s';
 
-    case BOOKMARK_INFO_LIST = 'bookmark_info_list_%s';
+    case BOOKMARK_LIST = 'bookmark_list_%s';
 
     case BOOKMARKED_ARTICLE_LIST = 'bookmarked_article_list_%s';
 

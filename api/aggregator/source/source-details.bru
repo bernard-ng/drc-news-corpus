@@ -1,11 +1,11 @@
 meta {
-  name: source-statistics-details
+  name: source-details
   type: http
   seq: 4
 }
 
 get {
-  url: {{baseUrl}}/aggregator/statistics/:source
+  url: {{baseUrl}}/aggregator/sources/:source
   body: none
   auth: bearer
 }

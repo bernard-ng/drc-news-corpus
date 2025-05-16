@@ -15,6 +15,8 @@
         <field name="url" />
 
         <embedded name="credibility" class="App\Aggregator\Domain\Model\ValueObject\Scoring\Credibility" use-column-prefix="false" />
+        <field name="displayName" nullable="true" />
+        <field name="description" length="2048" nullable="true" />
 
         <field name="updatedAt" type="datetime_immutable" nullable="true"/>
     </entity>

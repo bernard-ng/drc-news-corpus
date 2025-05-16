@@ -16,7 +16,7 @@ use App\Aggregator\Domain\Model\ValueObject\Scoring\Sentiment;
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final readonly class ArticleDetails implements \JsonSerializable
+final readonly class ArticleDetails
 {
     public function __construct(
         public ArticleId $id,
@@ -32,28 +32,8 @@ final readonly class ArticleDetails implements \JsonSerializable
         public ReadingTime $readingTime,
         public \DateTimeImmutable $publishedAt,
         public \DateTimeImmutable $crawledAt,
-        public ?\DateTimeImmutable $updatedAt
+        public ?\DateTimeImmutable $updatedAt,
+        public bool $bookmarked = false
     ) {
-    }
-
-    #[\Override]
-    public function jsonSerialize(): array
-    {
-        return [
-            'id' => $this->id,
-            'title' => $this->title,
-            'link' => (string) $this->link,
-            'categories' => $this->categories,
-            'body' => $this->body,
-            'source' => $this->source,
-            'hash' => $this->hash,
-            'credibility' => $this->credibility,
-            'sentiment' => $this->sentiment,
-            'metadata' => $this->metadata,
-            'readingTime' => (string) $this->readingTime,
-            'publishedAt' => $this->publishedAt,
-            'crawledAt' => $this->crawledAt,
-            'updatedAt' => $this->updatedAt,
-        ];
     }
 }

@@ -9,16 +9,16 @@ use App\SharedKernel\Domain\Model\Filters\FiltersQuery;
 use App\SharedKernel\Domain\Model\ValueObject\Page;
 
 /**
- * Class GetArticleOverviewList.
+ * Class GetSourceOverviewList.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final readonly class GetArticleOverviewList
+final readonly class GetSourceOverviewList
 {
     public function __construct(
-        public UserId $userId,
         public FiltersQuery $filters = new FiltersQuery(),
         public Page $page = new Page(),
+        public ?UserId $userId = null,
     ) {
     }
 }
