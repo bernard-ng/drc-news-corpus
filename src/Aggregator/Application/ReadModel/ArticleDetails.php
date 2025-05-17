@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Application\ReadModel;
 
+use App\Aggregator\Application\ReadModel\Source\SourceReference;
 use App\Aggregator\Domain\Model\Identity\ArticleId;
 use App\Aggregator\Domain\Model\ValueObject\Crawling\OpenGraph;
 use App\Aggregator\Domain\Model\ValueObject\Link;
@@ -24,7 +25,7 @@ final readonly class ArticleDetails
         public Link $link,
         public array $categories,
         public string $body,
-        public string $source,
+        public SourceReference $source,
         public string $hash,
         public Credibility $credibility,
         public Sentiment $sentiment,

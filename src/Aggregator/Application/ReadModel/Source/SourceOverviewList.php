@@ -15,8 +15,8 @@ use App\SharedKernel\Domain\Model\ValueObject\Pagination;
 final readonly class SourceOverviewList
 {
     public function __construct(
+        public array $items,
         public Pagination $pagination,
-        public array $items = []
     ) {
         Assert::allIsInstanceOf($items, SourceOverview::class);
     }

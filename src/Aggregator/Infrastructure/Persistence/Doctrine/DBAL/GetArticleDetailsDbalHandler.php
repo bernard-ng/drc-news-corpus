@@ -5,11 +5,23 @@ declare(strict_types=1);
 namespace App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL;
 
 use App\Aggregator\Application\ReadModel\ArticleDetails;
+use App\Aggregator\Application\ReadModel\Source\SourceReference;
 use App\Aggregator\Application\UseCase\Query\GetArticleDetails;
 use App\Aggregator\Application\UseCase\QueryHandler\GetArticleDetailsHandler;
 use App\Aggregator\Domain\Exception\ArticleNotFound;
+use App\Aggregator\Domain\Model\Identity\ArticleId;
+use App\Aggregator\Domain\Model\ValueObject\Crawling\OpenGraph;
+use App\Aggregator\Domain\Model\ValueObject\Link;
+use App\Aggregator\Domain\Model\ValueObject\ReadingTime;
+use App\Aggregator\Domain\Model\ValueObject\Scoring\Bias;
+use App\Aggregator\Domain\Model\ValueObject\Scoring\Credibility;
+use App\Aggregator\Domain\Model\ValueObject\Scoring\Reliability;
+use App\Aggregator\Domain\Model\ValueObject\Scoring\Sentiment;
+use App\Aggregator\Domain\Model\ValueObject\Scoring\Transparency;
 use App\Aggregator\Infrastructure\Persistence\Doctrine\CacheKey\ArticleCacheKey;
-use App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL\Features\ArticleQuery;
+use App\SharedKernel\Application\Asset\AssetType;
+use App\SharedKernel\Application\Asset\AssetUrlProvider;
+use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Mapping;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\NoResult;
 use Doctrine\DBAL\Cache\QueryCacheProfile;
 use Doctrine\DBAL\Connection;
@@ -22,17 +34,40 @@ use Doctrine\DBAL\ParameterType;
  */
 final readonly class GetArticleDetailsDbalHandler implements GetArticleDetailsHandler
 {
-    use ArticleQuery;
-
     public function __construct(
-        private Connection $connection
+        private Connection $connection,
+        private AssetUrlProvider $assetUrlProvider,
     ) {
     }
 
     #[\Override]
     public function __invoke(GetArticleDetails $query): ArticleDetails
     {
-        $qb = $this->createArticleBaseQuery()
+        $qb = $this->connection->createQueryBuilder()
+            ->select(
+                'a.id as article_id',
+                'a.title as article_title',
+                'a.link as article_link',
+                'a.categories as article_categories',
+                'a.body as article_body',
+                'a.hash as article_hash',
+                'a.published_at as article_published_at',
+                'a.crawled_at as article_crawled_at',
+                'a.updated_at as article_updated_at',
+                'a.bias as article_bias',
+                'a.reliability as article_reliability',
+                'a.transparency as article_transparency',
+                'a.sentiment as article_sentiment',
+                'a.metadata as article_metadata',
+                'a.reading_time as article_reading_time',
+            )
+            ->addSelect(
+                's.display_name as source_display_name',
+                's.url as source_url',
+                's.name as source_name'
+            )
+            ->leftJoin('a', 'source', 's', 'a.source = s.name')
+            ->from('article', 'a')
             ->where('id = :id')
             ->setParameter('id', $query->id->toBinary(), ParameterType::BINARY)
             ->enableResultCache(new QueryCacheProfile(0, ArticleCacheKey::ARTICLE_DETAILS->withId($query->id->toString())))
@@ -50,5 +85,37 @@ final readonly class GetArticleDetailsDbalHandler implements GetArticleDetailsHa
         }
 
         return $this->mapArticleDetails($data);
+    }
+
+    private function mapArticleDetails(array $item): ArticleDetails
+    {
+        return new ArticleDetails(
+            ArticleId::fromBinary($item['article_id']),
+            Mapping::string($item, 'article_title'),
+            Link::from(Mapping::string($item, 'article_link')),
+            explode(',', Mapping::string($item, 'article_categories')),
+            Mapping::string($item, 'article_body'),
+            new SourceReference(
+                Mapping::string($item, 'source_name'),
+                Mapping::nullableString($item, 'source_display_name'),
+                $this->assetUrlProvider->getUrl(
+                    Mapping::string($item, 'source_name'),
+                    AssetType::SOURCE_PROFILE_IMAGE
+                ),
+                Mapping::string($item, 'source_url'),
+            ),
+            Mapping::string($item, 'article_hash'),
+            new Credibility(
+                Mapping::enum($item, 'article_bias', Bias::class),
+                Mapping::enum($item, 'article_reliability', Reliability::class),
+                Mapping::enum($item, 'article_transparency', Transparency::class)
+            ),
+            Mapping::enum($item, 'article_sentiment', Sentiment::class),
+            OpenGraph::tryFrom(Mapping::nullableString($item, 'article_metadata')),
+            ReadingTime::create(Mapping::nullableInteger($item, 'article_reading_time')),
+            Mapping::datetime($item, 'article_published_at'),
+            Mapping::datetime($item, 'article_crawled_at'),
+            Mapping::nullableDatetime($item, 'article_updated_at')
+        );
     }
 }

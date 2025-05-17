@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Application\ReadModel;
 
+use App\Aggregator\Application\ReadModel\Source\SourceReference;
 use App\Aggregator\Domain\Model\Identity\ArticleId;
 use App\Aggregator\Domain\Model\ValueObject\Link;
 use App\Aggregator\Domain\Model\ValueObject\ReadingTime;
@@ -21,7 +22,7 @@ final readonly class ArticleOverview
         public Link $link,
         public array $categories,
         public string $excerpt,
-        public string $source,
+        public SourceReference $source,
         public ?string $image,
         public ReadingTime $readingTime,
         public \DateTimeImmutable $publishedAt,
