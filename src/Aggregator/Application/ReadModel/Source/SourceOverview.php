@@ -19,7 +19,8 @@ final readonly class SourceOverview
         public ?string $displayName = null,
         public ?string $updatedAt = null,
         public int $metadataAvailable = 0,
-        public bool $followed = false
+        public bool $followed = false,
+        public ?string $image = null
     ) {
     }
 }

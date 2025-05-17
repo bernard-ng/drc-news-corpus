@@ -17,6 +17,8 @@ use App\Aggregator\Domain\Model\ValueObject\Scoring\Credibility;
 use App\Aggregator\Domain\Model\ValueObject\Scoring\Reliability;
 use App\Aggregator\Domain\Model\ValueObject\Scoring\Transparency;
 use App\Aggregator\Infrastructure\Persistence\Doctrine\CacheKey\SourceCacheKey;
+use App\SharedKernel\Application\Asset\AssetType;
+use App\SharedKernel\Application\Asset\AssetUrlProvider;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Mapping;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\NoResult;
 use Doctrine\DBAL\Cache\QueryCacheProfile;
@@ -30,7 +32,8 @@ use Doctrine\DBAL\Connection;
 final readonly class GetSourceDetailsDbalHandler implements GetSourceDetailsHandler
 {
     public function __construct(
-        private Connection $connection
+        private Connection $connection,
+        private AssetUrlProvider $assetUrlProvider
     ) {
     }
 
@@ -46,7 +49,7 @@ final readonly class GetSourceDetailsDbalHandler implements GetSourceDetailsHand
                 's.bias as source_bias',
                 's.reliability as source_reliability',
                 's.transparency as source_transparency',
-                'COUNT(a.link) AS articles_count',
+                'COUNT(a.hash) AS articles_count',
                 'MAX(a.crawled_at) AS source_crawled_at',
                 'COUNT(CASE WHEN a.metadata IS NOT NULL THEN 1 ELSE NULL END) AS articles_metadata_available',
             )
@@ -82,7 +85,11 @@ final readonly class GetSourceDetailsDbalHandler implements GetSourceDetailsHand
             description: Mapping::nullableString($data, 'source_description'),
             updatedAt: Mapping::nullableString($data, 'source_updated_at'),
             metadataAvailable: Mapping::integer($data, 'articles_metadata_available'),
-            followed: false // TODO: check if the user follows the source
+            followed: false, // TODO: check if the user follows the source
+            image: $this->assetUrlProvider->getUrl(
+                Mapping::string($data, 'source_name'),
+                AssetType::SOURCE_PROFILE_IMAGE
+            ),
         );
     }
 
@@ -166,6 +173,7 @@ final readonly class GetSourceDetailsDbalHandler implements GetSourceDetailsHand
             array_keys($counts),
             array_values($counts)
         );
+        usort($shares, fn (CategoryShare $a, CategoryShare $b): int => ($a->count <=> $b->count) * -1);
 
         return new CategoryShares($shares, count($counts));
     }

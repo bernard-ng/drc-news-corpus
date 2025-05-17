@@ -9,9 +9,11 @@ use App\Aggregator\Application\ReadModel\Source\SourceOverviewList;
 use App\Aggregator\Application\UseCase\Query\GetSourceOverviewList;
 use App\Aggregator\Application\UseCase\QueryHandler\GetSourceOverviewListHandler;
 use App\Aggregator\Infrastructure\Persistence\Doctrine\CacheKey\SourceCacheKey;
+use App\SharedKernel\Application\Asset\AssetType;
 use App\SharedKernel\Domain\Model\ValueObject\Pagination;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Mapping;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\NoResult;
+use App\SharedKernel\Infrastructure\Persistence\Filesystem\Asset\AssetUrlProvider;
 use Doctrine\DBAL\Cache\QueryCacheProfile;
 use Doctrine\DBAL\Connection;
 use Knp\Bundle\PaginatorBundle\Pagination\SlidingPaginationInterface;
@@ -26,7 +28,8 @@ final readonly class GetSourceOverviewListDbalHandler implements GetSourceOvervi
 {
     public function __construct(
         private Connection $connexion,
-        private PaginatorInterface $paginator
+        private PaginatorInterface $paginator,
+        private AssetUrlProvider $assetUrlProvider
     ) {
     }
 
@@ -43,7 +46,7 @@ final readonly class GetSourceOverviewListDbalHandler implements GetSourceOvervi
                 's.bias as source_bias',
                 's.reliability as source_reliability',
                 's.transparency as source_transparency',
-                'COUNT(a.link) AS articles_count',
+                'COUNT(a.hash) AS articles_count',
                 'MAX(a.crawled_at) AS source_crawled_at',
                 'COUNT(CASE WHEN a.metadata IS NOT NULL THEN 1 ELSE NULL END) AS articles_metadata_available',
             )
@@ -71,7 +74,11 @@ final readonly class GetSourceOverviewListDbalHandler implements GetSourceOvervi
                     displayName: Mapping::nullableString($item, 'source_display_name'),
                     updatedAt: Mapping::nullableString($item, 'updated_at'),
                     metadataAvailable: Mapping::integer($item, 'articles_metadata_available'),
-                    followed: false // TODO: check if the user follows the source
+                    followed: false, // TODO: check if the user follows the source
+                    image: $this->assetUrlProvider->getUrl(
+                        Mapping::string($item, 'source_name'),
+                        AssetType::SOURCE_PROFILE_IMAGE
+                    ),
                 ),
                 \iterator_to_array($data->getItems())
             )

@@ -26,6 +26,7 @@ final readonly class SourceDetails
         public ?string $updatedAt = null,
         public int $metadataAvailable = 0,
         public bool $followed = false,
+        public ?string $image = null,
     ) {
     }
 }

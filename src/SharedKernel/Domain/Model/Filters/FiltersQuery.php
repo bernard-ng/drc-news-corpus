@@ -11,7 +11,7 @@ use App\Aggregator\Domain\Model\ValueObject\Crawling\DateRange;
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final readonly class FiltersQuery
+final class FiltersQuery
 {
     public function __construct(
         public ?string $search = null,

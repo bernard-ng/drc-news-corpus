@@ -12,7 +12,7 @@ use DateTime;
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final readonly class DateRange implements \Stringable
+final class DateRange implements \Stringable
 {
     private function __construct(
         public int $start,

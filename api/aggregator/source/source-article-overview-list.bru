@@ -1,11 +1,11 @@
 meta {
-  name: article-overview-list
+  name: source-article-overview-list
   type: http
-  seq: 1
+  seq: 3
 }
 
 get {
-  url: {{baseUrl}}/aggregator/articles
+  url: {{baseUrl}}/aggregator/sources/:source/articles
   body: none
   auth: bearer
 }
@@ -16,7 +16,11 @@ params:query {
   ~page: 22
   ~limit: 100
   ~source: radiookapi.net
-  ~search: Tshisekedi
+  ~search: Lubumbashi
+}
+
+params:path {
+  source: radiookapi.net
 }
 
 auth:bearer {

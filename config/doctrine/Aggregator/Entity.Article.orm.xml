@@ -13,6 +13,7 @@
         </id>
         <indexes>
             <index fields="hash" />
+            <index fields="publishedAt" />
         </indexes>
 
         <field name="title" length="2048" />

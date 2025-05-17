@@ -13,6 +13,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Stopwatch\Stopwatch;
 
 #[AsCommand(
     name: 'app:stats',
@@ -40,6 +41,9 @@ class GetSourceOverviewListConsole extends Command
         /** @var SourceOverviewList $stats */
         $stats = $this->queryBus->handle(new GetSourceOverviewList());
 
+        $stopWatch = new Stopwatch(true);
+        $stopWatch->start('app:stats');
+
         $this->io->title('Stats about the articles in the database');
         $this->io->table(
             ['Source', 'Articles', 'Metadata', 'CrawledAt'],
@@ -54,6 +58,7 @@ class GetSourceOverviewListConsole extends Command
             )
         );
 
+        $this->io->text((string) $stopWatch->stop('app:stats'));
         return Command::SUCCESS;
     }
 }
