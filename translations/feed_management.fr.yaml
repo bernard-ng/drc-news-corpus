@@ -6,3 +6,5 @@ feed_management.exceptions.bookmark_not_found: Le signet n'a pas été trouvé
 feed_management.exceptions.cannot_add_article_to_bookmark: Vous n'avez pas la permission d'ajouter cet article au signet
 feed_management.exceptions.cannot_delete_bookmark: Vous n'avez pas la permission de supprimer ce signet
 feed_management.exceptions.cannot_update_bookmark: Vous n'avez pas la permission de mettre à jour ce signet
+feed_management.exceptions.followed_source_not_found: La source suivie n'a pas été trouvée
+feed_management.exceptions.source_already_followed: La source est déjà suivie

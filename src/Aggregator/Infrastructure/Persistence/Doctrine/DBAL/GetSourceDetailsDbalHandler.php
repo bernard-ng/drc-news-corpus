@@ -23,6 +23,7 @@ use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Mapping;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\NoResult;
 use Doctrine\DBAL\Cache\QueryCacheProfile;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ParameterType;
 
 /**
  * Class GetSourceDetailsDbalHandler.
@@ -53,11 +54,15 @@ final readonly class GetSourceDetailsDbalHandler implements GetSourceDetailsHand
                 'MAX(a.crawled_at) AS source_crawled_at',
                 'COUNT(CASE WHEN a.metadata IS NOT NULL THEN 1 ELSE NULL END) AS articles_metadata_available',
             )
+            ->addSelect('CASE WHEN f.id IS NOT NULL THEN TRUE ELSE FALSE END as source_is_followed')
             ->from('article', 'a')
             ->leftJoin('a', 'source', 's', 'a.source = s.name')
+            ->leftJoin('s', 'followed_source', 'f', 's.name = f.source AND f.follower_id = :userId')
             ->where('a.source = :source')
             ->setParameter('source', $query->source)
-            ->enableResultCache(new QueryCacheProfile(0, SourceCacheKey::SOURCE_DETAILS->withId($query->source)));
+            ->setParameter('userId', $query->userId->toBinary(), ParameterType::BINARY)
+            //->enableResultCache(new QueryCacheProfile(0, SourceCacheKey::SOURCE_DETAILS->withId($query->source)))
+        ;
 
         try {
             $data = $qb->executeQuery()->fetchAssociative();
@@ -85,7 +90,7 @@ final readonly class GetSourceDetailsDbalHandler implements GetSourceDetailsHand
             description: Mapping::nullableString($data, 'source_description'),
             updatedAt: Mapping::nullableString($data, 'source_updated_at'),
             metadataAvailable: Mapping::integer($data, 'articles_metadata_available'),
-            followed: false, // TODO: check if the user follows the source
+            followed: Mapping::boolean($data, 'source_is_followed'),
             image: $this->assetUrlProvider->getUrl(
                 Mapping::string($data, 'source_name'),
                 AssetType::SOURCE_PROFILE_IMAGE

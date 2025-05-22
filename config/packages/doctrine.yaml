@@ -25,6 +25,7 @@ doctrine:
 
             # FeedManagement
             bookmark_id: App\FeedManagement\Infrastructure\Persistence\Doctrine\DBAL\Types\BookmarkIdType
+            followed_source_id: App\FeedManagement\Infrastructure\Persistence\Doctrine\DBAL\Types\FollowedSourceIdType
     orm:
         auto_generate_proxy_classes: true
         enable_lazy_ghost_objects: true

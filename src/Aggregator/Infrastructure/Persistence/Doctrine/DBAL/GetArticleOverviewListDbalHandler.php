@@ -49,7 +49,7 @@ final readonly class GetArticleOverviewListDbalHandler implements GetArticleOver
                 'a.title as article_title',
                 'a.link as article_link',
                 'a.categories as article_categories',
-                'LEFT(a.body, 200) as article_excerpt',
+                'LEFT(a.body, 200) as article_excerpt', // Not sure if this is optimal, benchmark needed
                 'a.published_at as article_published_at',
                 'a.metadata as article_metadata',
                 'a.reading_time as article_reading_time',
@@ -59,8 +59,12 @@ final readonly class GetArticleOverviewListDbalHandler implements GetArticleOver
                 's.url as source_url',
                 's.name as source_name',
             )
+            ->addSelect('CASE WHEN b.id IS NOT NULL THEN TRUE ELSE FALSE END as article_is_bookmarked')
             ->from('article', 'a')
             ->leftJoin('a', 'source', 's', 'a.source = s.name')
+            ->leftJoin('a', 'bookmark_article', 'ba', 'a.id = ba.article_id')
+            ->leftJoin('ba', 'bookmark', 'b', 'ba.bookmark_id = b.id AND b.user_id = :userId')
+            ->setParameter('userId', $query->userId->toBinary(), ParameterType::BINARY)
             ->orderBy('article_published_at', 'DESC');
 
         $qb = $this->applyFilters($qb, $query->filters);
@@ -136,7 +140,8 @@ final readonly class GetArticleOverviewListDbalHandler implements GetArticleOver
             ),
             $openGraph?->image,
             ReadingTime::create(Mapping::nullableInteger($item, 'article_reading_time')),
-            Mapping::datetime($item, 'article_published_at')
+            Mapping::datetime($item, 'article_published_at'),
+            Mapping::boolean($item, 'article_is_bookmarked'),
         );
     }
 }

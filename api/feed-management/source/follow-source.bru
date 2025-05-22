@@ -1,0 +1,19 @@
+meta {
+  name: follow-source
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/feed/sources/:source/follow
+  body: none
+  auth: bearer
+}
+
+params:path {
+  source: radiookapi.net
+}
+
+auth:bearer {
+  token: {{token}}
+}

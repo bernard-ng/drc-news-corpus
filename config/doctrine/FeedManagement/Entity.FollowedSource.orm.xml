@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                          https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity
+            name="App\FeedManagement\Domain\Model\Entity\FollowedSource"
+            repository-class="App\IdentityAndAccess\Infrastructure\Persistence\Doctrine\ORM\FollowedSourceOrmRepository"
+            table="followed_source"
+    >
+        <id name="id" type="followed_source_id">
+            <generator strategy="NONE"/>
+        </id>
+
+        <many-to-one field="follower" target-entity="App\IdentityAndAccess\Domain\Model\Entity\User">
+            <join-column nullable="false" on-delete="CASCADE" />
+        </many-to-one>
+        <many-to-one field="source" target-entity="App\Aggregator\Domain\Model\Entity\Source">
+            <join-column nullable="false"  name="source" referenced-column-name="name" on-delete="CASCADE" />
+        </many-to-one>
+
+        <field name="createdAt" type="datetime_immutable"/>
+    </entity>
+</doctrine-mapping>

@@ -9,6 +9,7 @@ use App\Aggregator\Application\ReadModel\Source\SourceOverviewList;
 use App\Aggregator\Application\UseCase\Query\GetSourceOverviewList;
 use App\Aggregator\Application\UseCase\QueryHandler\GetSourceOverviewListHandler;
 use App\Aggregator\Infrastructure\Persistence\Doctrine\CacheKey\SourceCacheKey;
+use App\IdentityAndAccess\Domain\Model\Identity\UserId;
 use App\SharedKernel\Application\Asset\AssetType;
 use App\SharedKernel\Domain\Model\ValueObject\Pagination;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Mapping;
@@ -16,6 +17,7 @@ use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\NoResult;
 use App\SharedKernel\Infrastructure\Persistence\Filesystem\Asset\AssetUrlProvider;
 use Doctrine\DBAL\Cache\QueryCacheProfile;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ParameterType;
 use Knp\Bundle\PaginatorBundle\Pagination\SlidingPaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 
@@ -52,9 +54,17 @@ final readonly class GetSourceOverviewListDbalHandler implements GetSourceOvervi
             )
             ->from('article', 'a')
             ->leftJoin('a', 'source', 's', 'a.source = s.name')
-            ->groupBy('source')
+            ->groupBy('s.name')
             ->orderBy('articles_count', 'DESC')
-            ->enableResultCache(new QueryCacheProfile(3600, SourceCacheKey::SOURCE_OVERVIEW_LIST->value));
+            ->enableResultCache(new QueryCacheProfile(3600, SourceCacheKey::SOURCE_OVERVIEW_LIST->value))
+        ;
+
+        if ($query->userId instanceof UserId) {
+            $qb->leftJoin('s', 'followed_source', 'f', 's.name = f.source AND f.follower_id = :userId')
+                ->addSelect('CASE WHEN f.id IS NOT NULL THEN TRUE ELSE FALSE END as source_is_followed')
+                ->setParameter('userId', $query->userId->toBinary(), ParameterType::BINARY)
+                ->disableResultCache();
+        }
 
         try {
             /** @var SlidingPaginationInterface<int, array<string, mixed>> $data */
@@ -64,7 +74,6 @@ final readonly class GetSourceOverviewListDbalHandler implements GetSourceOvervi
         }
 
         return new SourceOverviewList(
-            pagination: Pagination::create($data->getPaginationData()),
             items: array_map(
                 fn ($item): SourceOverview => new SourceOverview(
                     name: Mapping::string($item, 'source_name'),
@@ -74,14 +83,15 @@ final readonly class GetSourceOverviewListDbalHandler implements GetSourceOvervi
                     displayName: Mapping::nullableString($item, 'source_display_name'),
                     updatedAt: Mapping::nullableString($item, 'updated_at'),
                     metadataAvailable: Mapping::integer($item, 'articles_metadata_available'),
-                    followed: false, // TODO: check if the user follows the source
+                    followed: Mapping::boolean($item, 'source_is_followed'),
                     image: $this->assetUrlProvider->getUrl(
                         Mapping::string($item, 'source_name'),
                         AssetType::SOURCE_PROFILE_IMAGE
                     ),
                 ),
                 \iterator_to_array($data->getItems())
-            )
+            ),
+            pagination: Pagination::create($data->getPaginationData())
         );
     }
 }

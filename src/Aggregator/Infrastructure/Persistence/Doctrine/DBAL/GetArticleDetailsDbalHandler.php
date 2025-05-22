@@ -18,12 +18,10 @@ use App\Aggregator\Domain\Model\ValueObject\Scoring\Credibility;
 use App\Aggregator\Domain\Model\ValueObject\Scoring\Reliability;
 use App\Aggregator\Domain\Model\ValueObject\Scoring\Sentiment;
 use App\Aggregator\Domain\Model\ValueObject\Scoring\Transparency;
-use App\Aggregator\Infrastructure\Persistence\Doctrine\CacheKey\ArticleCacheKey;
 use App\SharedKernel\Application\Asset\AssetType;
 use App\SharedKernel\Application\Asset\AssetUrlProvider;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Mapping;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\NoResult;
-use Doctrine\DBAL\Cache\QueryCacheProfile;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
 
@@ -66,11 +64,15 @@ final readonly class GetArticleDetailsDbalHandler implements GetArticleDetailsHa
                 's.url as source_url',
                 's.name as source_name'
             )
+            ->addSelect('CASE WHEN b.id IS NOT NULL THEN TRUE ELSE FALSE END as article_is_bookmarked')
             ->leftJoin('a', 'source', 's', 'a.source = s.name')
+            ->leftJoin('a', 'bookmark_article', 'ba', 'a.id = ba.article_id')
+            ->leftJoin('ba', 'bookmark', 'b', 'ba.bookmark_id = b.id AND b.user_id = :userId')
             ->from('article', 'a')
-            ->where('id = :id')
-            ->setParameter('id', $query->id->toBinary(), ParameterType::BINARY)
-            ->enableResultCache(new QueryCacheProfile(0, ArticleCacheKey::ARTICLE_DETAILS->withId($query->id->toString())))
+            ->where('a.id = :articleId')
+            ->setParameter('articleId', $query->id->toBinary(), ParameterType::BINARY)
+            ->setParameter('userId', $query->userId->toBinary(), ParameterType::BINARY)
+            //->enableResultCache(new QueryCacheProfile(0, ArticleCacheKey::ARTICLE_DETAILS->withId($query->id->toString())))
         ;
 
         try {
@@ -115,7 +117,8 @@ final readonly class GetArticleDetailsDbalHandler implements GetArticleDetailsHa
             ReadingTime::create(Mapping::nullableInteger($item, 'article_reading_time')),
             Mapping::datetime($item, 'article_published_at'),
             Mapping::datetime($item, 'article_crawled_at'),
-            Mapping::nullableDatetime($item, 'article_updated_at')
+            Mapping::nullableDatetime($item, 'article_updated_at'),
+            Mapping::boolean($item, 'article_is_bookmarked'),
         );
     }
 }
