@@ -16,7 +16,7 @@
             <index fields="publishedAt" />
         </indexes>
 
-        <field name="title" length="2048" />
+        <field name="title" length="1024" />
         <field name="body" type="text" />
         <embedded name="link" class="App\Aggregator\Domain\Model\ValueObject\Link" use-column-prefix="false" />
         <field name="hash" length="32" />

@@ -5,6 +5,11 @@
                           https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
 
     <embeddable name="App\Aggregator\Domain\Model\ValueObject\ReadingTime">
-        <field name="readingTime" type="integer" nullable="true" />
+        <field name="readingTime" type="integer" nullable="true">
+            <options>
+                <option name="default">1</option>
+                <option name="unsigned">true</option>
+            </options>
+        </field>
     </embeddable>
 </doctrine-mapping>

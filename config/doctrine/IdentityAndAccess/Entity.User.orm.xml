@@ -14,7 +14,7 @@
 
         <field name="name"/>
         <field name="email" type="email" />
-        <field name="password" length="4098" />
+        <field name="password" length="512" />
         <field name="isLocked" type="boolean">
             <options>
                 <option name="default">0</option>

@@ -23,7 +23,7 @@ class LoginHistory
 
     private function __construct(
         public readonly User $user,
-        public readonly ?string $ip,
+        public readonly ?string $ipAddress,
         public readonly Device $device,
         public readonly GeoLocation $location,
         public readonly \DateTimeImmutable $createdAt = new \DateTimeImmutable()
@@ -39,7 +39,7 @@ class LoginHistory
     public function matchPreviousProfile(self $previous): self
     {
         if (
-            $this->ip !== $previous->ip ||
+            $this->ipAddress !== $previous->ipAddress ||
             $this->location->city !== $previous->location->city ||
             $this->location->country !== $previous->location->country ||
             $this->device->operatingSystem !== $previous->device->operatingSystem

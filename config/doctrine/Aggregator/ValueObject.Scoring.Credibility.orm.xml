@@ -5,17 +5,17 @@
                           https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
 
     <embeddable name="App\Aggregator\Domain\Model\ValueObject\Scoring\Credibility">
-        <field name="bias" enum-type="App\Aggregator\Domain\Model\ValueObject\Scoring\Bias">
+        <field name="bias" enum-type="App\Aggregator\Domain\Model\ValueObject\Scoring\Bias" length="30">
             <options>
                 <option name="default">neutral</option>
             </options>
         </field>
-        <field name="reliability" enum-type="App\Aggregator\Domain\Model\ValueObject\Scoring\Reliability">
+        <field name="reliability" enum-type="App\Aggregator\Domain\Model\ValueObject\Scoring\Reliability" length="30">
             <options>
                 <option name="default">reliable</option>
             </options>
         </field>
-        <field name="transparency" enum-type="App\Aggregator\Domain\Model\ValueObject\Scoring\Transparency">
+        <field name="transparency" enum-type="App\Aggregator\Domain\Model\ValueObject\Scoring\Transparency" length="30">
             <options>
                 <option name="default">medium</option>
             </options>

@@ -67,6 +67,18 @@ services:
     networks:
       - corpus_network
 
+  blackfire:
+    image: blackfire/blackfire
+    ports:
+      - "8707:8707"
+    environment:
+      BLACKFIRE_SERVER_ID: ${BLACKFIRE_SERVER_ID}
+      BLACKFIRE_SERVER_TOKEN: ${BLACKFIRE_SERVER_TOKEN}
+      BLACKFIRE_CLIENT_ID: ${BLACKFIRE_CLIENT_ID}
+      BLACKFIRE_CLIENT_TOKEN: ${BLACKFIRE_CLIENT_TOKEN}
+    networks:
+      - corpus_network
+
 networks:
   corpus_network:
 

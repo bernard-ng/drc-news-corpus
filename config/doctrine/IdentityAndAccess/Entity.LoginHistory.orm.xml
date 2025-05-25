@@ -16,7 +16,7 @@
             <join-column nullable="false" on-delete="CASCADE" />
         </many-to-one>
 
-        <field name="ip" nullable="true" length="45" />
+        <field name="ipAddress" nullable="true" length="15" />
         <embedded name="device" class="App\SharedKernel\Domain\Model\ValueObject\Tracking\Device" />
         <embedded name="location" class="App\SharedKernel\Domain\Model\ValueObject\Tracking\GeoLocation" />
 

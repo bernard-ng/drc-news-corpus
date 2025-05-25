@@ -12,7 +12,7 @@ use App\SharedKernel\Domain\Exception\InvalidEmailAddress;
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final readonly class EmailAddress implements \Stringable
+final readonly class EmailAddress implements \Stringable, \JsonSerializable
 {
     public string $value;
 
@@ -45,5 +45,10 @@ final readonly class EmailAddress implements \Stringable
     public function provider(): string
     {
         return substr($this->value, strpos($this->value, '@') + 1);
+    }
+
+    public function jsonSerialize(): string
+    {
+        return $this->value;
     }
 }

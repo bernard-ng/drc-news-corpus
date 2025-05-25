@@ -22,7 +22,7 @@ final class EmailType extends Type
     public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
         return $platform->getStringTypeDeclarationSQL([
-            'length' => 500,
+            'length' => 255,
         ]);
     }
 

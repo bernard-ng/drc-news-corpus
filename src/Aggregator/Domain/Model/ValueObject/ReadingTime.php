@@ -30,7 +30,7 @@ final readonly class ReadingTime implements \Stringable, \JsonSerializable
     public function __construct(
         string|int $value
     ) {
-        $this->readingTime = is_string($value) ? intval(str_word_count((string) ${$value}) / self::WORDS_PER_MINUTE) : $value;
+        $this->readingTime = is_string($value) ? intval(str_word_count($value) / self::WORDS_PER_MINUTE) : $value;
     }
 
     public function __toString(): string

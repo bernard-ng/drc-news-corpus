@@ -18,7 +18,7 @@
         </many-to-one>
 
         <field name="name" length="255" />
-        <field name="description" length="2048" nullable="true" />
+        <field name="description" length="512" nullable="true" />
         <field name="isPublic" type="boolean">
             <options>
                 <option name="default">0</option>

@@ -11,7 +11,6 @@ use App\Aggregator\Application\UseCase\Query\GetArticleOverviewList;
 use App\Aggregator\Application\UseCase\QueryHandler\GetArticleOverviewListHandler;
 use App\Aggregator\Domain\Model\Identity\ArticleId;
 use App\Aggregator\Domain\Model\ValueObject\Crawling\DateRange;
-use App\Aggregator\Domain\Model\ValueObject\Crawling\OpenGraph;
 use App\Aggregator\Domain\Model\ValueObject\Link;
 use App\Aggregator\Domain\Model\ValueObject\ReadingTime;
 use App\SharedKernel\Application\Asset\AssetType;
@@ -51,7 +50,7 @@ final readonly class GetArticleOverviewListDbalHandler implements GetArticleOver
                 'a.categories as article_categories',
                 'LEFT(a.body, 200) as article_excerpt', // Not sure if this is optimal, benchmark needed
                 'a.published_at as article_published_at',
-                'a.metadata as article_metadata',
+                "JSON_VALUE(a.metadata, '$.image') as article_image",
                 'a.reading_time as article_reading_time',
             )
             ->addSelect(
@@ -121,8 +120,6 @@ final readonly class GetArticleOverviewListDbalHandler implements GetArticleOver
 
     private function mapArticleOverview(array $item): ArticleOverview
     {
-        $openGraph = OpenGraph::tryFrom(Mapping::nullableString($item, 'article_metadata'));
-
         return new ArticleOverview(
             ArticleId::fromBinary($item['article_id']),
             Mapping::string($item, 'article_title'),
@@ -138,7 +135,7 @@ final readonly class GetArticleOverviewListDbalHandler implements GetArticleOver
                 ),
                 Mapping::string($item, 'source_url'),
             ),
-            $openGraph?->image,
+            Mapping::nullableString($item, 'article_image'),
             ReadingTime::create(Mapping::nullableInteger($item, 'article_reading_time')),
             Mapping::datetime($item, 'article_published_at'),
             Mapping::boolean($item, 'article_is_bookmarked'),

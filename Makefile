@@ -30,7 +30,7 @@ ssh: ## SSH into container
 
 .PHONY: start
 start: ## Start docker containers
-	$(dc) up -d
+	$(dc) --env-file .env.local up -d
 
 .PHONY: restart
 restart: ## Restart docker containers
