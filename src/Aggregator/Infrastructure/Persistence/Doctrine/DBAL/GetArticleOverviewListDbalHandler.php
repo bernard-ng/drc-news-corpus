@@ -13,6 +13,7 @@ use App\Aggregator\Domain\Model\Identity\ArticleId;
 use App\Aggregator\Domain\Model\ValueObject\Crawling\DateRange;
 use App\Aggregator\Domain\Model\ValueObject\Link;
 use App\Aggregator\Domain\Model\ValueObject\ReadingTime;
+use App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL\Features\BookmarkQuery;
 use App\SharedKernel\Application\Asset\AssetType;
 use App\SharedKernel\Domain\Model\Filters\FiltersQuery;
 use App\SharedKernel\Domain\Model\ValueObject\Pagination;
@@ -32,6 +33,8 @@ use Knp\Component\Pager\PaginatorInterface;
  */
 final readonly class GetArticleOverviewListDbalHandler implements GetArticleOverviewListHandler
 {
+    use BookmarkQuery;
+
     public function __construct(
         private Connection $connection,
         private PaginatorInterface $paginator,
@@ -58,11 +61,9 @@ final readonly class GetArticleOverviewListDbalHandler implements GetArticleOver
                 's.url as source_url',
                 's.name as source_name',
             )
-            ->addSelect('CASE WHEN b.id IS NOT NULL THEN TRUE ELSE FALSE END as article_is_bookmarked')
+            ->addSelect(sprintf('%s as article_is_bookmarked', $this->isArticleBookmarkedQuery()))
             ->from('article', 'a')
-            ->leftJoin('a', 'source', 's', 'a.source = s.name')
-            ->leftJoin('a', 'bookmark_article', 'ba', 'a.id = ba.article_id')
-            ->leftJoin('ba', 'bookmark', 'b', 'ba.bookmark_id = b.id AND b.user_id = :userId')
+            ->innerJoin('a', 'source', 's', 'a.source = s.name')
             ->setParameter('userId', $query->userId->toBinary(), ParameterType::BINARY)
             ->orderBy('article_published_at', 'DESC');
 
@@ -81,22 +82,22 @@ final readonly class GetArticleOverviewListDbalHandler implements GetArticleOver
     private function applyFilters(QueryBuilder $qb, FiltersQuery $filters): QueryBuilder
     {
         if ($filters->source !== null) {
-            $qb->andWhere('source_name = :source')
+            $qb->andWhere('s.name = :source')
                 ->setParameter('source', $filters->source);
         }
 
         if ($filters->category !== null) {
-            $qb->andWhere('article_categories LIKE :category')
+            $qb->andWhere('a.categories LIKE :category')
                 ->setParameter('category', sprintf('%%%s%%', $filters->category));
         }
 
         if ($filters->search !== null) {
-            $qb->andWhere('article_title LIKE :search')
+            $qb->andWhere('a.title LIKE :search')
                 ->setParameter('search', sprintf('%%%s%%', $filters->search));
         }
 
         if ($filters->dateRange instanceof DateRange) {
-            $qb->andWhere('article_published_at BETWEEN FROM_UNIXTIME(:start) AND FROM_UNIXTIME(:end)')
+            $qb->andWhere('a.published_at BETWEEN FROM_UNIXTIME(:start) AND FROM_UNIXTIME(:end)')
                 ->setParameter('start', $filters->dateRange->start, ParameterType::INTEGER)
                 ->setParameter('end', $filters->dateRange->end, ParameterType::INTEGER);
         }

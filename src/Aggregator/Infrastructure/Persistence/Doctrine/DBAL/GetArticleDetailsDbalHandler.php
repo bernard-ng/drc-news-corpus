@@ -18,6 +18,7 @@ use App\Aggregator\Domain\Model\ValueObject\Scoring\Credibility;
 use App\Aggregator\Domain\Model\ValueObject\Scoring\Reliability;
 use App\Aggregator\Domain\Model\ValueObject\Scoring\Sentiment;
 use App\Aggregator\Domain\Model\ValueObject\Scoring\Transparency;
+use App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL\Features\BookmarkQuery;
 use App\SharedKernel\Application\Asset\AssetType;
 use App\SharedKernel\Application\Asset\AssetUrlProvider;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Mapping;
@@ -32,6 +33,8 @@ use Doctrine\DBAL\ParameterType;
  */
 final readonly class GetArticleDetailsDbalHandler implements GetArticleDetailsHandler
 {
+    use BookmarkQuery;
+
     public function __construct(
         private Connection $connection,
         private AssetUrlProvider $assetUrlProvider,
@@ -64,10 +67,8 @@ final readonly class GetArticleDetailsDbalHandler implements GetArticleDetailsHa
                 's.url as source_url',
                 's.name as source_name'
             )
-            ->addSelect('CASE WHEN b.id IS NOT NULL THEN TRUE ELSE FALSE END as article_is_bookmarked')
-            ->leftJoin('a', 'source', 's', 'a.source = s.name')
-            ->leftJoin('a', 'bookmark_article', 'ba', 'a.id = ba.article_id')
-            ->leftJoin('ba', 'bookmark', 'b', 'ba.bookmark_id = b.id AND b.user_id = :userId')
+            ->addSelect(sprintf('%s as article_is_bookmarked', $this->isArticleBookmarkedQuery()))
+            ->innerJoin('a', 'source', 's', 'a.source = s.name')
             ->from('article', 'a')
             ->where('a.id = :articleId')
             ->setParameter('articleId', $query->id->toBinary(), ParameterType::BINARY)

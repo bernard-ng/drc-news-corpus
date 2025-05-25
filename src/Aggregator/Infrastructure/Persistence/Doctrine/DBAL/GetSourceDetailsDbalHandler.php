@@ -17,6 +17,7 @@ use App\Aggregator\Domain\Model\ValueObject\Scoring\Credibility;
 use App\Aggregator\Domain\Model\ValueObject\Scoring\Reliability;
 use App\Aggregator\Domain\Model\ValueObject\Scoring\Transparency;
 use App\Aggregator\Infrastructure\Persistence\Doctrine\CacheKey\SourceCacheKey;
+use App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL\Features\SourceQuery;
 use App\SharedKernel\Application\Asset\AssetType;
 use App\SharedKernel\Application\Asset\AssetUrlProvider;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Mapping;
@@ -32,6 +33,8 @@ use Doctrine\DBAL\ParameterType;
  */
 final readonly class GetSourceDetailsDbalHandler implements GetSourceDetailsHandler
 {
+    use SourceQuery;
+
     public function __construct(
         private Connection $connection,
         private AssetUrlProvider $assetUrlProvider
@@ -54,10 +57,9 @@ final readonly class GetSourceDetailsDbalHandler implements GetSourceDetailsHand
                 'MAX(a.crawled_at) AS source_crawled_at',
                 'COUNT(CASE WHEN a.metadata IS NOT NULL THEN 1 ELSE NULL END) AS articles_metadata_available',
             )
-            ->addSelect('CASE WHEN f.id IS NOT NULL THEN TRUE ELSE FALSE END as source_is_followed')
+            ->addSelect(sprintf('%s as source_is_followed', $this->isSourceFollowedQuery()))
             ->from('article', 'a')
-            ->leftJoin('a', 'source', 's', 'a.source = s.name')
-            ->leftJoin('s', 'followed_source', 'f', 's.name = f.source AND f.follower_id = :userId')
+            ->innerJoin('a', 'source', 's', 'a.source = s.name')
             ->where('a.source = :source')
             ->setParameter('source', $query->source)
             ->setParameter('userId', $query->userId->toBinary(), ParameterType::BINARY)

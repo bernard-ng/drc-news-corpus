@@ -9,6 +9,7 @@ use App\Aggregator\Application\ReadModel\Source\SourceOverviewList;
 use App\Aggregator\Application\UseCase\Query\GetSourceOverviewList;
 use App\Aggregator\Application\UseCase\QueryHandler\GetSourceOverviewListHandler;
 use App\Aggregator\Infrastructure\Persistence\Doctrine\CacheKey\SourceCacheKey;
+use App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL\Features\SourceQuery;
 use App\IdentityAndAccess\Domain\Model\Identity\UserId;
 use App\SharedKernel\Application\Asset\AssetType;
 use App\SharedKernel\Domain\Model\ValueObject\Pagination;
@@ -28,8 +29,10 @@ use Knp\Component\Pager\PaginatorInterface;
  */
 final readonly class GetSourceOverviewListDbalHandler implements GetSourceOverviewListHandler
 {
+    use SourceQuery;
+
     public function __construct(
-        private Connection $connexion,
+        private Connection $connection,
         private PaginatorInterface $paginator,
         private AssetUrlProvider $assetUrlProvider
     ) {
@@ -38,7 +41,7 @@ final readonly class GetSourceOverviewListDbalHandler implements GetSourceOvervi
     #[\Override]
     public function __invoke(GetSourceOverviewList $query): SourceOverviewList
     {
-        $qb = $this->connexion->createQueryBuilder()
+        $qb = $this->connection->createQueryBuilder()
             ->select(
                 's.name as source_name',
                 's.description as source_description',
@@ -53,15 +56,14 @@ final readonly class GetSourceOverviewListDbalHandler implements GetSourceOvervi
                 'COUNT(CASE WHEN a.metadata IS NOT NULL THEN 1 ELSE NULL END) AS articles_metadata_available',
             )
             ->from('article', 'a')
-            ->leftJoin('a', 'source', 's', 'a.source = s.name')
+            ->innerJoin('a', 'source', 's', 'a.source = s.name')
             ->groupBy('s.name')
             ->orderBy('articles_count', 'DESC')
             ->enableResultCache(new QueryCacheProfile(3600, SourceCacheKey::SOURCE_OVERVIEW_LIST->value))
         ;
 
         if ($query->userId instanceof UserId) {
-            $qb->leftJoin('s', 'followed_source', 'f', 's.name = f.source AND f.follower_id = :userId')
-                ->addSelect('CASE WHEN f.id IS NOT NULL THEN TRUE ELSE FALSE END as source_is_followed')
+            $qb->addSelect(sprintf('%s as source_is_followed', $this->isSourceFollowedQuery()))
                 ->setParameter('userId', $query->userId->toBinary(), ParameterType::BINARY)
                 ->disableResultCache();
         }
