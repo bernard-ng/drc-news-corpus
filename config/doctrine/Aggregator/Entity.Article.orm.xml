@@ -27,7 +27,7 @@
         </many-to-one>
 
         <embedded name="credibility" class="App\Aggregator\Domain\Model\ValueObject\Scoring\Credibility" use-column-prefix="false" />
-        <field name="sentiment" enum-type="App\Aggregator\Domain\Model\ValueObject\Scoring\Sentiment">
+        <field name="sentiment" enum-type="App\Aggregator\Domain\Model\ValueObject\Scoring\Sentiment" length="30">
             <options>
                 <option name="default">neutral</option>
             </options>

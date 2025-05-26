@@ -48,13 +48,14 @@
     },
     "require-dev": {
         "behat/behat": "^3.18.1",
+        "deptrac/deptrac": "^2.0.7",
         "phpstan/phpstan": "^2.1.12",
         "phpstan/phpstan-doctrine": "^2.0.2",
         "phpunit/phpunit": "^12.1.1",
-        "deptrac/deptrac": "^2.0.7",
         "rector/rector": "^2.0.12",
         "shipmonk/composer-dependency-analyser": "^1.8.2",
         "symfony/maker-bundle": "^1.62.1",
+        "symfony/web-profiler-bundle": "7.2.*",
         "symplify/easy-coding-standard": "^12.1.13",
         "tomasvotruba/class-leak": "^1.2.7"
     },

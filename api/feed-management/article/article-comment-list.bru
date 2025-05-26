@@ -1,0 +1,19 @@
+meta {
+  name: article-comment-list
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/feed/articles/:articleId/comments
+  body: none
+  auth: bearer
+}
+
+params:path {
+  articleId: 019549f9-13d8-725b-81f6-3c7e75aa5a26
+}
+
+auth:bearer {
+  token: {{token}}
+}

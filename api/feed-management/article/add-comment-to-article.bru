@@ -1,0 +1,25 @@
+meta {
+  name: add-comment-to-article
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/feed/articles/:articleId/comments
+  body: json
+  auth: bearer
+}
+
+params:path {
+  articleId: 019549f9-13d8-725b-81f6-3c7e75aa5a26
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "content": "this is a comment !"
+  }
+}

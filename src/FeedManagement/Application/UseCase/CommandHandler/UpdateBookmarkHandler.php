@@ -28,7 +28,11 @@ final readonly class UpdateBookmarkHandler implements CommandHandler
             throw PermissionNotGranted::withReason('feed_management.exceptions.cannot_update_bookmark');
         }
 
-        $bookmark->updateInfos($command->name, $command->description, $command->isPublic);
+        $bookmark = match ($command->isPublic) {
+            true => $bookmark->markAsPublic(),
+            false => $bookmark->markAsPrivate(),
+        };
+        $bookmark->updateInfos($command->name, $command->description);
 
         $this->bookmarkRepository->add($bookmark);
     }

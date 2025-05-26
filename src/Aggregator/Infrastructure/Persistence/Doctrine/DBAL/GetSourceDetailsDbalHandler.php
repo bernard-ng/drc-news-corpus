@@ -12,19 +12,14 @@ use App\Aggregator\Application\ReadModel\Source\SourceDetails;
 use App\Aggregator\Application\UseCase\Query\GetSourceDetails;
 use App\Aggregator\Application\UseCase\QueryHandler\GetSourceDetailsHandler;
 use App\Aggregator\Domain\Exception\SourceNotFound;
-use App\Aggregator\Domain\Model\ValueObject\Scoring\Bias;
-use App\Aggregator\Domain\Model\ValueObject\Scoring\Credibility;
-use App\Aggregator\Domain\Model\ValueObject\Scoring\Reliability;
-use App\Aggregator\Domain\Model\ValueObject\Scoring\Transparency;
 use App\Aggregator\Infrastructure\Persistence\Doctrine\CacheKey\SourceCacheKey;
 use App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL\Features\SourceQuery;
-use App\SharedKernel\Application\Asset\AssetType;
-use App\SharedKernel\Application\Asset\AssetUrlProvider;
-use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Mapping;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\NoResult;
 use Doctrine\DBAL\Cache\QueryCacheProfile;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 
 /**
  * Class GetSourceDetailsDbalHandler.
@@ -35,9 +30,11 @@ final readonly class GetSourceDetailsDbalHandler implements GetSourceDetailsHand
 {
     use SourceQuery;
 
+    private const int CACHE_TTL = 86400; // 24 hours
+
     public function __construct(
         private Connection $connection,
-        private AssetUrlProvider $assetUrlProvider
+        private CacheInterface $cache
     ) {
     }
 
@@ -53,6 +50,7 @@ final readonly class GetSourceDetailsDbalHandler implements GetSourceDetailsHand
                 's.bias as source_bias',
                 's.reliability as source_reliability',
                 's.transparency as source_transparency',
+                "CONCAT('https://devscast.org/images/sources/', s.name, '.png') as source_image",
                 'COUNT(a.hash) AS articles_count',
                 'MAX(a.crawled_at) AS source_crawled_at',
                 'COUNT(CASE WHEN a.metadata IS NOT NULL THEN 1 ELSE NULL END) AS articles_metadata_available',
@@ -62,8 +60,7 @@ final readonly class GetSourceDetailsDbalHandler implements GetSourceDetailsHand
             ->innerJoin('a', 'source', 's', 'a.source = s.name')
             ->where('a.source = :source')
             ->setParameter('source', $query->source)
-            ->setParameter('userId', $query->userId->toBinary(), ParameterType::BINARY)
-            //->enableResultCache(new QueryCacheProfile(0, SourceCacheKey::SOURCE_DETAILS->withId($query->source)))
+            ->setParameter('userId', $query->userId->toBinary(), ParameterType::BINARY)//->enableResultCache(new QueryCacheProfile(0, SourceCacheKey::SOURCE_DETAILS->withId($query->source)))
         ;
 
         try {
@@ -76,32 +73,16 @@ final readonly class GetSourceDetailsDbalHandler implements GetSourceDetailsHand
             throw SourceNotFound::withName($query->source);
         }
 
-        return new SourceDetails(
-            name: Mapping::string($data, 'source_name'),
-            url: Mapping::string($data, 'source_url'),
-            credibility: new Credibility(
-                Mapping::enum($data, 'source_bias', Bias::class),
-                Mapping::enum($data, 'source_reliability', Reliability::class),
-                Mapping::enum($data, 'source_transparency', Transparency::class)
-            ),
-            publicationGraph: $this->getPublicationGraph($query),
-            categoryShares: $this->getCategoryShares($query),
-            articlesCount: Mapping::integer($data, 'articles_count'),
-            crawledAt: Mapping::string($data, 'source_crawled_at'),
-            displayName: Mapping::nullableString($data, 'source_display_name'),
-            description: Mapping::nullableString($data, 'source_description'),
-            updatedAt: Mapping::nullableString($data, 'source_updated_at'),
-            metadataAvailable: Mapping::integer($data, 'articles_metadata_available'),
-            followed: Mapping::boolean($data, 'source_is_followed'),
-            image: $this->assetUrlProvider->getUrl(
-                Mapping::string($data, 'source_name'),
-                AssetType::SOURCE_PROFILE_IMAGE
-            ),
+        return SourceDetails::create(
+            $data,
+            $this->getPublicationGraph($query),
+            $this->getCategoryShares($query)
         );
     }
 
     public function getPublicationGraph(GetSourceDetails $query): PublicationGraph
     {
+        $cacheKey = SourceCacheKey::SOURCE_PUBLICATION_GRAPH->withId($query->source);
         $qb = $this->connection->createQueryBuilder()
             ->select('DATE(published_at) AS day, COUNT(*) AS count')
             ->from('article')
@@ -111,7 +92,7 @@ final readonly class GetSourceDetailsDbalHandler implements GetSourceDetailsHand
             ->setParameter('source', $query->source)
             ->groupBy('day')
             ->orderBy('day', 'ASC')
-            ->enableResultCache(new QueryCacheProfile(0, SourceCacheKey::SOURCE_PUBLICATION_GRAPH->withId($query->source)));
+            ->enableResultCache(new QueryCacheProfile(self::CACHE_TTL, $cacheKey));
 
         try {
             /** @var array<array{day: string, count: int}> $data */
@@ -124,32 +105,37 @@ final readonly class GetSourceDetailsDbalHandler implements GetSourceDetailsHand
             throw SourceNotFound::withName($query->source);
         }
 
-        $countsByDate = [];
-        foreach ($data as $row) {
-            $countsByDate[$row['day']] = (int) $row['count'];
-        }
+        return $this->cache->get($cacheKey, function (ItemInterface $item) use ($data): PublicationGraph {
+            $item->expiresAfter(self::CACHE_TTL);
 
-        $start = new \DateTimeImmutable('-6 months');
-        $end = new \DateTimeImmutable('today');
-        $period = new \DatePeriod($start, new \DateInterval('P1D'), $end);
+            $countsByDate = [];
+            foreach ($data as $row) {
+                $countsByDate[$row['day']] = (int) $row['count'];
+            }
 
-        $heatmap = [];
-        foreach ($period as $date) {
-            $day = $date->format('Y-m-d');
-            $heatmap[] = new DailyEntry($day, $countsByDate[$day] ?? 0);
-        }
+            $start = new \DateTimeImmutable('-6 months');
+            $end = new \DateTimeImmutable('today');
+            $period = new \DatePeriod($start, new \DateInterval('P1D'), $end);
 
-        return new PublicationGraph($heatmap);
+            $heatmap = [];
+            foreach ($period as $date) {
+                $day = $date->format('Y-m-d');
+                $heatmap[] = new DailyEntry($day, $countsByDate[$day] ?? 0);
+            }
+
+            return new PublicationGraph($heatmap);
+        });
     }
 
     public function getCategoryShares(GetSourceDetails $query): CategoryShares
     {
+        $cacheKey = SourceCacheKey::SOURCE_CATEGORY_SHARES->withId($query->source);
         $qb = $this->connection->createQueryBuilder()
             ->select('categories')
             ->from('article')
             ->where('source = :source')
             ->setParameter('source', $query->source)
-            ->enableResultCache(new QueryCacheProfile(0, SourceCacheKey::SOURCE_CATEGORY_SHARES->withId($query->source)));
+            ->enableResultCache(new QueryCacheProfile(0, $cacheKey));
 
         try {
             /** @var array<string> $categories */
@@ -162,26 +148,30 @@ final readonly class GetSourceDetailsDbalHandler implements GetSourceDetailsHand
             throw SourceNotFound::withName($query->source);
         }
 
-        $counts = [];
-        foreach ($categories as $row) {
-            foreach (array_filter(array_map('trim', explode(',', $row))) as $cat) {
-                $counts[$cat] = ($counts[$cat] ?? 0) + 1;
+        return $this->cache->get($cacheKey, function (ItemInterface $item) use ($categories): CategoryShares {
+            $item->expiresAfter(self::CACHE_TTL);
+
+            $counts = [];
+            foreach ($categories as $row) {
+                foreach (array_filter(array_map('trim', explode(',', $row))) as $cat) {
+                    $counts[$cat] = ($counts[$cat] ?? 0) + 1;
+                }
             }
-        }
 
-        $total = array_sum($counts);
+            $total = array_sum($counts);
 
-        $shares = array_map(
-            fn (string $category, int $count): CategoryShare => new CategoryShare(
-                category: $category,
-                count: $count,
-                percentage: $total > 0 ? round(($count / $total) * 100, 2) : 0.0
-            ),
-            array_keys($counts),
-            array_values($counts)
-        );
-        usort($shares, fn (CategoryShare $a, CategoryShare $b): int => ($a->count <=> $b->count) * -1);
+            $shares = array_map(
+                fn (string $category, int $count): CategoryShare => new CategoryShare(
+                    category: $category,
+                    count: $count,
+                    percentage: $total > 0 ? round(($count / $total) * 100, 2) : 0.0
+                ),
+                array_keys($counts),
+                array_values($counts)
+            );
+            usort($shares, fn (CategoryShare $a, CategoryShare $b): int => ($a->count <=> $b->count) * -1);
 
-        return new CategoryShares($shares, count($counts));
+            return new CategoryShares($shares, count($counts));
+        });
     }
 }

@@ -14,7 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 final class ResetPasswordModel
 {
     #[Assert\NotBlank]
-    #[Assert\Length(max: 4096)]
+    #[Assert\Length(max: 512)]
     #[Assert\PasswordStrength]
     public string $password;
 

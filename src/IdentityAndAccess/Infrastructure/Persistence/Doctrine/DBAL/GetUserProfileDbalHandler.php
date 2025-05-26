@@ -8,9 +8,6 @@ use App\IdentityAndAccess\Application\ReadModel\UserProfile;
 use App\IdentityAndAccess\Application\UseCase\Query\GetUserProfile;
 use App\IdentityAndAccess\Application\UseCase\QueryHandler\GetUserProfileHandler;
 use App\IdentityAndAccess\Domain\Exception\UserNotFound;
-use App\IdentityAndAccess\Domain\Model\Identity\UserId;
-use App\SharedKernel\Domain\Model\ValueObject\EmailAddress;
-use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Mapping;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
 
@@ -29,10 +26,16 @@ final readonly class GetUserProfileDbalHandler implements GetUserProfileHandler
     public function __invoke(GetUserProfile $query): UserProfile
     {
         $qb = $this->connection->createQueryBuilder()
-            ->select('u.id', 'u.name', 'u.email', 'u.created_at')
+            ->select(
+                'u.id as user_id',
+                'u.name as user_name',
+                'u.email as user_email',
+                'u.created_at as user_created_at',
+                'u.updated_at as user_updated_at'
+            )
             ->from('user', 'u')
             ->where('u.id = :userId')
-            ->setParameter('userId', $query->userId->toBinary(), ParameterType::INTEGER);
+            ->setParameter('userId', $query->userId->toBinary(), ParameterType::BINARY);
 
         /** @var array<string, mixed>|false $data */
         $data = $qb->executeQuery()->fetchAssociative();
@@ -41,12 +44,6 @@ final readonly class GetUserProfileDbalHandler implements GetUserProfileHandler
             throw UserNotFound::withId($query->userId);
         }
 
-        return new UserProfile(
-            UserId::fromBinary($data['id']),
-            Mapping::string($data, 'name'),
-            EmailAddress::from(Mapping::string($data, 'email')),
-            Mapping::nullableDateTime($data, 'updated_at'),
-            Mapping::dateTime($data, 'created_at')
-        );
+        return UserProfile::create($data);
     }
 }

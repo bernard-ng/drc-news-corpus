@@ -10,14 +10,14 @@ use App\SharedKernel\Application\Messaging\CommandBus;
 use App\SharedKernel\Domain\Model\ValueObject\Tracking\ClientProfile;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\IpUtils;
-use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
+use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 
 /**
  * Class LoginSuccessListener.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-#[AsEventListener(LoginSuccessEvent::class)]
+#[AsEventListener(InteractiveLoginEvent::class)]
 final readonly class LoginSuccessListener
 {
     public function __construct(
@@ -25,10 +25,10 @@ final readonly class LoginSuccessListener
     ) {
     }
 
-    public function __invoke(LoginSuccessEvent $event): void
+    public function __invoke(InteractiveLoginEvent $event): void
     {
         /** @var SecurityUser|null $user */
-        $user = $event->getAuthenticatedToken()->getUser();
+        $user = $event->getAuthenticationToken()->getUser();
 
         if ($user !== null) {
             $profile = new ClientProfile(

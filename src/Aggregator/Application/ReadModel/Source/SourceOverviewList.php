@@ -20,4 +20,12 @@ final readonly class SourceOverviewList
     ) {
         Assert::allIsInstanceOf($items, SourceOverview::class);
     }
+
+    public static function create(iterable $items, array $pagination): self
+    {
+        return new self(
+            array_map(fn (array $item): SourceOverview => SourceOverview::create($item), \iterator_to_array($items)),
+            Pagination::create($pagination)
+        );
+    }
 }

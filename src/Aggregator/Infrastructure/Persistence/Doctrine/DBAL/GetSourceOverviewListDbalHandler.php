@@ -4,18 +4,13 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL;
 
-use App\Aggregator\Application\ReadModel\Source\SourceOverview;
 use App\Aggregator\Application\ReadModel\Source\SourceOverviewList;
 use App\Aggregator\Application\UseCase\Query\GetSourceOverviewList;
 use App\Aggregator\Application\UseCase\QueryHandler\GetSourceOverviewListHandler;
 use App\Aggregator\Infrastructure\Persistence\Doctrine\CacheKey\SourceCacheKey;
 use App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL\Features\SourceQuery;
 use App\IdentityAndAccess\Domain\Model\Identity\UserId;
-use App\SharedKernel\Application\Asset\AssetType;
-use App\SharedKernel\Domain\Model\ValueObject\Pagination;
-use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Mapping;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\NoResult;
-use App\SharedKernel\Infrastructure\Persistence\Filesystem\Asset\AssetUrlProvider;
 use Doctrine\DBAL\Cache\QueryCacheProfile;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
@@ -34,7 +29,6 @@ final readonly class GetSourceOverviewListDbalHandler implements GetSourceOvervi
     public function __construct(
         private Connection $connection,
         private PaginatorInterface $paginator,
-        private AssetUrlProvider $assetUrlProvider
     ) {
     }
 
@@ -51,6 +45,7 @@ final readonly class GetSourceOverviewListDbalHandler implements GetSourceOvervi
                 's.bias as source_bias',
                 's.reliability as source_reliability',
                 's.transparency as source_transparency',
+                "CONCAT('https://devscast.org/images/sources/', s.name, '.png') as source_image",
                 'COUNT(a.hash) AS articles_count',
                 'MAX(a.crawled_at) AS source_crawled_at',
                 'COUNT(CASE WHEN a.metadata IS NOT NULL THEN 1 ELSE NULL END) AS articles_metadata_available',
@@ -75,25 +70,6 @@ final readonly class GetSourceOverviewListDbalHandler implements GetSourceOvervi
             throw NoResult::forQuery($qb->getSQL(), $qb->getParameters(), $e);
         }
 
-        return new SourceOverviewList(
-            items: array_map(
-                fn ($item): SourceOverview => new SourceOverview(
-                    name: Mapping::string($item, 'source_name'),
-                    url: Mapping::string($item, 'source_url'),
-                    articlesCount: Mapping::integer($item, 'articles_count'),
-                    crawledAt: Mapping::string($item, 'source_crawled_at'),
-                    displayName: Mapping::nullableString($item, 'source_display_name'),
-                    updatedAt: Mapping::nullableString($item, 'updated_at'),
-                    metadataAvailable: Mapping::integer($item, 'articles_metadata_available'),
-                    followed: Mapping::boolean($item, 'source_is_followed'),
-                    image: $this->assetUrlProvider->getUrl(
-                        Mapping::string($item, 'source_name'),
-                        AssetType::SOURCE_PROFILE_IMAGE
-                    ),
-                ),
-                \iterator_to_array($data->getItems())
-            ),
-            pagination: Pagination::create($data->getPaginationData())
-        );
+        return SourceOverviewList::create($data->getItems(), $data->getPaginationData());
     }
 }

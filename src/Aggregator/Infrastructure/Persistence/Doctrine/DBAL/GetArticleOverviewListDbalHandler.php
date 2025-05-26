@@ -4,25 +4,14 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL;
 
-use App\Aggregator\Application\ReadModel\ArticleOverview;
 use App\Aggregator\Application\ReadModel\ArticleOverviewList;
-use App\Aggregator\Application\ReadModel\Source\SourceReference;
 use App\Aggregator\Application\UseCase\Query\GetArticleOverviewList;
 use App\Aggregator\Application\UseCase\QueryHandler\GetArticleOverviewListHandler;
-use App\Aggregator\Domain\Model\Identity\ArticleId;
-use App\Aggregator\Domain\Model\ValueObject\Crawling\DateRange;
-use App\Aggregator\Domain\Model\ValueObject\Link;
-use App\Aggregator\Domain\Model\ValueObject\ReadingTime;
+use App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL\Features\ArticleQuery;
 use App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL\Features\BookmarkQuery;
-use App\SharedKernel\Application\Asset\AssetType;
-use App\SharedKernel\Domain\Model\Filters\FiltersQuery;
-use App\SharedKernel\Domain\Model\ValueObject\Pagination;
-use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Mapping;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\NoResult;
-use App\SharedKernel\Infrastructure\Persistence\Filesystem\Asset\AssetUrlProvider;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
-use Doctrine\DBAL\Query\QueryBuilder;
 use Knp\Bundle\PaginatorBundle\Pagination\SlidingPaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 
@@ -34,11 +23,11 @@ use Knp\Component\Pager\PaginatorInterface;
 final readonly class GetArticleOverviewListDbalHandler implements GetArticleOverviewListHandler
 {
     use BookmarkQuery;
+    use ArticleQuery;
 
     public function __construct(
         private Connection $connection,
         private PaginatorInterface $paginator,
-        private AssetUrlProvider $assetUrlProvider,
     ) {
     }
 
@@ -58,6 +47,7 @@ final readonly class GetArticleOverviewListDbalHandler implements GetArticleOver
             )
             ->addSelect(
                 's.display_name as source_display_name',
+                "CONCAT('https://devscast.org/images/sources/', s.name, '.png') as source_image",
                 's.url as source_url',
                 's.name as source_name',
             )
@@ -67,7 +57,7 @@ final readonly class GetArticleOverviewListDbalHandler implements GetArticleOver
             ->setParameter('userId', $query->userId->toBinary(), ParameterType::BINARY)
             ->orderBy('article_published_at', 'DESC');
 
-        $qb = $this->applyFilters($qb, $query->filters);
+        $qb = $this->applyArticleFilters($qb, $query->filters);
 
         try {
             /** @var SlidingPaginationInterface<int, array<string, mixed>> $data */
@@ -76,70 +66,6 @@ final readonly class GetArticleOverviewListDbalHandler implements GetArticleOver
             throw NoResult::forQuery($qb->getSQL(), $qb->getParameters(), $e);
         }
 
-        return $this->mapArticleOverviewList($data);
-    }
-
-    private function applyFilters(QueryBuilder $qb, FiltersQuery $filters): QueryBuilder
-    {
-        if ($filters->source !== null) {
-            $qb->andWhere('s.name = :source')
-                ->setParameter('source', $filters->source);
-        }
-
-        if ($filters->category !== null) {
-            $qb->andWhere('a.categories LIKE :category')
-                ->setParameter('category', sprintf('%%%s%%', $filters->category));
-        }
-
-        if ($filters->search !== null) {
-            $qb->andWhere('a.title LIKE :search')
-                ->setParameter('search', sprintf('%%%s%%', $filters->search));
-        }
-
-        if ($filters->dateRange instanceof DateRange) {
-            $qb->andWhere('a.published_at BETWEEN FROM_UNIXTIME(:start) AND FROM_UNIXTIME(:end)')
-                ->setParameter('start', $filters->dateRange->start, ParameterType::INTEGER)
-                ->setParameter('end', $filters->dateRange->end, ParameterType::INTEGER);
-        }
-
-        return $qb;
-    }
-
-    /**
-     * @param SlidingPaginationInterface<int, array<string, mixed>> $data
-     */
-    private function mapArticleOverviewList(SlidingPaginationInterface $data): ArticleOverviewList
-    {
-        return new ArticleOverviewList(
-            items: array_map(
-                fn ($item): ArticleOverview => $this->mapArticleOverview($item),
-                \iterator_to_array($data->getItems())
-            ),
-            pagination: Pagination::create($data->getPaginationData())
-        );
-    }
-
-    private function mapArticleOverview(array $item): ArticleOverview
-    {
-        return new ArticleOverview(
-            ArticleId::fromBinary($item['article_id']),
-            Mapping::string($item, 'article_title'),
-            Link::from(Mapping::string($item, 'article_link')),
-            explode(',', Mapping::string($item, 'article_categories')),
-            trim(Mapping::string($item, 'article_excerpt')),
-            new SourceReference(
-                Mapping::string($item, 'source_name'),
-                Mapping::nullableString($item, 'source_display_name'),
-                $this->assetUrlProvider->getUrl(
-                    Mapping::string($item, 'source_name'),
-                    AssetType::SOURCE_PROFILE_IMAGE
-                ),
-                Mapping::string($item, 'source_url'),
-            ),
-            Mapping::nullableString($item, 'article_image'),
-            ReadingTime::create(Mapping::nullableInteger($item, 'article_reading_time')),
-            Mapping::datetime($item, 'article_published_at'),
-            Mapping::boolean($item, 'article_is_bookmarked'),
-        );
+        return ArticleOverviewList::create($data->getItems(), $data->getPaginationData());
     }
 }

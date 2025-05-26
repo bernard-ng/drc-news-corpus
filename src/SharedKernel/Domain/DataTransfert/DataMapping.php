@@ -2,17 +2,18 @@
 
 declare(strict_types=1);
 
-namespace App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL;
+namespace App\SharedKernel\Domain\DataTransfert;
 
 use App\SharedKernel\Domain\Assert;
+use BackedEnum as T;
 use Symfony\Component\Uid\Uuid;
 
 /**
- * Class Mapping.
+ * Class DataMapping.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-abstract class Mapping
+abstract class DataMapping
 {
     /**
      * @param array<string, mixed> $data

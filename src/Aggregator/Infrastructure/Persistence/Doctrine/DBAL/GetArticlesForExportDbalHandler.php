@@ -7,9 +7,7 @@ namespace App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL;
 use App\Aggregator\Application\ReadModel\ArticleForExport;
 use App\Aggregator\Application\UseCase\Query\GetArticlesForExport;
 use App\Aggregator\Application\UseCase\QueryHandler\GetArticlesForExportHandler;
-use App\Aggregator\Domain\Model\Identity\ArticleId;
 use App\Aggregator\Domain\Model\ValueObject\Crawling\DateRange;
-use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Mapping;
 use Doctrine\DBAL\Connection;
 
 /**
@@ -19,6 +17,8 @@ use Doctrine\DBAL\Connection;
  */
 final readonly class GetArticlesForExportDbalHandler implements GetArticlesForExportHandler
 {
+    private const int BATCH_SIZE = 1000;
+
     public function __construct(
         private Connection $connection
     ) {
@@ -28,7 +28,17 @@ final readonly class GetArticlesForExportDbalHandler implements GetArticlesForEx
     public function __invoke(GetArticlesForExport $query): iterable
     {
         $qb = $this->connection->createQueryBuilder()
-            ->select('a.id', 'a.title', 'a.link', 'a.categories', 'a.body', 'a.source', 'a.hash', 'a.published_at', 'a.crawled_at')
+            ->select(
+                'a.id as article_id',
+                'a.title as article_title',
+                'a.link as article_link',
+                'a.categories as article_categories',
+                'a.body as article_body',
+                'a.source as article_source',
+                'a.hash as article_hash',
+                'a.published_at as article_published_at',
+                'a.crawled_at as article_crawled_at'
+            )
             ->from('article', 'a')
             ->orderBy('a.published_at', 'DESC');
 
@@ -43,12 +53,11 @@ final readonly class GetArticlesForExportDbalHandler implements GetArticlesForEx
                 ->setParameter('end', $query->date->end);
         }
 
-        $limit = 1000;
         $offset = 0;
 
         while (true) {
             $qb->setFirstResult($offset);
-            $qb->setMaxResults($limit);
+            $qb->setMaxResults(self::BATCH_SIZE);
 
             /** @var array<array<string, mixed>> $data */
             $data = $qb->executeQuery()->fetchAllAssociative();
@@ -57,20 +66,10 @@ final readonly class GetArticlesForExportDbalHandler implements GetArticlesForEx
             }
 
             foreach ($data as $article) {
-                yield new ArticleForExport(
-                    ArticleId::fromBinary($article['id']),
-                    Mapping::string($article, 'title'),
-                    Mapping::string($article, 'link'),
-                    Mapping::string($article, 'categories'),
-                    Mapping::string($article, 'body'),
-                    Mapping::string($article, 'source'),
-                    Mapping::string($article, 'hash'),
-                    Mapping::datetime($article, 'published_at'),
-                    Mapping::datetime($article, 'crawled_at')
-                );
+                yield ArticleForExport::create($article);
             }
 
-            $offset += $limit;
+            $offset += self::BATCH_SIZE;
         }
     }
 }

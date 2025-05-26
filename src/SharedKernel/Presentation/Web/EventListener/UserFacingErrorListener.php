@@ -6,6 +6,10 @@ namespace App\SharedKernel\Presentation\Web\EventListener;
 
 use App\Aggregator\Domain\Exception\ArticleNotFound;
 use App\Aggregator\Domain\Exception\SourceNotFound;
+use App\FeedManagement\Domain\Exception\BookmarkedArticleNotFound;
+use App\FeedManagement\Domain\Exception\BookmarkNotFound;
+use App\FeedManagement\Domain\Exception\CommentNotFound;
+use App\FeedManagement\Domain\Exception\FollowedSourceNotFound;
 use App\IdentityAndAccess\Domain\Exception\PermissionNotGranted;
 use App\IdentityAndAccess\Domain\Exception\UserNotFound;
 use App\SharedKernel\Domain\Exception\InvalidArgument;
@@ -29,6 +33,10 @@ final readonly class UserFacingErrorListener
         ArticleNotFound::class,
         SourceNotFound::class,
         UserNotFound::class,
+        CommentNotFound::class,
+        BookmarkNotFound::class,
+        FollowedSourceNotFound::class,
+        BookmarkedArticleNotFound::class,
     ];
 
     private const array BAD_REQUEST_EXCEPTIONS = [

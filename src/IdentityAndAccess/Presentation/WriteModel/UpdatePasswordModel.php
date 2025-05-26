@@ -17,7 +17,7 @@ final class UpdatePasswordModel
     public string $current;
 
     #[Assert\NotBlank]
-    #[Assert\Length(max: 4096)]
+    #[Assert\Length(max: 512)]
     #[Assert\PasswordStrength]
     public string $password;
 

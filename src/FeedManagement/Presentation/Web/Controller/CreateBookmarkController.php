@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\FeedManagement\Presentation\Web\Controller\Bookmark;
+namespace App\FeedManagement\Presentation\Web\Controller;
 
 use App\FeedManagement\Application\UseCase\Command\CreateBookmark;
 use App\FeedManagement\Presentation\WriteModel\CreateBookmarkModel;
@@ -29,7 +29,6 @@ final class CreateBookmarkController extends AbstractController
     public function __invoke(#[MapRequestPayload] CreateBookmarkModel $model): JsonResponse
     {
         $securityUser = $this->getSecurityUser();
-
         $this->handleCommand(new CreateBookmark(
             $securityUser->userId,
             $model->name,

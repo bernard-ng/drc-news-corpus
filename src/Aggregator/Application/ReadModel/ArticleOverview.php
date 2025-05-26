@@ -8,6 +8,7 @@ use App\Aggregator\Application\ReadModel\Source\SourceReference;
 use App\Aggregator\Domain\Model\Identity\ArticleId;
 use App\Aggregator\Domain\Model\ValueObject\Link;
 use App\Aggregator\Domain\Model\ValueObject\ReadingTime;
+use App\SharedKernel\Domain\DataTransfert\DataMapping;
 
 /**
  * Class ArticleOverview.
@@ -28,5 +29,21 @@ final readonly class ArticleOverview
         public \DateTimeImmutable $publishedAt,
         public bool $bookmarked = false
     ) {
+    }
+
+    public static function create(array $item): self
+    {
+        return new self(
+            ArticleId::fromBinary($item['article_id']),
+            DataMapping::string($item, 'article_title'),
+            Link::from(DataMapping::string($item, 'article_link')),
+            explode(',', DataMapping::string($item, 'article_categories')),
+            trim(DataMapping::string($item, 'article_excerpt')),
+            SourceReference::create($item),
+            DataMapping::nullableString($item, 'article_image'),
+            ReadingTime::create(DataMapping::nullableInteger($item, 'article_reading_time')),
+            DataMapping::datetime($item, 'article_published_at'),
+            DataMapping::boolean($item, 'article_is_bookmarked'),
+        );
     }
 }

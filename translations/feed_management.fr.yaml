@@ -8,3 +8,5 @@ feed_management.exceptions.cannot_delete_bookmark: Vous n'avez pas la permission
 feed_management.exceptions.cannot_update_bookmark: Vous n'avez pas la permission de mettre à jour ce signet
 feed_management.exceptions.followed_source_not_found: La source suivie n'a pas été trouvée
 feed_management.exceptions.source_already_followed: La source est déjà suivie
+feed_management.exceptions.cannot_delete_comment: Vous n'avez pas la permission de supprimer ce commentaire
+feed_management.exceptions.comment_not_found: Le commentaire n'a pas été trouvé

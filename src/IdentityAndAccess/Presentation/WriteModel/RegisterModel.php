@@ -22,6 +22,6 @@ final class RegisterModel
     public string $email;
 
     #[Assert\NotBlank]
-    #[Assert\Length(max: 4096)]
+    #[Assert\Length(max: 512)]
     public string $password;
 }

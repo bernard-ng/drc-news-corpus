@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace App\Aggregator\Application\ReadModel;
 
 use App\Aggregator\Domain\Model\Identity\ArticleId;
-use DateTimeInterface;
+use App\SharedKernel\Domain\DataTransfert\DataMapping;
 
 /**
  * Class ExportedArticle.
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-final readonly class ArticleForExport implements \JsonSerializable
+final readonly class ArticleForExport
 {
     public function __construct(
         public ArticleId $id,
@@ -27,19 +27,18 @@ final readonly class ArticleForExport implements \JsonSerializable
     ) {
     }
 
-    #[\Override]
-    public function jsonSerialize(): array
+    public static function create(array $item): self
     {
-        return [
-            'id' => $this->id->toRfc4122(),
-            'title' => $this->title,
-            'link' => $this->link,
-            'categories' => $this->categories,
-            'body' => $this->body,
-            'source' => $this->source,
-            'hash' => $this->hash,
-            'published_at' => $this->publishedAt->format(DateTimeInterface::RFC3339),
-            'crawled_at' => $this->crawledAt->format(DateTimeInterface::RFC3339),
-        ];
+        return new self(
+            ArticleId::fromBinary($item['article_id']),
+            DataMapping::string($item, 'article_title'),
+            DataMapping::string($item, 'article_link'),
+            DataMapping::string($item, 'article_categories'),
+            DataMapping::string($item, 'article_body'),
+            DataMapping::string($item, 'article_source'),
+            DataMapping::string($item, 'article_hash'),
+            DataMapping::datetime($item, 'article_published_at'),
+            DataMapping::datetime($item, 'article_crawled_at')
+        );
     }
 }

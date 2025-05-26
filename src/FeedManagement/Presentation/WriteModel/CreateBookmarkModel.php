@@ -17,7 +17,7 @@ final class CreateBookmarkModel
     #[Assert\Length(max: 255)]
     public string $name;
 
-    #[Assert\Length(max: 2048)]
+    #[Assert\Length(max: 512)]
     public ?string $description = null;
 
     public bool $isPublic = false;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\FeedManagement\Presentation\Web\Controller\Bookmark;
+namespace App\FeedManagement\Presentation\Web\Controller;
 
 use App\FeedManagement\Application\UseCase\Command\UpdateBookmark;
 use App\FeedManagement\Domain\Model\Identity\BookmarkId;

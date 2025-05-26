@@ -42,20 +42,25 @@ class Bookmark
         return new self($user, $name, $description);
     }
 
-    public function updateInfos(string $name, ?string $description = null, bool $isPublic = false): self
+    public function updateInfos(string $name, ?string $description = null): self
     {
         $this->name = $name;
         $this->description = $description;
-        $this->isPublic = $isPublic;
         $this->updatedAt = new \DateTimeImmutable();
 
         return $this;
     }
 
-    public function toggleVisibility(): self
+    public function markAsPrivate(): self
     {
-        $this->isPublic = ! $this->isPublic;
-        $this->updatedAt = new \DateTimeImmutable();
+        $this->isPublic = false;
+
+        return $this;
+    }
+
+    public function markAsPublic(): self
+    {
+        $this->isPublic = true;
 
         return $this;
     }

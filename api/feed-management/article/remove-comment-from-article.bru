@@ -1,0 +1,20 @@
+meta {
+  name: remove-comment-from-article
+  type: http
+  seq: 2
+}
+
+delete {
+  url: {{baseUrl}}/feed/articles/:articleId/comments/:commentId
+  body: none
+  auth: bearer
+}
+
+params:path {
+  commentId: 01970c22-8001-7e10-b2e4-f95f1f45d53d
+  articleId: 019549f9-13d8-725b-81f6-3c7e75aa5a26
+}
+
+auth:bearer {
+  token: {{token}}
+}

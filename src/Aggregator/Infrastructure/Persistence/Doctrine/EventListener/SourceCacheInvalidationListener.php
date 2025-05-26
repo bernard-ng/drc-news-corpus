@@ -42,8 +42,6 @@ final readonly class SourceCacheInvalidationListener
             $this->cache?->deleteItems([
                 SourceCacheKey::SOURCE_OVERVIEW->withId($entity->name),
                 SourceCacheKey::SOURCE_OVERVIEW_LIST->withId($entity->name),
-                SourceCacheKey::SOURCE_PUBLICATION_GRAPH->withId($entity->name),
-                SourceCacheKey::SOURCE_CATEGORY_SHARES->withId($entity->name),
                 SourceCacheKey::SOURCE_DETAILS->withId($entity->name),
             ]);
         } catch (\Throwable $e) {
