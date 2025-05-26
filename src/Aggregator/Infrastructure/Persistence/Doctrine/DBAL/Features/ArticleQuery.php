@@ -16,6 +16,25 @@ use Doctrine\DBAL\Query\QueryBuilder;
  */
 trait ArticleQuery
 {
+    private function getArticleLastId(): string
+    {
+        return $this->connection->createQueryBuilder()
+            ->select('a.id')
+            ->from('article', 'a')
+            ->orderBy('a.id', 'DESC')
+            ->setMaxResults(1)
+            ->executeQuery()
+            ->fetchOne();
+    }
+
+    /**
+     * Applies filters to the provided QueryBuilder instance based on the given FiltersQuery.
+     *
+     * @param QueryBuilder $qb The query builder instance to which filters will be applied.
+     * @param FiltersQuery $filters The filters containing criteria for filtering articles.
+     *
+     * @return QueryBuilder The updated query builder with the applied filters.
+     */
     private function applyArticleFilters(QueryBuilder $qb, FiltersQuery $filters): QueryBuilder
     {
         if ($filters->source !== null) {

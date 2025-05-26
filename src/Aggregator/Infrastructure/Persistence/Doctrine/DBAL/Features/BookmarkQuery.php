@@ -11,6 +11,9 @@ namespace App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL\Features;
  */
 trait BookmarkQuery
 {
+    /**
+     * Returns a SQL query to check if a user bookmarks an article.
+     */
     private function isArticleBookmarkedQuery(): string
     {
         $qb = $this->connection->createQueryBuilder()

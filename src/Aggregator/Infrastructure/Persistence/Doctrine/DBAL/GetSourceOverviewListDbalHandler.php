@@ -7,11 +7,11 @@ namespace App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL;
 use App\Aggregator\Application\ReadModel\Source\SourceOverviewList;
 use App\Aggregator\Application\UseCase\Query\GetSourceOverviewList;
 use App\Aggregator\Application\UseCase\QueryHandler\GetSourceOverviewListHandler;
-use App\Aggregator\Infrastructure\Persistence\Doctrine\CacheKey\SourceCacheKey;
 use App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL\Features\SourceQuery;
 use App\IdentityAndAccess\Domain\Model\Identity\UserId;
+use App\SharedKernel\Domain\Model\ValueObject\Pagination;
+use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Features\PaginationQuery;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\NoResult;
-use Doctrine\DBAL\Cache\QueryCacheProfile;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
 use Knp\Bundle\PaginatorBundle\Pagination\SlidingPaginationInterface;
@@ -24,11 +24,12 @@ use Knp\Component\Pager\PaginatorInterface;
  */
 final readonly class GetSourceOverviewListDbalHandler implements GetSourceOverviewListHandler
 {
+    use PaginationQuery;
     use SourceQuery;
 
     public function __construct(
         private Connection $connection,
-        private PaginatorInterface $paginator,
+        private PaginatorInterface $paginator
     ) {
     }
 
@@ -46,7 +47,7 @@ final readonly class GetSourceOverviewListDbalHandler implements GetSourceOvervi
                 's.reliability as source_reliability',
                 's.transparency as source_transparency',
                 "CONCAT('https://devscast.org/images/sources/', s.name, '.png') as source_image",
-                'COUNT(a.hash) AS articles_count',
+                'COUNT(a.id) AS articles_count',
                 'MAX(a.crawled_at) AS source_crawled_at',
                 'COUNT(CASE WHEN a.metadata IS NOT NULL THEN 1 ELSE NULL END) AS articles_metadata_available',
             )
@@ -54,7 +55,6 @@ final readonly class GetSourceOverviewListDbalHandler implements GetSourceOvervi
             ->innerJoin('a', 'source', 's', 'a.source = s.name')
             ->groupBy('s.name')
             ->orderBy('articles_count', 'DESC')
-            ->enableResultCache(new QueryCacheProfile(3600, SourceCacheKey::SOURCE_OVERVIEW_LIST->value))
         ;
 
         if ($query->userId instanceof UserId) {
@@ -70,6 +70,9 @@ final readonly class GetSourceOverviewListDbalHandler implements GetSourceOvervi
             throw NoResult::forQuery($qb->getSQL(), $qb->getParameters(), $e);
         }
 
-        return SourceOverviewList::create($data->getItems(), $data->getPaginationData());
+        return SourceOverviewList::create(
+            \iterator_to_array($data->getItems()),
+            Pagination::create($data->getPaginationData())
+        );
     }
 }

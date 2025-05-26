@@ -8,12 +8,12 @@ use App\FeedManagement\Application\ReadModel\BookmarkInfosList;
 use App\FeedManagement\Application\UseCase\Query\GetBookmarkInfosList;
 use App\FeedManagement\Application\UseCase\QueryHandler\GetBookmarkInfosListHandler;
 use App\FeedManagement\Infrastructure\Persistence\Doctrine\CacheKey\BookmarkCacheKey;
+use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Features\PaginationQuery;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\NoResult;
 use Doctrine\DBAL\Cache\QueryCacheProfile;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
-use Knp\Bundle\PaginatorBundle\Pagination\SlidingPaginationInterface;
-use Knp\Component\Pager\PaginatorInterface;
+use Doctrine\DBAL\Query\QueryBuilder;
 
 /**
  * Class GetBookmarkInfosListDbalHandler.
@@ -22,9 +22,10 @@ use Knp\Component\Pager\PaginatorInterface;
  */
 final readonly class GetBookmarkInfosListDbalHandler implements GetBookmarkInfosListHandler
 {
+    use PaginationQuery;
+
     public function __construct(
         private Connection $connection,
-        private PaginatorInterface $paginator
     ) {
     }
 
@@ -48,13 +49,29 @@ final readonly class GetBookmarkInfosListDbalHandler implements GetBookmarkInfos
             ->setParameter('userId', $query->userId->toBinary(), ParameterType::BINARY)
             ->enableResultCache(new QueryCacheProfile(0, BookmarkCacheKey::BOOKMARK_LIST->withId($query->userId->toString())));
 
+        $qb = $this->paginate($qb, $query);
+
         try {
-            /** @var SlidingPaginationInterface<int, array<string, mixed>> $data */
-            $data = $this->paginator->paginate($qb, $query->page->page, $query->page->limit);
+            /** @var array<int, array<string, mixed>> $data */
+            $data = $qb->executeQuery()->fetchAllAssociative();
         } catch (\Throwable $e) {
             throw NoResult::forQuery($qb->getSQL(), $qb->getParameters(), $e);
         }
 
-        return BookmarkInfosList::create($data->getItems(), $data->getPaginationData());
+        $pagination = $this->getPagination($data, $query->page, 'bookmark_id');
+        return BookmarkInfosList::create($data, $pagination);
+    }
+
+    private function paginate(QueryBuilder $qb, GetBookmarkInfosList $query): QueryBuilder
+    {
+        return $this->applyCursorPagination($qb, $query->page, 'b.id', fn () => $this->connection->createQueryBuilder()
+            ->select('b.id')
+            ->from('bookmark', 'b')
+            ->where('b.user_id = :userId')
+            ->orderBy('b.id', 'DESC')
+            ->setMaxResults(1)
+            ->setParameter('userId', $query->userId->toBinary(), ParameterType::BINARY)
+            ->executeQuery()
+            ->fetchOne());
     }
 }

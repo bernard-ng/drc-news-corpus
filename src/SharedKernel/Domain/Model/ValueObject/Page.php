@@ -22,10 +22,14 @@ final class Page
     public function __construct(
         public int $page = self::DEFAULT_PAGE,
         public int $limit = self::DEFAULT_LIMIT,
+        public ?string $lastId = null,
+        public int $offset = 0,
     ) {
         Assert::greaterThanEq($this->page, self::DEFAULT_PAGE);
         Assert::greaterThanEq($this->limit, self::DEFAULT_LIMIT);
         Assert::lessThanEq($this->limit, self::MAX_LIMIT);
+
+        $this->offset = intval(($this->page - 1) * $this->limit);
     }
 
     public function next(): self

@@ -11,6 +11,9 @@ namespace App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL\Features;
  */
 trait SourceQuery
 {
+    /**
+     * Returns a SQL query to check if a user follows a source.
+     */
     private function isSourceFollowedQuery(): string
     {
         $qb = $this->connection->createQueryBuilder()

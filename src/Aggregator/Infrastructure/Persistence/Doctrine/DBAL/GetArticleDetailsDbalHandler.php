@@ -60,7 +60,6 @@ final readonly class GetArticleDetailsDbalHandler implements GetArticleDetailsHa
             ->where('a.id = :articleId')
             ->setParameter('articleId', $query->id->toBinary(), ParameterType::BINARY)
             ->setParameter('userId', $query->userId->toBinary(), ParameterType::BINARY)
-            //->enableResultCache(new QueryCacheProfile(0, ArticleCacheKey::ARTICLE_DETAILS->withId($query->id->toString())))
         ;
 
         try {

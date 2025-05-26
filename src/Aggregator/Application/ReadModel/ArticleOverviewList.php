@@ -21,11 +21,11 @@ final readonly class ArticleOverviewList
         Assert::allIsInstanceOf($this->items, ArticleOverview::class);
     }
 
-    public static function create(iterable $items, array $pagination): self
+    public static function create(array $items, Pagination $pagination): self
     {
         return new self(
-            array_map(fn (array $item): ArticleOverview => ArticleOverview::create($item), \iterator_to_array($items)),
-            Pagination::create($pagination)
+            array_map(fn (array $item): ArticleOverview => ArticleOverview::create($item), $items),
+            $pagination
         );
     }
 }

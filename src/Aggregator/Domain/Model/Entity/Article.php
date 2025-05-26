@@ -34,7 +34,9 @@ class Article
         private(set) Sentiment $sentiment = Sentiment::NEUTRAL,
         private(set) ?OpenGraph $metadata = null,
         private(set) ?ReadingTime $readingTime = null,
-        private(set) ?\DateTimeImmutable $updatedAt = null
+        private(set) ?\DateTimeImmutable $updatedAt = null,
+        private(set) ?string $image = null,
+        private(set) ?string $excerpt = null,
     ) {
         $this->id = new ArticleId();
     }

@@ -4,16 +4,17 @@ declare(strict_types=1);
 
 namespace App\FeedManagement\Infrastructure\Persistence\Doctrine\DBAL;
 
+use App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL\Features\ArticleQuery;
 use App\FeedManagement\Application\ReadModel\BookmarkedArticleList;
 use App\FeedManagement\Application\UseCase\Query\GetBookmarkedArticleList;
 use App\FeedManagement\Application\UseCase\QueryHandler\GetBookmarkedArticleListHandler;
 use App\FeedManagement\Infrastructure\Persistence\Doctrine\CacheKey\BookmarkCacheKey;
+use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Features\PaginationQuery;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\NoResult;
 use Doctrine\DBAL\Cache\QueryCacheProfile;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
-use Knp\Bundle\PaginatorBundle\Pagination\SlidingPaginationInterface;
-use Knp\Component\Pager\PaginatorInterface;
+use Doctrine\DBAL\Query\QueryBuilder;
 
 /**
  * Class GetBookmarkedArticleListDbalHandler.
@@ -22,9 +23,11 @@ use Knp\Component\Pager\PaginatorInterface;
  */
 final readonly class GetBookmarkedArticleListDbalHandler implements GetBookmarkedArticleListHandler
 {
+    use PaginationQuery;
+    use ArticleQuery;
+
     public function __construct(
         private Connection $connection,
-        private PaginatorInterface $paginator
     ) {
     }
 
@@ -36,9 +39,9 @@ final readonly class GetBookmarkedArticleListDbalHandler implements GetBookmarke
                 'a.title as article_title',
                 'a.link as article_link',
                 'a.categories as article_categories',
-                'LEFT(a.body, 200) as article_excerpt',
+                'a.excerpt as article_excerpt',
                 'a.published_at as article_published_at',
-                "JSON_VALUE(a.metadata, '$.image') as article_image",
+                'a.image as article_image',
                 'a.reading_time as article_reading_time',
             )
             ->addSelect(
@@ -57,13 +60,32 @@ final readonly class GetBookmarkedArticleListDbalHandler implements GetBookmarke
             ->enableResultCache(new QueryCacheProfile(0, BookmarkCacheKey::BOOKMARKED_ARTICLE_LIST->withId($query->bookmarkId->toString())))
         ;
 
+        $qb = $this->paginate($qb, $query);
+
         try {
-            /** @var SlidingPaginationInterface<int, array<string, mixed>> $data */
-            $data = $this->paginator->paginate($qb, $query->page->page, $query->page->limit);
+            /** @var array<int, array<string, mixed>> $data */
+            $data = $qb->executeQuery()->fetchAllAssociative();
         } catch (\Throwable $e) {
             throw NoResult::forQuery($qb->getSQL(), $qb->getParameters(), $e);
         }
 
-        return BookmarkedArticleList::create($data->getItems(), $data->getPaginationData());
+        $pagination = $this->getPagination($data, $query->page, 'article_id');
+        return BookmarkedArticleList::create($data, $pagination);
+    }
+
+    private function paginate(QueryBuilder $qb, GetBookmarkedArticleList $query): QueryBuilder
+    {
+        return $this->applyCursorPagination($qb, $query->page, 'a.id', fn () => $this->connection->createQueryBuilder()
+            ->select('a.id')
+            ->from('bookmark_article', 'ba')
+            ->innerJoin('ba', 'article', 'a', 'a.id = ba.article_id')
+            ->innerJoin('ba', 'bookmark', 'b', 'b.id = ba.bookmark_id AND b.user_id = :userId')
+            ->where('b.id = :bookmarkId')
+            ->setParameter('bookmarkId', $query->bookmarkId->toBinary(), ParameterType::BINARY)
+            ->setParameter('userId', $query->userId->toBinary(), ParameterType::BINARY)
+            ->orderBy('a.id', 'DESC')
+            ->setMaxResults(1)
+            ->executeQuery()
+            ->fetchOne());
     }
 }

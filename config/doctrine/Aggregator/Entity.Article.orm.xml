@@ -35,6 +35,18 @@
         <field name="metadata" type="open_graph" nullable="true" />
         <embedded name="readingTime" class="App\Aggregator\Domain\Model\ValueObject\ReadingTime" use-column-prefix="false" />
 
+        <field name="image"
+               insertable="false"
+               updatable="false"
+               column-definition="VARCHAR(255) GENERATED ALWAYS AS (JSON_UNQUOTE(JSON_EXTRACT(metadata, '$.image'))) STORED"
+        />
+        <field
+                name="excerpt"
+                insertable="false"
+                updatable="false"
+                column-definition="VARCHAR(255) GENERATED ALWAYS AS (CONCAT(LEFT(body, 200), '...')) STORED"
+        />
+
         <field name="publishedAt" type="datetime_immutable" />
         <field name="crawledAt" type="datetime_immutable" />
         <field name="updatedAt" type="datetime_immutable" nullable="true" />

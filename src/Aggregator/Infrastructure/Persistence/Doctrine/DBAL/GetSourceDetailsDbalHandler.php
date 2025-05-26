@@ -38,6 +38,7 @@ final readonly class GetSourceDetailsDbalHandler implements GetSourceDetailsHand
     ) {
     }
 
+    #[\Override]
     public function __invoke(GetSourceDetails $query): SourceDetails
     {
         $qb = $this->connection->createQueryBuilder()
@@ -60,7 +61,7 @@ final readonly class GetSourceDetailsDbalHandler implements GetSourceDetailsHand
             ->innerJoin('a', 'source', 's', 'a.source = s.name')
             ->where('a.source = :source')
             ->setParameter('source', $query->source)
-            ->setParameter('userId', $query->userId->toBinary(), ParameterType::BINARY)//->enableResultCache(new QueryCacheProfile(0, SourceCacheKey::SOURCE_DETAILS->withId($query->source)))
+            ->setParameter('userId', $query->userId->toBinary(), ParameterType::BINARY)
         ;
 
         try {

@@ -21,11 +21,11 @@ final readonly class BookmarkedArticleList
         Assert::allIsInstanceOf($this->items, BookmarkedArticle::class);
     }
 
-    public static function create(iterable $items, array $pagination): self
+    public static function create(array $items, Pagination $pagination): self
     {
         return new self(
-            array_map(fn (array $item): BookmarkedArticle => BookmarkedArticle::create($item), \iterator_to_array($items)),
-            Pagination::create($pagination)
+            array_map(fn (array $item): BookmarkedArticle => BookmarkedArticle::create($item), $items),
+            $pagination
         );
     }
 }
