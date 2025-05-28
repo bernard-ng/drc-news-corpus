@@ -33,10 +33,8 @@ trait PaginationQuery
             return PaginationInfo::from($page);
         }
 
-        $pagination = PaginationInfo::from($page);
-        $pagination->lastId = DataMapping::uuid(array_pop($data), $field)->toString();
-
-        return $pagination;
+        return PaginationInfo::from($page)
+            ->setLastId(DataMapping::uuid(array_pop($data), $field)->toString());
     }
 
     /**

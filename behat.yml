@@ -1,0 +1,16 @@
+default:
+  suites:
+    default:
+      contexts:
+        - Tests\Behat\Hook\DatabasePurger
+      paths:
+        - tests/Behat/features
+
+  formatters:
+    progress: true
+
+  extensions:
+    FriendsOfBehat\SymfonyExtension:
+      bootstrap: tests/bootstrap.php
+      kernel:
+        class: App\SharedKernel\Infrastructure\Framework\Symfony\Kernel

@@ -47,10 +47,13 @@
       "ext-dom": "*"
     },
     "require-dev": {
-        "behat/behat": "^3.18.1",
+        "behat/behat": "^3.22",
         "deptrac/deptrac": "^2.0.7",
+        "doctrine/doctrine-fixtures-bundle": "^4.1",
+        "friends-of-behat/symfony-extension": "^2.6",
         "phpstan/phpstan": "^2.1.12",
-        "phpstan/phpstan-doctrine": "^2.0.2",
+        "phpstan/phpstan-doctrine": "^2.0",
+        "phpstan/phpstan-symfony": "^2.0",
         "phpunit/phpunit": "^12.1.1",
         "rector/rector": "^2.0.12",
         "shipmonk/composer-dependency-analyser": "^1.8.2",

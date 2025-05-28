@@ -16,17 +16,6 @@ use Doctrine\DBAL\Query\QueryBuilder;
  */
 trait ArticleQuery
 {
-    private function getArticleLastId(): string
-    {
-        return $this->connection->createQueryBuilder()
-            ->select('a.id')
-            ->from('article', 'a')
-            ->orderBy('a.id', 'DESC')
-            ->setMaxResults(1)
-            ->executeQuery()
-            ->fetchOne();
-    }
-
     private function addArticleOverviewSelectQuery(QueryBuilder $qb): QueryBuilder
     {
         return $qb->addSelect(

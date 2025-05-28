@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Aggregator\Domain\Model\ValueObject;
+namespace Tests\Unit\SharedKernel\Domain\Model\ValueObject;
 
 use App\SharedKernel\Domain\Exception\InvalidArgument;
 use App\SharedKernel\Domain\Model\ValueObject\DateRange;
@@ -23,7 +23,6 @@ final class DateRangeTest extends TestCase
             '--'
         );
 
-        $this->assertInstanceOf(DateRange::class, $dateRange);
         $this->assertEquals(1633046400, $dateRange->start);
         $this->assertEquals(1633824000, $dateRange->end);
     }

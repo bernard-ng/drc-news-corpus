@@ -19,7 +19,6 @@ final class PageRangeTest extends TestCase
     {
         $pageRange = PageRange::from('1:10');
 
-        $this->assertInstanceOf(PageRange::class, $pageRange);
         $this->assertEquals(1, $pageRange->start);
         $this->assertEquals(10, $pageRange->end);
     }

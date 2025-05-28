@@ -47,6 +47,7 @@ final readonly class GetBookmarkedArticleListDbalHandler implements GetBookmarke
             ->setParameter('userId', $query->userId->toBinary(), ParameterType::BINARY)
         ;
 
+        $qb = $this->applyArticleFilters($qb, $query->filters);
         $qb = $this->applyCursorPagination($qb, $query->page, 'a.id');
 
         try {

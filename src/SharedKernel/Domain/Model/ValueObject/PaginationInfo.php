@@ -16,13 +16,20 @@ final class PaginationInfo
     public function __construct(
         public readonly int $current,
         public readonly int $limit,
-        public ?string $lastId = null,
+        private(set) ?string $lastId = null,
     ) {
+    }
+
+    public function setLastId(?string $lastId): self
+    {
+        $this->lastId = $lastId;
+
+        return $this;
     }
 
     public static function from(Page $page): self
     {
-        return new self($page->page, $page->limit, null);
+        return new self($page->page, $page->limit);
     }
 
     public static function create(array $data): self
@@ -33,7 +40,7 @@ final class PaginationInfo
 
         return new self(
             $data['current'],
-            $data['totalCount'],
+            $data['numItemsPerPage'],
         );
     }
 
