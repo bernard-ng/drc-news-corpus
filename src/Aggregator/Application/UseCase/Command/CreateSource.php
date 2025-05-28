@@ -15,7 +15,9 @@ final readonly class CreateSource
 {
     public function __construct(
         public string $name,
-        public Credibility $credibility
+        public Credibility $credibility,
+        public ?string $displayName = null,
+        public ?string $description = null
     ) {
     }
 }

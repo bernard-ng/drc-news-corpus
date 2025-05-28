@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Aggregator\Infrastructure\Crawler\Source;
 
 use App\Aggregator\Domain\Model\ValueObject\Crawling\CrawlingSettings;
-use App\Aggregator\Domain\Model\ValueObject\Crawling\DateRange;
 use App\Aggregator\Domain\Service\Crawling\SourceCrawler as SourceCrawlerInterface;
+use App\SharedKernel\Domain\Model\ValueObject\DateRange;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 /**

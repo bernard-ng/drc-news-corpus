@@ -35,8 +35,8 @@ class Article
         private(set) ?OpenGraph $metadata = null,
         private(set) ?ReadingTime $readingTime = null,
         private(set) ?\DateTimeImmutable $updatedAt = null,
-        private(set) ?string $image = null,
-        private(set) ?string $excerpt = null,
+        public readonly ?string $image = null,
+        public readonly ?string $excerpt = null,
     ) {
         $this->id = new ArticleId();
     }

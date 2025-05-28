@@ -22,7 +22,9 @@ final class Version20250526164157 extends AbstractMigration
     public function up(Schema $schema): void
     {
         $this->addSql(<<<'SQL'
-            ALTER TABLE article ADD image VARCHAR(255) GENERATED ALWAYS AS (JSON_UNQUOTE(JSON_EXTRACT(metadata, '$.image'))) STORED, ADD excerpt VARCHAR(255) GENERATED ALWAYS AS (CONCAT(LEFT(body, 200), '...')) STORED
+            ALTER TABLE article 
+                ADD image VARCHAR(1024) GENERATED ALWAYS AS (JSON_UNQUOTE(JSON_EXTRACT(metadata, '$.image'))) STORED, 
+                ADD excerpt VARCHAR(255) GENERATED ALWAYS AS (CONCAT(LEFT(body, 200), '...')) STORED
         SQL);
     }
 

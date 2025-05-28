@@ -18,7 +18,7 @@ final readonly class GetBookmarkedArticleList
     public function __construct(
         public UserId $userId,
         public BookmarkId $bookmarkId,
-        public Page $page
+        public Page $page = new Page(),
     ) {
     }
 }

@@ -1,0 +1,24 @@
+meta {
+  name: source-details
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/feed/sources/:sourceId
+  body: none
+  auth: bearer
+}
+
+params:path {
+  sourceId: 01970f05-a945-7ef0-bfe3-4583491d58d2
+}
+
+headers {
+  accept: application/json
+  : 
+}
+
+auth:bearer {
+  token: {{token}}
+}

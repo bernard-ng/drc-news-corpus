@@ -6,9 +6,9 @@ namespace App\Aggregator\Infrastructure\Crawler\Source\Data;
 
 use App\Aggregator\Domain\Exception\ArticleOutOfRange;
 use App\Aggregator\Domain\Model\ValueObject\Crawling\CrawlingSettings;
-use App\Aggregator\Domain\Model\ValueObject\Crawling\DateRange;
 use App\Aggregator\Domain\Model\ValueObject\Crawling\PageRange;
 use App\Aggregator\Infrastructure\Crawler\Source\Source;
+use App\SharedKernel\Domain\Model\ValueObject\DateRange;
 use Symfony\Component\DomCrawler\Crawler;
 
 /**

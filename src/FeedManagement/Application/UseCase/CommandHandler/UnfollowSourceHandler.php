@@ -26,11 +26,11 @@ final readonly class UnfollowSourceHandler implements CommandHandler
     {
         $followedSource = $this->followedSourceRepository->getByUserId(
             $command->userId,
-            $command->source
+            $command->sourceId
         );
 
         if (! $followedSource instanceof FollowedSource) {
-            throw FollowedSourceNotFound::with($command->userId, $command->source);
+            throw FollowedSourceNotFound::with($command->userId, $command->sourceId);
         }
 
         $this->followedSourceRepository->remove($followedSource);

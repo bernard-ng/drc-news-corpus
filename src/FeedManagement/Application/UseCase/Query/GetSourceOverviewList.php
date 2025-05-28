@@ -1,0 +1,22 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\FeedManagement\Application\UseCase\Query;
+
+use App\IdentityAndAccess\Domain\Model\Identity\UserId;
+use App\SharedKernel\Domain\Model\ValueObject\Page;
+
+/**
+ * Class GetSourceOverviewList.
+ *
+ * @author bernard-ng <bernard@devscast.tech>
+ */
+final readonly class GetSourceOverviewList
+{
+    public function __construct(
+        public UserId $userId,
+        public Page $page = new Page(),
+    ) {
+    }
+}

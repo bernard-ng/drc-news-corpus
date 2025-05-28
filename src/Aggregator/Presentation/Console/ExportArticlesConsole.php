@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Aggregator\Presentation\Console;
 
 use App\Aggregator\Application\UseCase\Command\ExportArticles;
-use App\Aggregator\Domain\Model\ValueObject\Crawling\DateRange;
 use App\SharedKernel\Application\Messaging\CommandBus;
+use App\SharedKernel\Domain\Model\ValueObject\DateRange;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;

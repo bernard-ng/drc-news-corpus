@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\FeedManagement\Domain\Exception;
 
+use App\Aggregator\Domain\Model\Identity\SourceId;
 use App\IdentityAndAccess\Domain\Model\Identity\UserId;
 use App\SharedKernel\Domain\Exception\UserFacingError;
 
@@ -14,9 +15,9 @@ use App\SharedKernel\Domain\Exception\UserFacingError;
  */
 final class FollowedSourceNotFound extends \DomainException implements UserFacingError
 {
-    public static function with(UserId $userId, string $source): self
+    public static function with(UserId $userId, SourceId $sourceId): self
     {
-        return new self(sprintf('User %s does not follow source %s', $userId->toString(), $source));
+        return new self(sprintf('User %s does not follow source %s', $userId->toString(), $sourceId->toString()));
     }
 
     public function translationId(): string

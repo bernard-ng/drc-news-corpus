@@ -6,7 +6,7 @@ namespace App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Features;
 
 use App\SharedKernel\Domain\DataTransfert\DataMapping;
 use App\SharedKernel\Domain\Model\ValueObject\Page;
-use App\SharedKernel\Domain\Model\ValueObject\Pagination;
+use App\SharedKernel\Domain\Model\ValueObject\PaginationInfo;
 use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Symfony\Component\Uid\Uuid;
@@ -25,15 +25,15 @@ trait PaginationQuery
      * @param Page $page The Page instance containing pagination details.
      * @param non-empty-string $field The field name used to extract the last record's identifier.
      *
-     * @return Pagination The Pagination instance with configured details.
+     * @return PaginationInfo The Pagination instance with configured details.
      */
-    public function getPagination(array $data, Page $page, string $field): Pagination
+    public function createPaginationInfo(array $data, Page $page, string $field): PaginationInfo
     {
         if ($data === []) {
-            return Pagination::from($page);
+            return PaginationInfo::from($page);
         }
 
-        $pagination = Pagination::from($page);
+        $pagination = PaginationInfo::from($page);
         $pagination->lastId = DataMapping::uuid(array_pop($data), $field)->toString();
 
         return $pagination;
@@ -45,14 +45,13 @@ trait PaginationQuery
      * @param QueryBuilder $qb The query builder to apply pagination to.
      * @param Page $page The pagination information, including the last ID and limit.
      * @param string $field The field used for pagination comparison.
-     * @param callable $getLastId A callback to retrieve the initial ID when the last ID is not set.
      *
      * @return QueryBuilder The modified query builder with pagination applied.
      */
-    public function applyCursorPagination(QueryBuilder $qb, Page $page, string $field, callable $getLastId): QueryBuilder
+    public function applyCursorPagination(QueryBuilder $qb, Page $page, string $field): QueryBuilder
     {
         if ($page->lastId === null) {
-            $page->lastId = Uuid::fromBinary($getLastId())->toString();
+            return $this->applyOffsetPagination($qb, $page);
         }
 
         return $qb

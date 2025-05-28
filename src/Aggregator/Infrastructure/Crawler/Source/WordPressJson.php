@@ -6,8 +6,8 @@ namespace App\Aggregator\Infrastructure\Crawler\Source;
 
 use App\Aggregator\Domain\Exception\ArticleOutOfRange;
 use App\Aggregator\Domain\Model\ValueObject\Crawling\CrawlingSettings;
-use App\Aggregator\Domain\Model\ValueObject\Crawling\DateRange;
 use App\Aggregator\Domain\Model\ValueObject\Crawling\PageRange;
+use App\SharedKernel\Domain\Model\ValueObject\DateRange;
 
 /**
  * Class WordPressJson.

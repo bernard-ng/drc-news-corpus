@@ -8,7 +8,7 @@ use App\Aggregator\Domain\Exception\ArticleNotFound;
 use App\Aggregator\Domain\Model\Entity\Article;
 use App\Aggregator\Domain\Model\Identity\ArticleId;
 use App\Aggregator\Domain\Model\Repository\ArticleRepository;
-use App\Aggregator\Domain\Model\ValueObject\Crawling\DateRange;
+use App\SharedKernel\Domain\Model\ValueObject\DateRange;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -109,7 +109,8 @@ final class ArticleOrmRepository extends ServiceEntityRepository implements Arti
     public function clear(string $source, ?string $category): int
     {
         $qb = $this->createQueryBuilder('a')
-            ->where('a.source = :source')
+            ->leftJoin('a.source', 's')
+            ->where('s.name = :source')
             ->setParameter('source', $source);
 
         if ($category !== null) {

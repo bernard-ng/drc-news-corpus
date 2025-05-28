@@ -38,6 +38,8 @@ class CreateSourceConsole extends Command
     protected function configure(): void
     {
         $this->addArgument('source', InputArgument::REQUIRED, 'the website source to crawle');
+        $this->addArgument('displayName', InputArgument::OPTIONAL, 'the display name of the source');
+        $this->addArgument('description', InputArgument::OPTIONAL, 'the description of the source');
         $this->addOption('bias', 'b', InputArgument::OPTIONAL, 'bias of the source', Bias::NEUTRAL->value);
         $this->addOption('reliability', 'r', InputArgument::OPTIONAL, 'reliability of the source', Reliability::AVERAGE->value);
         $this->addOption('transparency', 't', InputArgument::OPTIONAL, 'transparency of the source', Transparency::MEDIUM->value);
@@ -49,6 +51,8 @@ class CreateSourceConsole extends Command
         $this->io = new SymfonyStyle($input, $output);
         $this->io->title('Create a new data source');
 
+        $this->askArgument($input, 'source');
+        $this->askArgument($input, 'displayName');
         $this->askOption($input, 'bias');
         $this->askOption($input, 'reliability');
         $this->askOption($input, 'transparency');
@@ -70,13 +74,20 @@ class CreateSourceConsole extends Command
 
         /** @var string $source */
         $source = $input->getArgument('source');
+
+        /** @var string|null $displayName */
+        $displayName = $input->getArgument('displayName');
+
+        /** @var string|null $description */
+        $description = $input->getArgument('description');
+
         $credibility = new Credibility(
             bias: Bias::from($input->getOption('bias')),
             reliability: Reliability::from($input->getOption('reliability')),
             transparency: Transparency::from($input->getOption('transparency')),
         );
 
-        $this->commandBus->handle(new CreateSource($source, $credibility));
+        $this->commandBus->handle(new CreateSource($source, $credibility, $displayName, $description));
 
         $this->io->success('Source add successfully');
         return Command::SUCCESS;

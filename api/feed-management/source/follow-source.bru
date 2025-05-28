@@ -1,17 +1,17 @@
 meta {
   name: follow-source
   type: http
-  seq: 1
+  seq: 2
 }
 
 post {
-  url: {{baseUrl}}/feed/sources/:source/follow
+  url: {{baseUrl}}/feed/sources/:sourceId/follow
   body: none
   auth: bearer
 }
 
 params:path {
-  source: mediacongo.net
+  sourceId: 01970f05-a945-7ef0-bfe3-4583491d58d2
 }
 
 auth:bearer {

@@ -30,15 +30,15 @@ final readonly class FollowSourceHandler implements CommandHandler
     {
         $followedSource = $this->followedSourceRepository->getByUserId(
             $command->userId,
-            $command->source
+            $command->sourceId
         );
 
         if ($followedSource instanceof FollowedSource) {
-            throw SourceAlreadyFollowed::with($command->userId, $command->source);
+            throw SourceAlreadyFollowed::with($command->userId, $command->sourceId);
         }
 
         $user = $this->userRepository->getById($command->userId);
-        $source = $this->sourceRepository->getByName($command->source);
+        $source = $this->sourceRepository->getById($command->sourceId);
 
         $followedSource = new FollowedSource($source, $user);
         $this->followedSourceRepository->add($followedSource);

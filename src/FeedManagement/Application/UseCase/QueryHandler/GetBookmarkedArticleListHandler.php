@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\FeedManagement\Application\UseCase\QueryHandler;
 
-use App\FeedManagement\Application\ReadModel\BookmarkedArticleList;
+use App\FeedManagement\Application\ReadModel\ArticleOverviewList;
 use App\FeedManagement\Application\UseCase\Query\GetBookmarkedArticleList;
 use App\SharedKernel\Application\Messaging\QueryHandler;
 
@@ -15,5 +15,5 @@ use App\SharedKernel\Application\Messaging\QueryHandler;
  */
 interface GetBookmarkedArticleListHandler extends QueryHandler
 {
-    public function __invoke(GetBookmarkedArticleList $query): BookmarkedArticleList;
+    public function __invoke(GetBookmarkedArticleList $query): ArticleOverviewList;
 }

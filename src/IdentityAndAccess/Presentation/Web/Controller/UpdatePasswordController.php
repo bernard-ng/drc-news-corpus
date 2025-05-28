@@ -8,7 +8,6 @@ use App\IdentityAndAccess\Application\UseCase\Command\UpdatePassword;
 use App\IdentityAndAccess\Presentation\WriteModel\UpdatePasswordModel;
 use App\SharedKernel\Presentation\Web\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -17,7 +16,6 @@ use Symfony\Component\Routing\Attribute\Route;
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-#[AsController]
 final class UpdatePasswordController extends AbstractController
 {
     #[Route(

@@ -16,7 +16,7 @@
             <join-column nullable="false" on-delete="CASCADE" />
         </many-to-one>
         <many-to-one field="source" target-entity="App\Aggregator\Domain\Model\Entity\Source">
-            <join-column nullable="false"  name="source" referenced-column-name="name" on-delete="CASCADE" />
+            <join-column nullable="false" on-delete="CASCADE" />
         </many-to-one>
 
         <field name="createdAt" type="datetime_immutable"/>

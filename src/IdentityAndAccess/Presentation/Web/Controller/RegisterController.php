@@ -9,7 +9,6 @@ use App\IdentityAndAccess\Presentation\WriteModel\RegisterModel;
 use App\SharedKernel\Domain\Model\ValueObject\EmailAddress;
 use App\SharedKernel\Presentation\Web\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -18,7 +17,6 @@ use Symfony\Component\Routing\Attribute\Route;
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-#[AsController]
 final class RegisterController extends AbstractController
 {
     #[Route(

@@ -1,0 +1,28 @@
+meta {
+  name: source-article-overview-list
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/feed/sources/:sourceId/articles
+  body: none
+  auth: bearer
+}
+
+params:query {
+  ~lastId: 019549f9-0962-7fb5-9197-29b1754d13a5
+  ~dateRange[start]: 1740614400
+  ~dateRange[end]: 1740700800
+  ~page: 22
+  ~limit: 100
+  ~search: Lubumbashi
+}
+
+params:path {
+  sourceId: 01970f05-a945-7ef0-bfe3-4583491d58d2
+}
+
+auth:bearer {
+  token: {{token}}
+}

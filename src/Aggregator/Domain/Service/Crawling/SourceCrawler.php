@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Aggregator\Domain\Service\Crawling;
 
 use App\Aggregator\Domain\Model\ValueObject\Crawling\CrawlingSettings;
-use App\Aggregator\Domain\Model\ValueObject\Crawling\DateRange;
+use App\SharedKernel\Domain\Model\ValueObject\DateRange;
 
 /**
  * Interface SourceCrawler.

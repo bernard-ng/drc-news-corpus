@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\SharedKernel\Presentation\Web\Controller;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Attribute\Route;
 
 /**
@@ -13,7 +12,6 @@ use Symfony\Component\Routing\Attribute\Route;
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-#[AsController]
 final class DefaultController extends AbstractController
 {
     #[Route(

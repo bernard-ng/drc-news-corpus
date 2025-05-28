@@ -6,6 +6,7 @@ namespace App\Aggregator\Infrastructure\Persistence\Doctrine\ORM;
 
 use App\Aggregator\Domain\Exception\SourceNotFound;
 use App\Aggregator\Domain\Model\Entity\Source;
+use App\Aggregator\Domain\Model\Identity\SourceId;
 use App\Aggregator\Domain\Model\Repository\SourceRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -44,6 +45,19 @@ final class SourceOrmRepository extends ServiceEntityRepository implements Sourc
 
         if ($source === null) {
             throw SourceNotFound::withName($name);
+        }
+
+        return $source;
+    }
+
+    public function getById(SourceId $sourceId): Source
+    {
+        $source = $this->findOneBy([
+            'id' => $sourceId,
+        ]);
+
+        if ($source === null) {
+            throw SourceNotFound::withId($sourceId);
         }
 
         return $source;

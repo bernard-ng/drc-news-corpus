@@ -9,7 +9,6 @@ use App\FeedManagement\Domain\Model\Identity\CommentId;
 use App\SharedKernel\Presentation\Web\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
 
@@ -18,7 +17,6 @@ use Symfony\Component\Routing\Requirement\Requirement;
  *
  * @author bernard-ng <bernard@devscast.tech>
  */
-#[AsController]
 final class RemoveCommentFromArticleController extends AbstractController
 {
     #[Route(

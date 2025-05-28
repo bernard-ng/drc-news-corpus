@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Aggregator\Domain\Model\Repository;
 
 use App\Aggregator\Domain\Model\Entity\Source;
+use App\Aggregator\Domain\Model\Identity\SourceId;
 
 /**
  * Interface SourceRepository.
@@ -18,4 +19,6 @@ interface SourceRepository
     public function remove(Source $source): void;
 
     public function getByName(string $name): Source;
+
+    public function getById(SourceId $sourceId): Source;
 }

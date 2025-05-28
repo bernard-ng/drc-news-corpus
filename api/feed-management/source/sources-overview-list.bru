@@ -1,0 +1,26 @@
+meta {
+  name: sources-overview-list
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/feed/sources
+  body: none
+  auth: bearer
+}
+
+params:query {
+  ~lastId: 01970f05-a945-7ef0-bfe3-45834b6bc40e
+  ~limit: 10
+  ~page: 1
+}
+
+headers {
+  accept: application/json
+  : 
+}
+
+auth:bearer {
+  token: {{token}}
+}

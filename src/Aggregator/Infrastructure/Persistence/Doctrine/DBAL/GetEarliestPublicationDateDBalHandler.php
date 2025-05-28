@@ -27,9 +27,10 @@ final readonly class GetEarliestPublicationDateDBalHandler implements GetEarlies
     public function __invoke(GetEarliestPublicationDate $query): \DateTimeImmutable
     {
         $qb = $this->connection->createQueryBuilder()
-            ->from('article', 'a')
             ->select('MIN(a.published_at)')
-            ->andWhere('a.source = :source')
+            ->from('article', 'a')
+            ->innerJoin('a', 'source', 's', 'a.source_id = s.id')
+            ->where('s.name = :source')
             ->setParameter('source', $query->source);
 
         if ($query->category !== null) {

@@ -11,7 +11,6 @@ use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Features\Paginatio
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\NoResult;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
-use Doctrine\DBAL\Query\QueryBuilder;
 
 /**
  * Class GetArticleCommentListDbalHandler.
@@ -43,29 +42,15 @@ final readonly class GetArticleCommentListDbalHandler implements GetArticleComme
             ->orderBy('c.created_at', 'DESC')
             ->setParameter('articleId', $query->articleId->toBinary(), ParameterType::BINARY);
 
-        $qb = $this->paginate($qb, $query);
+        $qb = $this->applyCursorPagination($qb, $query->page, 'c.id');
 
         try {
-            /** @var array<int, array<string, mixed>> $data */
             $data = $qb->executeQuery()->fetchAllAssociative();
         } catch (\Throwable $e) {
             throw NoResult::forQuery($qb->getSQL(), $qb->getParameters(), $e);
         }
 
-        $pagination = $this->getPagination($data, $query->page, 'comment_id');
+        $pagination = $this->createPaginationInfo($data, $query->page, 'comment_id');
         return CommentList::create($data, $pagination);
-    }
-
-    private function paginate(QueryBuilder $qb, GetArticleCommentList $query): QueryBuilder
-    {
-        return $this->applyCursorPagination($qb, $query->page, 'c.id', fn () => $this->connection->createQueryBuilder()
-            ->select('c.id')
-            ->from('comment', 'c')
-            ->where('c.article_id = :articleId')
-            ->orderBy('c.id', 'DESC')
-            ->setMaxResults(1)
-            ->setParameter('articleId', $query->articleId->toBinary(), ParameterType::BINARY)
-            ->executeQuery()
-            ->fetchOne());
     }
 }

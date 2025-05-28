@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\FeedManagement\Application\UseCase\Command;
 
+use App\Aggregator\Domain\Model\Identity\SourceId;
 use App\IdentityAndAccess\Domain\Model\Identity\UserId;
 
 /**
@@ -14,7 +15,7 @@ use App\IdentityAndAccess\Domain\Model\Identity\UserId;
 final readonly class FollowSource
 {
     public function __construct(
-        public string $source,
+        public SourceId $sourceId,
         public UserId $userId
     ) {
     }

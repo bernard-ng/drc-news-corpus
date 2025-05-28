@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\FeedManagement\Infrastructure\Persistence\Doctrine\ORM;
 
+use App\Aggregator\Domain\Model\Identity\SourceId;
 use App\FeedManagement\Domain\Model\Entity\FollowedSource;
 use App\FeedManagement\Domain\Model\Repository\FollowedSourceRepository;
 use App\IdentityAndAccess\Domain\Model\Identity\UserId;
@@ -37,12 +38,12 @@ final class FollowedSourceOrmRepository extends ServiceEntityRepository implemen
         $this->getEntityManager()->flush();
     }
 
-    public function getByUserId(UserId $userId, string $source): ?FollowedSource
+    public function getByUserId(UserId $userId, SourceId $sourceId): ?FollowedSource
     {
         return $this->createQueryBuilder('fs')
             ->andWhere('fs.follower = :userId')
-            ->andWhere('fs.source = :source')
-            ->setParameter('source', $source)
+            ->andWhere('fs.source = :sourceId')
+            ->setParameter('sourceId', $sourceId->toBinary(), ParameterType::BINARY)
             ->setParameter('userId', $userId->toBinary(), ParameterType::BINARY)
             ->getQuery()
             ->getOneOrNullResult();

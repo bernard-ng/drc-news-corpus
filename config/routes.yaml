@@ -5,11 +5,11 @@ controllers:
     - HTTP
     - HTTPS
 
-api_login_check:
+identity_and_access_login_check:
   path: /api/login_check
 
-api_refresh_token:
+identity_and_access_refresh_token:
   path: /api/token/refresh
 
-api_token_invalidate:
+identity_and_access_token_invalidate:
   path: /api/token/invalidate

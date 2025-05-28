@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\FeedManagement\Domain\Model\Repository;
 
+use App\Aggregator\Domain\Model\Identity\SourceId;
 use App\FeedManagement\Domain\Model\Entity\FollowedSource;
 use App\IdentityAndAccess\Domain\Model\Identity\UserId;
 
@@ -18,5 +19,5 @@ interface FollowedSourceRepository
 
     public function remove(FollowedSource $followedSource): void;
 
-    public function getByUserId(UserId $userId, string $source): ?FollowedSource;
+    public function getByUserId(UserId $userId, SourceId $sourceId): ?FollowedSource;
 }

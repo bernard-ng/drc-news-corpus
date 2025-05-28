@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Aggregator\Domain\Model\ValueObject\Crawling;
 
 use App\SharedKernel\Domain\Assert;
+use App\SharedKernel\Domain\Model\ValueObject\DateRange;
 
 /**
  * Class FetchConfig.

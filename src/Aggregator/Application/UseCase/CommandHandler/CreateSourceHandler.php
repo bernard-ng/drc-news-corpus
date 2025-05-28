@@ -23,8 +23,10 @@ final readonly class CreateSourceHandler implements CommandHandler
 
     public function __invoke(CreateSource $command): void
     {
-        $name = $command->name;
-        $source = Source::create($name, 'https://' . $name);
+        $source = Source::create($command->name, sprintf('https://%s', $command->name))
+            ->defineCredibility($command->credibility)
+            ->defineProfileInfos($command->displayName, $command->description);
+
         $this->sourceRepository->add($source);
     }
 }

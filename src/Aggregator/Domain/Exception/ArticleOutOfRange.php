@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Domain\Exception;
 
-use App\Aggregator\Domain\Model\ValueObject\Crawling\DateRange;
 use App\SharedKernel\Domain\Exception\UserFacingError;
+use App\SharedKernel\Domain\Model\ValueObject\DateRange;
 
 /**
  * Class ArticleOutOfRange.

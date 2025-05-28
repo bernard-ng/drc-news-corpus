@@ -16,7 +16,7 @@ final readonly class GetArticleCommentList
 {
     public function __construct(
         public ArticleId $articleId,
-        public Page $page
+        public Page $page = new Page(),
     ) {
     }
 }

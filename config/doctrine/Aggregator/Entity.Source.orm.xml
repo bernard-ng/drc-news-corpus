@@ -8,11 +8,12 @@
             repository-class="App\Aggregator\Infrastructure\Persistence\Doctrine\ORM\SourceOrmRepository"
             table="source"
     >
-        <id name="name" type="string">
+        <id name="id" type="source_id">
             <generator strategy="NONE"/>
         </id>
 
         <field name="url" />
+        <field name="name" unique="true" />
 
         <embedded name="credibility" class="App\Aggregator\Domain\Model\ValueObject\Scoring\Credibility" use-column-prefix="false" />
         <field name="displayName" nullable="true" />

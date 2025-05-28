@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Aggregator\Domain\Exception;
 
+use App\Aggregator\Domain\Model\Identity\SourceId;
 use App\SharedKernel\Domain\Exception\UserFacingError;
 
 /**
@@ -16,6 +17,11 @@ final class SourceNotFound extends \DomainException implements UserFacingError
     public static function withName(string $name): self
     {
         return new self(sprintf('source with name %s was not found', $name));
+    }
+
+    public static function withId(SourceId $sourceId): self
+    {
+        return new self(sprintf('source with id %s was not found', $sourceId->toString()));
     }
 
     public function translationId(): string

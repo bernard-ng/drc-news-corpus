@@ -1,0 +1,19 @@
+meta {
+  name: article-details
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/feed/articles/:articleId
+  body: none
+  auth: bearer
+}
+
+params:path {
+  articleId: 019589b9-7137-7156-9aeb-1e3f0f138a15
+}
+
+auth:bearer {
+  token: {{token}}
+}

@@ -7,7 +7,7 @@ namespace App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL;
 use App\Aggregator\Application\ReadModel\ArticleForExport;
 use App\Aggregator\Application\UseCase\Query\GetArticlesForExport;
 use App\Aggregator\Application\UseCase\QueryHandler\GetArticlesForExportHandler;
-use App\Aggregator\Domain\Model\ValueObject\Crawling\DateRange;
+use App\SharedKernel\Domain\Model\ValueObject\DateRange;
 use Doctrine\DBAL\Connection;
 
 /**
@@ -34,16 +34,17 @@ final readonly class GetArticlesForExportDbalHandler implements GetArticlesForEx
                 'a.link as article_link',
                 'a.categories as article_categories',
                 'a.body as article_body',
-                'a.source as article_source',
+                's.name as article_source',
                 'a.hash as article_hash',
                 'a.published_at as article_published_at',
                 'a.crawled_at as article_crawled_at'
             )
             ->from('article', 'a')
+            ->innerJoin('a', 'source', 's', 'a.source_id = s.id')
             ->orderBy('a.published_at', 'DESC');
 
         if ($query->source !== null) {
-            $qb->andWhere('a.source = :source')
+            $qb->andWhere('s.name = :source')
                 ->setParameter('source', $query->source);
         }
 

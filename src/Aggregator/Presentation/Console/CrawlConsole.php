@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Aggregator\Presentation\Console;
 
 use App\Aggregator\Domain\Model\ValueObject\Crawling\CrawlingSettings;
-use App\Aggregator\Domain\Model\ValueObject\Crawling\DateRange;
 use App\Aggregator\Domain\Model\ValueObject\Crawling\PageRange;
 use App\Aggregator\Infrastructure\Crawler\Source\SourceCrawler;
+use App\SharedKernel\Domain\Model\ValueObject\DateRange;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;

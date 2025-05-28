@@ -15,6 +15,7 @@ doctrine:
 
             # Aggregator
             article_id: App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL\Types\ArticleIdType
+            source_id: App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL\Types\SourceIdType
             open_graph: App\Aggregator\Infrastructure\Persistence\Doctrine\DBAL\Types\OpenGraphType
 
             # Identity and Access

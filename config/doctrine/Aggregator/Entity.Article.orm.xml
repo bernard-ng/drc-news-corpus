@@ -23,7 +23,7 @@
         <field name="categories" nullable="true" />
 
         <many-to-one field="source" target-entity="App\Aggregator\Domain\Model\Entity\Source">
-            <join-column nullable="false"  name="source" referenced-column-name="name" on-delete="RESTRICT" />
+            <join-column nullable="false" on-delete="CASCADE" />
         </many-to-one>
 
         <embedded name="credibility" class="App\Aggregator\Domain\Model\ValueObject\Scoring\Credibility" use-column-prefix="false" />
@@ -38,7 +38,7 @@
         <field name="image"
                insertable="false"
                updatable="false"
-               column-definition="VARCHAR(255) GENERATED ALWAYS AS (JSON_UNQUOTE(JSON_EXTRACT(metadata, '$.image'))) STORED"
+               column-definition="VARCHAR(1024) GENERATED ALWAYS AS (JSON_UNQUOTE(JSON_EXTRACT(metadata, '$.image'))) STORED"
         />
         <field
                 name="excerpt"

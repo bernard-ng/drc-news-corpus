@@ -1,0 +1,15 @@
+meta {
+  name: bookmark-list
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/feed/bookmarks
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
