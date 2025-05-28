@@ -1,8 +1,8 @@
 includes:
     - vendor/phpstan/phpstan-symfony/extension.neon
     - vendor/phpstan/phpstan-symfony/rules.neon
-    - vendor/phpstan/phpstan-doctrine/extension.neon
-    - vendor/phpstan/phpstan-doctrine/rules.neon
+#    - vendor/phpstan/phpstan-doctrine/extension.neon
+#    - vendor/phpstan/phpstan-doctrine/rules.neon
 
 parameters:
     level: 8
@@ -14,6 +14,6 @@ parameters:
         - tests/
     ignoreErrors:
         -   identifier: missingType.iterableValue
-    doctrine:
-            objectManagerLoader: tests/object-manager.php
-            allowNullablePropertyForRequiredField: true
+#    doctrine:
+#            objectManagerLoader: tests/object-manager.php
+#            allowNullablePropertyForRequiredField: true

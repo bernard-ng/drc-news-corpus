@@ -7,9 +7,21 @@ controllers:
 
 identity_and_access_login_check:
   path: /api/login_check
+  methods: [POST]
+  schemes:
+    - HTTP
+    - HTTPS
 
 identity_and_access_refresh_token:
   path: /api/token/refresh
+  methods: [POST]
+  schemes:
+    - HTTP
+    - HTTPS
 
 identity_and_access_token_invalidate:
   path: /api/token/invalidate
+  methods: [POST]
+  schemes:
+    - HTTP
+    - HTTPS

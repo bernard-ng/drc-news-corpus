@@ -62,12 +62,14 @@ final class ArticleOrmRepository extends ServiceEntityRepository implements Arti
             ->orderBy('a.publishedAt', 'DESC');
 
         if ($source !== null) {
-            $qb->andWhere('a.source = :source')
+            $qb
+                ->leftJoin('a.source', 's')
+                ->andWhere('s.name = :source')
                 ->setParameter('source', $source);
         }
 
         if ($date instanceof DateRange) {
-            $qb->andWhere('a.publishedAt BETWEEN :start AND :end')
+            $qb->andWhere('a.publishedAt BETWEEN FROM_UNIXTIME(:start) AND FROM_UNIXTIME(:end)')
                 ->setParameter('start', $date->start)
                 ->setParameter('end', $date->end);
         }
