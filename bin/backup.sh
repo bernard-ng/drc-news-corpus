@@ -12,7 +12,7 @@ mkdir -p "$DATA_DIR"
 # Load environment variables from .env.local
 set -a
 if [ -f "${SCRIPT_DIR}/../.env.local" ]; then
-  export $(grep -v '^#' "${SCRIPT_DIR}/../.env.local" | grep '=' | xargs)
+  export "$(grep -v '^#' "${SCRIPT_DIR}/../.env.local" | grep '=' | xargs)"
 fi
 set +a
 
