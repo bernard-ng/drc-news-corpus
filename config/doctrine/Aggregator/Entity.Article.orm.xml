@@ -14,6 +14,7 @@
         <indexes>
             <index fields="hash" />
             <index fields="publishedAt" />
+            <index name="IDX_PUBLISHED_AT_ID" fields="publishedAt, id" />
         </indexes>
 
         <field name="title" length="1024" />

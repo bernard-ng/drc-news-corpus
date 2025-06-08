@@ -8,6 +8,7 @@ use App\FeedManagement\Application\ReadModel\SourceOverviewList;
 use App\FeedManagement\Application\UseCase\Query\GetSourceOverviewList;
 use App\FeedManagement\Application\UseCase\QueryHandler\GetSourceOverviewListHandler;
 use App\FeedManagement\Infrastructure\Persistence\Doctrine\DBAL\Queries\SourceQuery;
+use App\SharedKernel\Domain\Model\Pagination\PaginatorKeyset;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Features\PaginationQuery;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\NoResult;
 use Doctrine\DBAL\Connection;
@@ -40,7 +41,7 @@ final readonly class GetSourceOverviewListDbalHandler implements GetSourceOvervi
             ->setParameter('userId', $query->userId->toBinary(), ParameterType::BINARY)
         ;
 
-        $qb = $this->applyCursorPagination($qb, $query->page, 's.id');
+        $qb = $this->applyCursorPagination($qb, $query->page, new PaginatorKeyset('s.id', 's.created_at'));
 
         try {
             $data = $qb->executeQuery()->fetchAllAssociative();
@@ -48,7 +49,7 @@ final readonly class GetSourceOverviewListDbalHandler implements GetSourceOvervi
             throw NoResult::forQuery($qb->getSQL(), $qb->getParameters(), $e);
         }
 
-        $pagination = $this->createPaginationInfo($data, $query->page, 'source_id');
+        $pagination = $this->createPaginationInfo($data, $query->page, new PaginatorKeyset('source_id'));
         return SourceOverviewList::create($data, $pagination);
     }
 }

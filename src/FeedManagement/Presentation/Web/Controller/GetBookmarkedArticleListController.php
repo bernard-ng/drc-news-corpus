@@ -6,7 +6,7 @@ namespace App\FeedManagement\Presentation\Web\Controller;
 
 use App\FeedManagement\Application\UseCase\Query\GetBookmarkedArticleList;
 use App\FeedManagement\Domain\Model\Identity\BookmarkId;
-use App\SharedKernel\Domain\Model\ValueObject\Page;
+use App\SharedKernel\Domain\Model\Pagination\Page;
 use App\SharedKernel\Presentation\Web\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Attribute\MapQueryString;

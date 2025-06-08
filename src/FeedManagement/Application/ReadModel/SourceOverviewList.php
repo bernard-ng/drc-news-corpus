@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\FeedManagement\Application\ReadModel;
 
 use App\SharedKernel\Domain\Assert;
-use App\SharedKernel\Domain\Model\ValueObject\PaginationInfo;
+use App\SharedKernel\Domain\Model\Pagination\PaginationInfo;
 
 /**
  * Class SourceOverviewList.

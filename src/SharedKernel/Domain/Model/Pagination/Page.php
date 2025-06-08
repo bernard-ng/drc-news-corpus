@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\SharedKernel\Domain\Model\ValueObject;
+namespace App\SharedKernel\Domain\Model\Pagination;
 
 use App\SharedKernel\Domain\Assert;
 
@@ -15,14 +15,14 @@ final class Page
 {
     public const int DEFAULT_PAGE = 1;
 
-    public const int DEFAULT_LIMIT = 10;
+    public const int DEFAULT_LIMIT = 5;
 
     public const int MAX_LIMIT = 100;
 
     public function __construct(
         public int $page = self::DEFAULT_PAGE,
         public int $limit = self::DEFAULT_LIMIT,
-        public ?string $lastId = null,
+        public ?string $cursor = null,
         public int $offset = 0,
     ) {
         Assert::greaterThanEq($this->page, self::DEFAULT_PAGE);

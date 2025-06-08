@@ -6,7 +6,7 @@ namespace App\FeedManagement\Application\UseCase\Query;
 
 use App\FeedManagement\Domain\Model\Filters\ArticleFilters;
 use App\IdentityAndAccess\Domain\Model\Identity\UserId;
-use App\SharedKernel\Domain\Model\ValueObject\Page;
+use App\SharedKernel\Domain\Model\Pagination\Page;
 
 /**
  * Class GetArticleOverviewList.

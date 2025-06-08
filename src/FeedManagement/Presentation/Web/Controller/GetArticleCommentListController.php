@@ -7,7 +7,7 @@ namespace App\FeedManagement\Presentation\Web\Controller;
 use App\Aggregator\Domain\Model\Identity\ArticleId;
 use App\FeedManagement\Application\ReadModel\CommentList;
 use App\FeedManagement\Application\UseCase\Query\GetArticleCommentList;
-use App\SharedKernel\Domain\Model\ValueObject\Page;
+use App\SharedKernel\Domain\Model\Pagination\Page;
 use App\SharedKernel\Presentation\Web\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Attribute\MapQueryString;

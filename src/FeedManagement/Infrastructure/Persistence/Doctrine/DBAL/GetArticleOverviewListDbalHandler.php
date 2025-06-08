@@ -10,6 +10,7 @@ use App\FeedManagement\Application\UseCase\QueryHandler\GetArticleOverviewListHa
 use App\FeedManagement\Infrastructure\Persistence\Doctrine\DBAL\Queries\ArticleQuery;
 use App\FeedManagement\Infrastructure\Persistence\Doctrine\DBAL\Queries\BookmarkQuery;
 use App\FeedManagement\Infrastructure\Persistence\Doctrine\DBAL\Queries\SourceQuery;
+use App\SharedKernel\Domain\Model\Pagination\PaginatorKeyset;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Features\PaginationQuery;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\NoResult;
 use Doctrine\DBAL\Connection;
@@ -42,12 +43,12 @@ final readonly class GetArticleOverviewListDbalHandler implements GetArticleOver
 
         $qb->from('article', 'a')
             ->innerJoin('a', 'source', 's', 'a.source_id = s.id')
-            ->orderBy('a.published_at', $query->filters->sortDirection->value)
+            //->orderBy('a.published_at', $query->filters->sortDirection->value)
             ->setParameter('userId', $query->userId->toBinary(), ParameterType::BINARY)
         ;
 
         $qb = $this->applyArticleFilters($qb, $query->filters);
-        $qb = $this->applyCursorPagination($qb, $query->page, 'a.id');
+        $qb = $this->applyCursorPagination($qb, $query->page, new PaginatorKeyset('a.id', 'a.published_at'));
 
         try {
             $data = $qb->executeQuery()->fetchAllAssociative();
@@ -55,7 +56,7 @@ final readonly class GetArticleOverviewListDbalHandler implements GetArticleOver
             throw NoResult::forQuery($qb->getSQL(), $qb->getParameters(), $e);
         }
 
-        $pagination = $this->createPaginationInfo($data, $query->page, 'article_id');
+        $pagination = $this->createPaginationInfo($data, $query->page, new PaginatorKeyset('article_id', 'article_published_at'));
         return ArticleOverviewList::create($data, $pagination);
     }
 }

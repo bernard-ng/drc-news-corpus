@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\FeedManagement\Application\UseCase\Query;
 
 use App\Aggregator\Domain\Model\Identity\ArticleId;
-use App\SharedKernel\Domain\Model\ValueObject\Page;
+use App\SharedKernel\Domain\Model\Pagination\Page;
 
 /**
  * Class GetArticleCommentListHandler.

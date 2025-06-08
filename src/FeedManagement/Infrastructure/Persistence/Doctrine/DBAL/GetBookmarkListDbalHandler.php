@@ -8,6 +8,7 @@ use App\FeedManagement\Application\ReadModel\BookmarkList;
 use App\FeedManagement\Application\UseCase\Query\GetBookmarkList;
 use App\FeedManagement\Application\UseCase\QueryHandler\GetBookmarkListHandler;
 use App\FeedManagement\Infrastructure\Persistence\Doctrine\DBAL\Queries\BookmarkQuery;
+use App\SharedKernel\Domain\Model\Pagination\PaginatorKeyset;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Features\PaginationQuery;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\NoResult;
 use Doctrine\DBAL\Connection;
@@ -41,7 +42,7 @@ final readonly class GetBookmarkListDbalHandler implements GetBookmarkListHandle
             ->setParameter('userId', $query->userId->toBinary(), ParameterType::BINARY)
         ;
 
-        $qb = $this->applyCursorPagination($qb, $query->page, 'b.id');
+        $qb = $this->applyCursorPagination($qb, $query->page, new PaginatorKeyset('b.id'));
 
         try {
             $data = $qb->executeQuery()->fetchAllAssociative();
@@ -49,7 +50,7 @@ final readonly class GetBookmarkListDbalHandler implements GetBookmarkListHandle
             throw NoResult::forQuery($qb->getSQL(), $qb->getParameters(), $e);
         }
 
-        $pagination = $this->createPaginationInfo($data, $query->page, 'bookmark_id');
+        $pagination = $this->createPaginationInfo($data, $query->page, new PaginatorKeyset('bookmark_id'));
         return BookmarkList::create($data, $pagination);
     }
 }

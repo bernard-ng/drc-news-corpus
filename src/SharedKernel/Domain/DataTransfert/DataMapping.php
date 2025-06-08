@@ -6,7 +6,7 @@ namespace App\SharedKernel\Domain\DataTransfert;
 
 use App\SharedKernel\Domain\Assert;
 use BackedEnum as T;
-use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Uid\UuidV7;
 
 /**
  * Class DataMapping.
@@ -19,10 +19,10 @@ abstract class DataMapping
      * @param array<string, mixed> $data
      * @param non-empty-string $key
      */
-    public static function uuid(array $data, string $key): Uuid
+    public static function uuid(array $data, string $key): UuidV7
     {
         Assert::keyExists($data, $key);
-        return Uuid::fromString($data[$key]);
+        return UuidV7::fromString($data[$key]);
     }
 
     /**

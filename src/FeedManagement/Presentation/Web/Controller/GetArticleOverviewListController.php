@@ -6,7 +6,7 @@ namespace App\FeedManagement\Presentation\Web\Controller;
 
 use App\FeedManagement\Application\UseCase\Query\GetArticleOverviewList;
 use App\FeedManagement\Domain\Model\Filters\ArticleFilters;
-use App\SharedKernel\Domain\Model\ValueObject\Page;
+use App\SharedKernel\Domain\Model\Pagination\Page;
 use App\SharedKernel\Presentation\Web\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Attribute\MapQueryString;

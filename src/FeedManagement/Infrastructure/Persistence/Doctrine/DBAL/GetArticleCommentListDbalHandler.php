@@ -7,6 +7,7 @@ namespace App\FeedManagement\Infrastructure\Persistence\Doctrine\DBAL;
 use App\FeedManagement\Application\ReadModel\CommentList;
 use App\FeedManagement\Application\UseCase\Query\GetArticleCommentList;
 use App\FeedManagement\Application\UseCase\QueryHandler\GetArticleCommentListHandler;
+use App\SharedKernel\Domain\Model\Pagination\PaginatorKeyset;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\Features\PaginationQuery;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DBAL\NoResult;
 use Doctrine\DBAL\Connection;
@@ -42,7 +43,7 @@ final readonly class GetArticleCommentListDbalHandler implements GetArticleComme
             ->orderBy('c.created_at', 'DESC')
             ->setParameter('articleId', $query->articleId->toBinary(), ParameterType::BINARY);
 
-        $qb = $this->applyCursorPagination($qb, $query->page, 'c.id');
+        $qb = $this->applyCursorPagination($qb, $query->page, new PaginatorKeyset('c.id', 'c.created_at'));
 
         try {
             $data = $qb->executeQuery()->fetchAllAssociative();
@@ -50,7 +51,7 @@ final readonly class GetArticleCommentListDbalHandler implements GetArticleComme
             throw NoResult::forQuery($qb->getSQL(), $qb->getParameters(), $e);
         }
 
-        $pagination = $this->createPaginationInfo($data, $query->page, 'comment_id');
+        $pagination = $this->createPaginationInfo($data, $query->page, new PaginatorKeyset('comment_id', 'comment_created_at'));
         return CommentList::create($data, $pagination);
     }
 }
