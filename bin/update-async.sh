@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 SOURCES=("7sur7.cd" "actualite.cd" "radiookapi.net" "mediacongo.net" "newscd.net")
-BASE_CMD="/usr/bin/php /home/eshimate/devscast.org/bin/console app:update"
-LOG_DIR="/home/eshimate/devscast.org/var"
+BASE_CMD="/usr/bin/php /var/www/html/news.devscast.tech/bin/console app:update"
+LOG_DIR="/var/www/html/news.devscast.tech/var"
 
 mkdir -p "$LOG_DIR"
 rm -f "${LOG_DIR}"/*.log
