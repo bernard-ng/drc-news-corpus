@@ -1,4 +1,4 @@
-#!/usr/local/cpanel/bin/jailshell
+#!/usr/bin/env bash
 
 SOURCES=("7sur7.cd" "actualite.cd" "radiookapi.net" "mediacongo.net" "newscd.net")
 BASE_CMD="/usr/local/bin/php /home/eshimate/devscast.org/bin/console app:open-graph"

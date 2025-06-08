@@ -67,12 +67,12 @@ audit: ## security audit
 
 .PHONY: deploy
 deploy: ## Deployment tasks
-	/usr/local/bin/php ~/composer.phar install --optimize-autoloader
-	/usr/local/bin/php bin/console doctrine:database:create --if-not-exists
-	/usr/local/bin/php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration --all-or-nothing
-	/usr/local/bin/php bin/console cache:clear --env=prod
-	/usr/local/bin/php bin/console secrets:decrypt-to-local --env=prod
-	/usr/local/bin/php ~/composer.phar symfony:dump-env prod
+	/usr/bin/php ~/composer.phar install --optimize-autoloader
+	/usr/bin/php bin/console doctrine:database:create --if-not-exists
+	/usr/bin/php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration --all-or-nothing
+	/usr/bin/php bin/console cache:clear --env=prod
+	/usr/bin/php bin/console secrets:decrypt-to-local --env=prod
+	/usr/bin/php ~/composer.phar symfony:dump-env prod
 
 # -----------------------------------
 # Symfony
