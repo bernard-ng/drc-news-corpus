@@ -18,7 +18,8 @@ final readonly class CrawlingSettings
         public string $id,
         public ?PageRange $pageRange = null,
         public ?DateRange $dateRange = null,
-        public ?string $category = null
+        public ?string $category = null,
+        public bool $notify = false
     ) {
         Assert::notEmpty($this->id);
     }

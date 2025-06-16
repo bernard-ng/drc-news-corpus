@@ -50,7 +50,7 @@ final class SeptSurSeptCd extends Source
             }
         }
 
-        $this->completed();
+        $this->completed($settings->notify);
     }
 
     /**

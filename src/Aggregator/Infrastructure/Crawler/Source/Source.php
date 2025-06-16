@@ -116,10 +116,10 @@ abstract class Source implements SourceCrawler
         $this->logger->notice('Initialized');
     }
 
-    protected function completed(): void
+    protected function completed(bool $notify = false): void
     {
         $event = $this->stopwatch->stop(self::WATCH_EVENT_NAME);
-        $this->dispatcher->dispatch(new SourceCrawled((string) $event, $this->getId()));
+        $this->dispatcher->dispatch(new SourceCrawled((string) $event, $this->getId(), $notify));
         $this->logger->notice('Done');
     }
 

@@ -39,6 +39,7 @@ class CrawlConsole extends Command
         $this->addOption('page', null, InputOption::VALUE_OPTIONAL, 'PageRange interval to crawle');
         $this->addOption('category', null, InputOption::VALUE_OPTIONAL, 'the category to crawle');
         $this->addOption('parallel', null, InputOption::VALUE_OPTIONAL, 'the number of parallel requests', default: 1);
+        $this->addOption('notify', null, InputOption::VALUE_NONE, 'enable notifications');
     }
 
     #[\Override]
@@ -75,7 +76,8 @@ class CrawlConsole extends Command
                 id: $source,
                 pageRange: $page !== null ? PageRange::from($page) : null,
                 dateRange: $date !== null ? DateRange::from($date) : null,
-                category: $category
+                category: $category,
+                notify: $input->getOption('notify') !== null
             )
         );
 

@@ -49,7 +49,7 @@ final class MediaCongoNet extends Source
             }
         }
 
-        $this->completed();
+        $this->completed($settings->notify);
     }
 
     #[\Override]

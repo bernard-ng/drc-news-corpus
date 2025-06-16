@@ -25,12 +25,14 @@ final readonly class SourceCrawledListener implements EventListener
 
     public function __invoke(SourceCrawled $event): void
     {
-        $email = new SourceCrawledEmail(
-            EmailAddress::from($this->crawlingNotificationEmail),
-            $event->event,
-            $event->source
-        );
+        if ($event->notify) {
+            $email = new SourceCrawledEmail(
+                EmailAddress::from($this->crawlingNotificationEmail),
+                $event->event,
+                $event->source
+            );
 
-        $this->mailer->send($email);
+            $this->mailer->send($email);
+        }
     }
 }

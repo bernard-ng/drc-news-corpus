@@ -41,6 +41,7 @@ class UpdateConsole extends Command
         $this->addOption('category', null, InputOption::VALUE_OPTIONAL, 'the category to crawle');
         $this->addOption('direction', null, InputOption::VALUE_OPTIONAL, 'the direction to crawle', 'forward', ['forward', 'backward']);
         $this->addOption('days', null, InputOption::VALUE_OPTIONAL, 'the number of days to crawle');
+        $this->addOption('notify', null, InputOption::VALUE_OPTIONAL, 'enable notifications', default: false);
     }
 
     #[\Override]
@@ -76,7 +77,12 @@ class UpdateConsole extends Command
             DateRange::backward($date, $days);
 
         $this->io->title(sprintf('[%s] Updating with range %s', $direction->value, $dateRange->format()));
-        $this->sourceCrawler->fetch(new CrawlingSettings($source, dateRange: $dateRange, category: $category));
+        $this->sourceCrawler->fetch(new CrawlingSettings(
+            $source,
+            dateRange: $dateRange,
+            category: $category,
+            notify: $input->getOption('notify') !== null
+        ));
         $this->io->success('website crawled successfully');
 
         return Command::SUCCESS;

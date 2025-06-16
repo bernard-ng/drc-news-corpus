@@ -47,7 +47,7 @@ final class RadioOkapiNet extends Source
             }
         }
 
-        $this->completed();
+        $this->completed($settings->notify);
     }
 
     #[\Override]

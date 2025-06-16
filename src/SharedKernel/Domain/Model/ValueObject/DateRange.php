@@ -58,7 +58,7 @@ final class DateRange implements \Stringable
     public static function forward(\DateTimeImmutable $date): self
     {
         $start = $date;
-        $end = new \DateTimeImmutable('now');
+        $end = new \DateTimeImmutable('now', new \DateTimeZone('Africa/Lubumbashi'));
 
         return new self((int) $start->format('U'), (int) $end->format('U'));
     }
